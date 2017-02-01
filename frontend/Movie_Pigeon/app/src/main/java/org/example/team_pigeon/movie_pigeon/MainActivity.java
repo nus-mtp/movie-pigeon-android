@@ -13,25 +13,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Button BSignIn = (Button) findViewById(R.id.buttonSignIn);
-        final Button BRegister = (Button) findViewById(R.id.buttonRegister);
+        SigninPage sp = new SigninPage(MainActivity.this, this);
 
-        BSignIn.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v) {
-                // Check Credentials and respond accordingly
-
-                // for testing purpose
-                System.out.println("Sign in button clicked");
-            }
-        });
-
-        BSignIn.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v) {
-                // Check Credentials and respond accordingly
-
-                // for testing purpose
-                System.out.println("Sign in button clicked");
-            }
-        });
     }
 }
