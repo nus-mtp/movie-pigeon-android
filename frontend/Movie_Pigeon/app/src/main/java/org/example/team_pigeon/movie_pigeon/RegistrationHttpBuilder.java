@@ -13,8 +13,8 @@ import java.net.URLEncoder;
  */
 
 class RegistrationHttpBuilder {
-    String url = "128.199.231.190";
-    String registrationURL = "128.199.231.190/api/users";
+    String url = "http://128.199.231.190:8080";
+    String registrationURL = "http://128.199.231.190:8080/api/users";
     String charset = java.nio.charset.StandardCharsets.UTF_8.name();
     String param1, param2, param3;
     HttpURLConnection connection = null;
