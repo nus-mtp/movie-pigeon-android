@@ -4,42 +4,33 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 
 /**
  * Created by Guo Mingxuan on 1/2/2017.
  */
 
-class HttpBuilder {
+class RegistrationHttpBuilder {
     String url = "128.199.231.190";
-    String typeURL;
+    String registrationURL = "128.199.231.190/api/users";
     String charset = java.nio.charset.StandardCharsets.UTF_8.name();
     String param1, param2, param3;
-    URLConnection connection = null;
-    final int signInType = 0;
+    HttpURLConnection connection = null;
 
-    HttpBuilder(int type, String email, String username, String password) {
+    RegistrationHttpBuilder(String email, String username, String password) {
         String query = formQuery(email, username, password);
         // type 0 for sign in, type 1 for registration
-        if (type == signInType) {
-            request(query, type);
-        } else {
-            request(query, type);
-        }
+       request(query);
     }
 
-    private void request(String query, int type) {
+    private void request(String query) {
         // build registration request here
-        if (type == signInType) {
-            typeURL = url + "/api/clients";
-        } else {
-            typeURL = url + "/api/users";
-        }
         try {
-            connection = new URL(typeURL).openConnection();
-            connection.setDoOutput(true); // Triggers POST.
+            connection = (HttpURLConnection) new URL(registrationURL).openConnection();
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
             connection.setRequestProperty("Accept-Charset", charset);
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + charset);
 
@@ -52,6 +43,7 @@ class HttpBuilder {
 
 
 
+            connection.connect();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.print("Unable to connect to server");

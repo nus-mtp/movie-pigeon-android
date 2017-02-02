@@ -27,7 +27,7 @@ class SigninPage {
         BSignIn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Check Credentials and respond accordingly
-                HttpBuilder hb = new HttpBuilder(0, email, "", password);
+                SignInHttpBuilder sBuilder = new SignInHttpBuilder(mContext, email, password);
                 // TODO processing response from the server
 
 

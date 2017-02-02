@@ -13,13 +13,12 @@ import android.widget.EditText;
  */
 
 class RegisterPage {
-    final int registerType = 1;
 
     RegisterPage(Context mContext, Activity mActivity, View signin) {
         View register = LayoutInflater.from(mActivity.getApplication()).inflate(R.layout.register_page, null);
         mActivity.setContentView(register);
         // remove signin page view
-        ((ViewManager)signin.getParent()).removeView(signin);
+//        ((ViewManager)signin.getParent()).removeView(signin);
 
         EditText etEmail = (EditText) register.findViewById(R.id.rETEmail);
         EditText etUsername = (EditText) register.findViewById(R.id.rETUsername);
@@ -40,7 +39,7 @@ class RegisterPage {
             @Override
             public void onClick(View v) {
 
-                HttpBuilder hb = new HttpBuilder(registerType, email, username, password);
+                RegistrationHttpBuilder hb = new RegistrationHttpBuilder(email, username, password);
                 // TODO process server response
 
             }
