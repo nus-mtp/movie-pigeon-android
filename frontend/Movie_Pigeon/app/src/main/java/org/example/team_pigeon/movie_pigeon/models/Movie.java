@@ -19,8 +19,9 @@ public class Movie implements Serializable{
     private String director;
     private String rating;
     private String length;
-    private List<String> actors;
-    private List<String> genres;
+    private String plot;
+    private ArrayList<String> actors;
+    private ArrayList<String> genres;
     private boolean isRated;
     private boolean isReleased;
     private boolean isBookmarked;
@@ -94,7 +95,7 @@ public class Movie implements Serializable{
         this.rating = rating;
     }
 
-    public List<String> getActors() {
+    public ArrayList<String> getActors() {
         return actors;
     }
 
@@ -102,7 +103,7 @@ public class Movie implements Serializable{
         this.actors = new ArrayList<String>(Arrays.asList(actorsRaw.split(",")));
     }
 
-    public List<String> getGenre() {
+    public ArrayList<String> getGenre() {
         return genres;
     }
 
@@ -133,11 +134,20 @@ public class Movie implements Serializable{
     public void setBookmarked(boolean bookmarked) {
         isBookmarked = bookmarked;
     }
+
     public String getLength() {
         return length;
     }
 
     public void setLength(String length) {
         this.length = length;
+    }
+
+    public String getPlot() {
+        return plot;
+    }
+
+    public void setPlot(String plot) {
+        this.plot = plot;
     }
 }
