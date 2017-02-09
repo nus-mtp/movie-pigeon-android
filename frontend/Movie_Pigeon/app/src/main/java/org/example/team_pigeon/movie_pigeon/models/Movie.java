@@ -4,24 +4,43 @@ package org.example.team_pigeon.movie_pigeon.models;
  * Created by SHENGX on 2017/2/3.
  */
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Movie implements Serializable{
+    @Expose
     private String title;
+    @Expose
+    @SerializedName("movie_id")
     private String movieID;
+    @Expose
+    @SerializedName("production_year")
     private String productionYear;
+    @Expose
     private String language;
+    @Expose
     private String country;
+    @Expose
+    @SerializedName("poster_url")
     private String posterURL;
+    @Expose
     private String director;
     private String rating;
+    @Expose
+    @SerializedName("runtime")
     private String length;
+    @Expose
     private String plot;
-    private ArrayList<String> actors;
-    private ArrayList<String> genres;
+    @Expose
+    private String actors;
+    @Expose
+    @SerializedName("genre")
+    private String genres;
     private boolean isRated;
     private boolean isReleased;
     private boolean isBookmarked;
@@ -95,20 +114,12 @@ public class Movie implements Serializable{
         this.rating = rating;
     }
 
-    public ArrayList<String> getActors() {
+    public String getActors() {
         return actors;
     }
 
-    public void setActors(String actorsRaw) {
-        this.actors = new ArrayList<String>(Arrays.asList(actorsRaw.split(",")));
-    }
-
-    public ArrayList<String> getGenre() {
-        return genres;
-    }
-
-    public void setGenre(String genresRaw) {
-        this.genres = new ArrayList<String>(Arrays.asList(genresRaw.split(",")));
+    public void setActors(String actors) {
+        this.actors = actors;
     }
 
     public boolean isRated() {
@@ -149,5 +160,13 @@ public class Movie implements Serializable{
 
     public void setPlot(String plot) {
         this.plot = plot;
+    }
+
+    public String getGenres() {
+        return genres;
+    }
+
+    public void setGenres(String genres) {
+        this.genres = genres;
     }
 }
