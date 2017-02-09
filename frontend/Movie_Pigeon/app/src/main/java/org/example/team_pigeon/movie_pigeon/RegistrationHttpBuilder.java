@@ -84,12 +84,14 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
         }
     }
 
+
     @Override
     protected Void doInBackground(String... params) {
         String p1, p2, p3;
         p1=params[0];
         p2=params[1];
         p3=params[2];
+        Log.e("rHttpBuilder", "Passed in parameters are " + p1 + " " + p2 + " " + p3);
         query = formQuery(p1, p2, p3);
         Log.e("rHttpBuilder", "query formed");
         Log.e("rHttpBuilder", "Query is " + query);
