@@ -39,7 +39,7 @@ class RegisterPage {
             @Override
             public void onClick(View v) {
 
-                RegistrationHttpBuilder hb = new RegistrationHttpBuilder(email, username, password);
+                new RegistrationHttpBuilder().execute(email, username, password);
                 // TODO process server response
 
             }
