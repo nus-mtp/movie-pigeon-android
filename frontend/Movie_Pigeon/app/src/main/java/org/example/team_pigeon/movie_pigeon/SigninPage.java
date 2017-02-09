@@ -14,20 +14,26 @@ import android.widget.EditText;
 class SigninPage {
     SigninPage(final Context mContext, final Activity mActivity) {
         final View signin = LayoutInflater.from(mActivity.getApplication()).inflate(R.layout.signin_page, null);
+        final String[] email = new String[1];
+        final String[] password = new String[1];
         Button BSignIn = (Button) signin.findViewById(R.id.buttonSignIn);
         Button BRegister = (Button) signin.findViewById(R.id.buttonRegister);
         mActivity.setContentView(signin);
 
-        EditText etEmail = (EditText) signin.findViewById(R.id.editTextUsername);
-        EditText etPassword = (EditText) signin.findViewById(R.id.editTextPassword);
-
-        final String email = String.valueOf(etEmail.getText());
-        final String password = String.valueOf(etPassword.getText());
+        final EditText etEmail = (EditText) signin.findViewById(R.id.editTextUsername);
+        final EditText etPassword = (EditText) signin.findViewById(R.id.editTextPassword);
 
         BSignIn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Check Credentials and respond accordingly
-                SignInHttpBuilder sBuilder = new SignInHttpBuilder(mContext, email, password);
+                email[0] = String.valueOf(etEmail.getText());
+                password[0] = String.valueOf(etPassword.getText());
+
+                String[] signInDetails = new String[2];
+                signInDetails[0] = email[0];
+                signInDetails[1] = password[0];
+                SignInHttpBuilder sBuilder = new SignInHttpBuilder(mContext);
+                sBuilder.execute(signInDetails);
                 // TODO processing response from the server
 
 
