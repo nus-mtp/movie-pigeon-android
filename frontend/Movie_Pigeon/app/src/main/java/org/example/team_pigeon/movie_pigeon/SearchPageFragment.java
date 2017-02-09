@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -42,6 +43,7 @@ public class SearchPageFragment extends Fragment {
     private SearchTask searchTask;
     private Bundle arguments;
     private MovieListFragment movieListFragment = new MovieListFragment();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
 
@@ -49,6 +51,8 @@ public class SearchPageFragment extends Fragment {
         fragmentManager = getFragmentManager();
         btnSearch = (Button) view.findViewById(R.id.button_search);
         rgrpSearchBy = (RadioGroup) view.findViewById(R.id.rg_search_by);
+        //To be Implemented in next version
+        rgrpSearchBy.setVisibility(View.GONE);
         etSearch = (EditText) view.findViewById(R.id.editText_search);
         rgrpSearchBy.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
@@ -78,44 +82,68 @@ public class SearchPageFragment extends Fragment {
     }
 
     private class SearchTask extends AsyncTask<String, Integer, Void> {
+        private final int SUCCESSFUL = 0;
+        private final int ERROR = 1;
+        private final int NO_RESULT = 2;
+        int status = SUCCESSFUL;
+
         @Override
-        protected Void doInBackground (String...params){
-        try {
-            OkHttpClient client = new OkHttpClient();
-            Request request = new SearchRequestHttpBuilder(params[0]).getRequest();
-            Response response = client.newCall(request).execute();
-            if (!response.isSuccessful()) {
-                throw new IOException("Unexpected code" + response);
+        protected Void doInBackground(String... params) {
+            try {
+                OkHttpClient client = new OkHttpClient();
+                Request request = new SearchRequestHttpBuilder(params[0]).getRequest();
+                Response response = client.newCall(request).execute();
+                if (!response.isSuccessful()) {
+                    status = ERROR;
+                    throw new IOException("Unexpected code" + response);
+                }
+                //Convert json to Arraylist<Movie>
+                movies = gson.fromJson(response.body().charStream(), new TypeToken<ArrayList<Movie>>() {
+                }.getType());
+                if (movies.size() == 0) {
+                    status = NO_RESULT;
+                }
+                return null;
+            } catch (IOException e) {
+                Log.e(TAG, e.getMessage());
             }
-            //Convert json to Arraylist<Movie>
-            movies = gson.fromJson(response.body().charStream(), new TypeToken<ArrayList<Movie>>() {
-            }.getType());
             return null;
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-        }
-        return null;
 
-    }
+        }
 
         @Override
-        protected void onPreExecute () {
+        protected void onPreExecute() {
             Log.i(TAG, "New search request is initialised");
             btnSearch.setEnabled(false);
-    }
+            return;
+        }
 
         @Override
-        protected void onPostExecute (Void params) {
-            Log.i(TAG, "Search is completed");
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            arguments = new Bundle();
-            arguments.putSerializable("movies", movies);
-            movieListFragment.setArguments(arguments);
-            fragmentTransaction.replace(R.id.fl_content, movieListFragment);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
+        protected void onPostExecute(Void params) {
+            switch (status) {
+                case SUCCESSFUL:
+                    Log.i(TAG, "Search is completed");
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    arguments = new Bundle();
+                    arguments.putSerializable("movies", movies);
+                    movieListFragment.setArguments(arguments);
+                    fragmentTransaction.replace(R.id.fl_content, movieListFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                    break;
 
-    }
+                case ERROR:
+                    Toast.makeText(getContext(), "Connection error, please check your connection", Toast.LENGTH_SHORT).show();
+                    btnSearch.setEnabled(true);
+                    break;
+
+                case NO_RESULT:
+                    Toast.makeText(getContext(), "Sorry, the search has no results", Toast.LENGTH_SHORT).show();
+                    btnSearch.setEnabled(true);
+                    break;
+            }
+
+        }
     }
 
     //To create a list of movies for testing purpose
