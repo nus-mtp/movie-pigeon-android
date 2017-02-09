@@ -1,16 +1,13 @@
 package org.example.team_pigeon.movie_pigeon;
 
 import android.app.Fragment;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import org.example.team_pigeon.movie_pigeon.adapters.MovieListAdapter;
 import org.example.team_pigeon.movie_pigeon.models.Movie;
@@ -39,21 +36,22 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
         mHandler = new footerHandler();
         movieListAdapter = new MovieListAdapter(movies,getActivity());
         list_movies.setAdapter(movieListAdapter);
-        list_movies.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if(view.getLastVisiblePosition() == totalItemCount-1 && list_movies.getCount() >= 10 && isLoading == false) {
-                    isLoading = true;
-                    Thread thread = new ThreadGetMoreMovies();
-                    thread.start();
-                }
-            }
-        });
+        //Scrolling to load more function will be implement in the next version
+//        list_movies.setOnScrollListener(new AbsListView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(AbsListView view, int scrollState) {
+//
+//            }
+//
+//            @Override
+//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//                if(view.getLastVisiblePosition() == totalItemCount-1 && list_movies.getCount() >= 10 && isLoading == false) {
+//                    isLoading = true;
+//                    Thread thread = new ThreadGetMoreMovies();
+//                    thread.start();
+//                }
+//            }
+//        });
         list_movies.setOnItemClickListener(this);
         return view;
     }
@@ -91,15 +89,6 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
     private ArrayList<Movie> getMoreMovies() {
         //For testing
         ArrayList<Movie> list = new ArrayList<>();
-        list.add(new Movie("new","111"));
-        Movie movie = list.get(0);
-        movie.setPosterURL("https://s-media-cache-ak0.pinimg.com/736x/17/ba/70/17ba70b5d152cb9042e4a0785dccf834.jpg");
-        list.add(new Movie("new2","1112"));
-        list.add(new Movie("new3","1113"));
-        list.add(new Movie("new4","1114"));
-        list.add(new Movie("new5","1115"));
-        list.add(new Movie("new6","1112"));
-        list.add(new Movie("new7","1111"));
         return list;
     }
 
