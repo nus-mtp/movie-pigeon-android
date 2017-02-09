@@ -93,13 +93,19 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 e.printStackTrace();
             }
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(response));
-            StringBuffer sb = new StringBuffer();
-            String line = "";
-            Log.e("rHttpBuilder", "Starting to read response");
-            while ((line = br.readLine()) != null) {
-                sb.append(line+"\n");
-                System.out.println("Response>>>" + line);
+            if (status == 200) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(response));
+                StringBuffer sb = new StringBuffer();
+                String line = "";
+                Log.e("rHttpBuilder", "Starting to read response");
+                while ((line = br.readLine()) != null) {
+                    sb.append(line + "\n");
+                    System.out.println("Response>>>" + line);
+                }
+            } else if (status == 401) {
+                // TODO wrong email or password
+                Log.e("sHttpBuilder", "Unauthorized");
+
             }
         } catch (IOException e) {
             e.printStackTrace();
