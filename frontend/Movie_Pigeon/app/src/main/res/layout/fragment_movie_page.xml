@@ -74,7 +74,7 @@
                     <TextView
                         android:id="@+id/text_movie_page_year_content"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:text=" " />
                 </TableRow>
@@ -94,7 +94,7 @@
                     <TextView
                         android:id="@+id/text_movie_page_country_content"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginLeft="8dp"
                         android:text=" " />
@@ -115,7 +115,7 @@
                     <TextView
                         android:id="@+id/text_movie_page_length_content"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:text=" " />
                 </TableRow>
@@ -156,7 +156,7 @@
                     <TextView
                         android:id="@+id/text_movie_page_director_content"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_weight="1"
                         android:text=" " />
@@ -177,7 +177,7 @@
                     <TextView
                         android:id="@+id/text_movie_page_actors_content"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_weight="1"
                         android:text=" " />
