@@ -55,10 +55,11 @@
         android:layout_height="60dp"
         android:inputType="textPersonName"
         android:ems="10"
+        android:background="@color/colorEditTextGrey"
         android:id="@+id/editText_search"
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
-        android:hint="Search movies by title..."/>
+        android:hint="   Search movies by title..."/>
 
     <Button
         android:text="Search"
@@ -66,5 +67,7 @@
         android:layout_width="300dp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:layout_height="60dp" />
+        android:layout_height="60dp"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="@android:color/holo_blue_dark" />
 </LinearLayout>
