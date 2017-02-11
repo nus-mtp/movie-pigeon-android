@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,12 +17,12 @@ import android.widget.Toast;
 
 class RegisterPage {
 
-    RegisterPage(final Context mContext, Activity mActivity, View signin) {
+    RegisterPage(final Context mContext, final Activity mActivity, View signin) {
         final String[] email = new String[1];
         final String[] username = new String[1];
         final String[] password = new String[1];
         final String[] confirmPassword = new String[1];
-        View register = LayoutInflater.from(mActivity.getApplication()).inflate(R.layout.register_page, null);
+        final View register = LayoutInflater.from(mActivity.getApplication()).inflate(R.layout.register_page, null);
         mActivity.setContentView(register);
 
         final EditText etEmail = (EditText) register.findViewById(R.id.rETEmail);
@@ -30,6 +31,16 @@ class RegisterPage {
         final EditText etConfirmPassword = (EditText) register.findViewById(R.id.rETConfirmPassword);
 
         Button registerButton = (Button) register.findViewById(R.id.rpRegisterButton);
+        Button backButton = (Button) register.findViewById(R.id.rpBackButton);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((ViewGroup)register.getParent()).removeView(register);
+                SigninPage sp = new SigninPage(mContext, mActivity);
+            }
+        });
+
         registerButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
