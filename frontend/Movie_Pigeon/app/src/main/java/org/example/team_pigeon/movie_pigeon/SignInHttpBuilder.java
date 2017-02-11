@@ -369,7 +369,8 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 signinFolder.mkdirs();
             }
 
-            credential = new File(signinFolder.getAbsolutePath(), "credential.txt");
+            credential = new File(signinFolder.getAbsolutePath(), "credential");
+            System.out.println(credential.getAbsolutePath());
 
             // original token received is like: {"access_token":"AInKmwQRJLvylHTojqcNMqP7FvdXhWVoEIdgtTdRJW7rv68XHz6NpJ32dJPMUE8ZpYqF8zw8dOBGPRHtBJhWAHvniswYXynjH0xKnziVVYN486MLwiUd1WiuVntrTMBq","token_type":"Bearer"}
             // magic number 17 - remove part:   {"access_token":"
