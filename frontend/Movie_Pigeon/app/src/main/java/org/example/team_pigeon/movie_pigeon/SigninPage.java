@@ -2,6 +2,8 @@ package org.example.team_pigeon.movie_pigeon;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -12,7 +14,12 @@ import android.widget.EditText;
  */
 
 class SigninPage {
+    Context mContext;
+    Activity mActivity;
+
     SigninPage(final Context mContext, final Activity mActivity) {
+        this.mContext = mContext;
+        this.mActivity = mActivity;
         final View signin = LayoutInflater.from(mActivity.getApplication()).inflate(R.layout.signin_page, null);
         final String[] email = new String[1];
         final String[] password = new String[1];

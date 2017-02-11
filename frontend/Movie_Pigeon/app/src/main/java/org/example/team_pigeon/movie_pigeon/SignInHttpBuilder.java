@@ -2,7 +2,9 @@ package org.example.team_pigeon.movie_pigeon;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -413,10 +415,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
             }
 
         }
-
-
     }
-
 
     private String formQuery(String name, String id, String secret) {
         param1 = name;
@@ -461,5 +460,16 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
         Log.e("sHttpBuilder", "Passed in parameters are " + p1 + " " + p2);
         request(mContext, p1, p2);
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void v) {
+        /*--------------------Starting HomePageActivity-------------------*/
+
+        Intent intent = new Intent("startHomePageActivity");
+        intent.putExtra("Token", token);
+        mContext.sendBroadcast(intent);
+
+        /*--------------------End of starting HomePageActivity-------------------*/
     }
 }
