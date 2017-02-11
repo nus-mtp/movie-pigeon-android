@@ -41,21 +41,12 @@ class SigninPage {
                 signInDetails[1] = password[0];
                 SignInHttpBuilder sBuilder = new SignInHttpBuilder(mContext);
                 sBuilder.execute(signInDetails);
-                // TODO processing response from the server
-
-
-
-                // for testing purpose
-                System.out.println("Sign in button clicked");
             }
         });
 
         BRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 RegisterPage register = new RegisterPage(mContext, mActivity, signin);
-
-                // for testing purpose
-                System.out.println("Register button clicked");
             }
         });
     }

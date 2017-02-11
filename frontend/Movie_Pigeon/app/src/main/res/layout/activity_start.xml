@@ -6,6 +6,6 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.example.team_pigeon.movie_pigeon.MainActivity">
+    tools:context="org.example.team_pigeon.movie_pigeon.StartActivity">
 
 </RelativeLayout>

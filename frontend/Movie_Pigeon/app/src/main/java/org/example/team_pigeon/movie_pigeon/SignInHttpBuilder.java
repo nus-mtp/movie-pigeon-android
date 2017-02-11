@@ -4,14 +4,12 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Base64;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -23,7 +21,6 @@ import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import android.provider.Settings.Secure;
 import android.util.Log;
-import android.webkit.CookieManager;
 
 import java.net.URL;
 import java.net.URLEncoder;
@@ -134,17 +131,10 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
 
         /*-------------------End of Login step 1-------------------------------*/
 
-//        try {
-//            Thread.sleep(1000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
          /*-------------------Login step 2-------------------------------*/
 
         Log.e("sHttpBuilder", "id is " + id);
         getUrl = "http://128.199.231.190:8080/api/oauth2/authorize/transactionId?client_id=" + id + "&response_type=code&redirect_uri=moviepigeon/";
-//        getUrl = "http://192.168.0.101:8080/api/oauth2/authorize/transactionId?client_id=test&response_type=code&redirect_uri=baidu.com/";
         Log.e("sHttpBuilder", "get url is " + getUrl);
 
         try {
@@ -203,15 +193,8 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
         connection.disconnect();
         Log.e("sHttpBuilder", "Obtained transactionId: " + transactionId);
 
-//        try {
-//            Thread.sleep(1000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
         // step 2 part 2
         authorizeUrl = "http://128.199.231.190:8080/api/oauth2/authorize/";
-//        authorizeUrl = "http://192.168.0.101:8080/api/oauth2/authorize/";
         try {
             connection = (HttpURLConnection) new URL(authorizeUrl).openConnection();
             connection.setRequestMethod("POST");
@@ -253,12 +236,6 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
             status = connection.getResponseCode();
             Log.e("sHttpBuilder", "2nd Post response status is " + status);
 
-//            try {
-//                response = connection.getInputStream();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-
             if (status == 404) {
                 response = connection.getErrorStream();
                 BufferedReader br = new BufferedReader(new InputStreamReader(response));
@@ -282,8 +259,6 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
         }
 
         Log.e("sHttpBuilder", "Obtained code: " + code);
-
-
         /*-------------------End of Login step 2-------------------------------*/
 
         /*-------------------Login step 3-------------------------------*/
@@ -344,7 +319,6 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
             }
 
             if (status == 200) {
-//                response = connection.getErrorStream();
                 BufferedReader br = new BufferedReader(new InputStreamReader(response));
                 StringBuffer sb = new StringBuffer();
                 String line = "";
@@ -353,7 +327,6 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     sb.append(line + "\n");
                     System.out.println("Response>>>" + line);
                     token = line;
-//                    code = line.replaceAll(".*=", "");
                 }
             } else if (status == 401) {
                 // TODO wrong email or password
@@ -393,9 +366,6 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
             }
 
             credential = new File(signinFolder.getAbsolutePath(), "credential.txt");
-
-            // process token - remove unwanted info
-//            String regex = "\\s*\\b'access_token':'\\b\\s"
 
             // original token received is like: {"access_token":"AInKmwQRJLvylHTojqcNMqP7FvdXhWVoEIdgtTdRJW7rv68XHz6NpJ32dJPMUE8ZpYqF8zw8dOBGPRHtBJhWAHvniswYXynjH0xKnziVVYN486MLwiUd1WiuVntrTMBq","token_type":"Bearer"}
             // magic number 17 - remove part:   {"access_token":"

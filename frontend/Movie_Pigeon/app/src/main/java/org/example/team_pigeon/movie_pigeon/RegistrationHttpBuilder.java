@@ -24,13 +24,6 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
     String param1, param2, param3, query;
     HttpURLConnection connection = null;
 
-//    public RegistrationHttpBuilder(String email, String username, String password) {
-//        super();
-//        query = formQuery(email, username, password);
-//        Log.e("rHttpBuilder", "query built");
-////       request(query);
-//    }
-
     private void request(String query) {
         // build registration request here
         try {

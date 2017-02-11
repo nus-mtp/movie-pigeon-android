@@ -22,8 +22,6 @@ class RegisterPage {
         final String[] confirmPassword = new String[1];
         View register = LayoutInflater.from(mActivity.getApplication()).inflate(R.layout.register_page, null);
         mActivity.setContentView(register);
-        // remove signin page view
-//        ((ViewManager)signin.getParent()).removeView(signin);
 
         final EditText etEmail = (EditText) register.findViewById(R.id.rETEmail);
         final EditText etUsername = (EditText) register.findViewById(R.id.rETUsername);
