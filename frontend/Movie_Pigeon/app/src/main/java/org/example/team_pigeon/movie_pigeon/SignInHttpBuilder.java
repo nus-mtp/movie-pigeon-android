@@ -16,6 +16,7 @@ import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import android.provider.Settings.Secure;
 import android.util.Log;
+import android.webkit.CookieManager;
 
 import java.net.URL;
 import java.net.URLEncoder;
@@ -30,16 +31,17 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
     String registerClientUrl = "http://128.199.231.190:8080/api/clients";
     String getUrl;
     String authorizeUrl;
+    String tokenUrl = "http://128.199.231.190:8080/api/oauth2/token";
     HttpURLConnection connection;
     String charset = java.nio.charset.StandardCharsets.UTF_8.name();
     String query, param1, param2, param3;
     String id, deviceName, secret;
     Context mContext;
     String base64EncodedCredentials;
-    String transactionId, transactionBody;
+    String transactionId, transactionBody, tokenBody;
     private InputStream response;
     private int status;
-    private String code;
+    private String code, token;
     static final String COOKIES_HEADER = "Set-Cookie";
     static java.net.CookieManager msCookieManager = new java.net.CookieManager();
 
@@ -130,7 +132,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
          /*-------------------Login step 2-------------------------------*/
 
         Log.e("sHttpBuilder", "id is " + id);
-        getUrl = "http://128.199.231.190:8080/api/oauth2/authorize/transactionId?client_id=" + id + "&response_type=code&redirect_uri=baidu.com/";
+        getUrl = "http://128.199.231.190:8080/api/oauth2/authorize/transactionId?client_id=" + id + "&response_type=code&redirect_uri=moviepigeon/";
 //        getUrl = "http://192.168.0.101:8080/api/oauth2/authorize/transactionId?client_id=test&response_type=code&redirect_uri=baidu.com/";
         Log.e("sHttpBuilder", "get url is " + getUrl);
 
@@ -275,7 +277,95 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
 
         /*-------------------Login step 3-------------------------------*/
 
+        try {
+            connection = (HttpURLConnection) new URL(tokenUrl).openConnection();
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Accept-Charset", charset);
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + charset);
 
+            // different authentication info: clientid & secret
+            String base64EncodedCredentialsForToken = "Basic " + Base64.encodeToString(
+                    (id + ":" + secret).getBytes(),
+                    Base64.NO_WRAP);
+            connection.setRequestProperty("Authorization", base64EncodedCredentialsForToken);
+
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.29 Safari/537.36");
+
+            // load cookies
+            if (msCookieManager.getCookieStore().getCookies().size() > 0) {
+                // While joining the Cookies, use ',' or ';' as needed. Most of the servers are using ';'
+                connection.setRequestProperty("Cookie",
+                        TextUtils.join(";",  msCookieManager.getCookieStore().getCookies()));
+            }
+
+            connection.connect();
+
+            // forming the body
+            param1 = code;
+            param2 = "authorization_code";
+            param3 = "moviepigeon/";
+            try {
+                tokenBody = String.format("code=%s&grant_type=%s&redirect_uri=%s",
+                        URLEncoder.encode(param1, charset),
+                        URLEncoder.encode(param2, charset),
+                        URLEncoder.encode(param3, charset));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                System.out.println("Unable to encode message");
+            }
+
+            Log.e("sHttpBuilder", "body for requesting token is " + tokenBody);
+
+            try (OutputStream output = connection.getOutputStream()) {
+                output.write(tokenBody.getBytes(charset));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            status = connection.getResponseCode();
+            Log.e("sHttpBuilder", "Login step 3 response status is " + status);
+
+            try {
+                response = connection.getInputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (status == 200) {
+//                response = connection.getErrorStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(response));
+                StringBuffer sb = new StringBuffer();
+                String line = "";
+                Log.e("rHttpBuilder", "Starting to read response");
+                while ((line = br.readLine()) != null) {
+                    sb.append(line + "\n");
+                    System.out.println("Response>>>" + line);
+                    token = line;
+//                    code = line.replaceAll(".*=", "");
+                }
+            } else if (status == 401) {
+                // TODO wrong email or password
+                Log.e("sHttpBuilder", "Unauthorized");
+            } else {
+                InputStream is = connection.getErrorStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                StringBuffer sb = new StringBuffer();
+                String line = "";
+                Log.e("rHttpBuilder", "Starting to read response");
+                while ((line = br.readLine()) != null) {
+                    sb.append(line + "\n");
+                    System.out.println("Response>>>" + line);
+                    token = line;
+                }
+            }
+
+            connection.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Log.e("sHttpBuilder", "Obtained token: " + token);
 
         /*-------------------End of Login step 3-------------------------------*/
 
