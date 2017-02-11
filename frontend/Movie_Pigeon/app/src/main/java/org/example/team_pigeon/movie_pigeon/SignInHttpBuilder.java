@@ -3,10 +3,15 @@ package org.example.team_pigeon.movie_pigeon;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Base64;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -44,6 +49,10 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
     private String code, token;
     static final String COOKIES_HEADER = "Set-Cookie";
     static java.net.CookieManager msCookieManager = new java.net.CookieManager();
+    String folderMain = "MoviePigeon";
+    String folderSignin = "Signin";
+    private File mainFolder, signinFolder, credential;
+    private FileOutputStream fos;
 
     SignInHttpBuilder(Context mContext) {
         this.mContext = mContext;
@@ -369,7 +378,45 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
 
         /*-------------------End of Login step 3-------------------------------*/
 
+        /*--------------------save token into a local file--------------------*/
+        // check external sd card mounted and create folders
+        if (isExternalStorageReadable() && isExternalStorageWritable()) {
+            mainFolder = new File(Environment.getExternalStorageDirectory(), folderMain);
+            if (!mainFolder.exists()) {
+                mainFolder.mkdirs();
+            }
+            signinFolder = new File(Environment.getExternalStorageDirectory() + "/" + folderMain, folderSignin);
+            if (!signinFolder.exists()) {
+                signinFolder.mkdirs();
+            }
+
+            credential = new File(signinFolder.getAbsolutePath(), "credential.txt");
+
+            // process token - remove unwanted info
+//            String regex = "\\s*\\b'access_token':'\\b\\s"
+
+            // original token received is like: {"access_token":"AInKmwQRJLvylHTojqcNMqP7FvdXhWVoEIdgtTdRJW7rv68XHz6NpJ32dJPMUE8ZpYqF8zw8dOBGPRHtBJhWAHvniswYXynjH0xKnziVVYN486MLwiUd1WiuVntrTMBq","token_type":"Bearer"}
+            // magic number 17 - remove part:   {"access_token":"
+            // read till right before the last colon (the colon before "token_type") and -1 for the " sign
+            token = token.substring(17, token.lastIndexOf(",") - 1);
+            Log.e("sHttpBuilder", "Trimmed token is " + token);
+
+            try {
+                fos = new FileOutputStream(credential);
+                fos.write(token.getBytes());
+                fos.flush();
+                fos.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
     }
+
 
     private String formQuery(String name, String id, String secret) {
         param1 = name;
@@ -385,6 +432,25 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
             System.out.println("Unable to encode message");
             return "";
         }
+    }
+
+    /* Checks if external storage is available for read and write */
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    /* Checks if external storage is available to at least read */
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            return true;
+        }
+        return false;
     }
 
     @Override

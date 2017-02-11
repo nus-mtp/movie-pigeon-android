@@ -3,6 +3,7 @@
     package="org.example.team_pigeon.movie_pigeon">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
