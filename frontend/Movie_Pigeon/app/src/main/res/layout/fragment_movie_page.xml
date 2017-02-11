@@ -44,7 +44,6 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/textView6"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/text_movie_page_title" />
@@ -65,7 +64,6 @@
                     android:layout_marginTop="10dp">
 
                     <TextView
-                        android:id="@+id/textView8"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/text_movie_page_year" />
@@ -85,7 +83,6 @@
                     android:layout_marginTop="10dp">
 
                     <TextView
-                        android:id="@+id/textView10"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/text_movie_page_country" />
@@ -106,7 +103,6 @@
                     android:layout_marginTop="10dp">
 
                     <TextView
-                        android:id="@+id/textView12"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/text_movie_page_length" />
@@ -126,7 +122,6 @@
                     android:layout_marginTop="10dp">
 
                     <TextView
-                        android:id="@+id/textView15"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/text_movie_page_genres" />
@@ -147,7 +142,6 @@
                     android:layout_marginTop="10dp">
 
                     <TextView
-                        android:id="@+id/textView16"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/text_movie_page_director" />
@@ -168,7 +162,6 @@
                     android:layout_marginTop="5dp">
 
                     <TextView
-                        android:id="@+id/textView18"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/text_movie_page_actors" />
