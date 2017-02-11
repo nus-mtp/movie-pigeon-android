@@ -48,13 +48,13 @@ public class MoviePageFragment extends Fragment {
 
     private void setContent(Bundle argument){
         txt_title.setText(argument.getString("title"));
-        if(!argument.getString("poster").equals("NULL")){
+        if(argument.getString("poster") != null){
             ImageLoader.getInstance().displayImage(argument.getString("poster"),image_poster);
         }
         else{
             image_poster.setImageResource(R.mipmap.image_no_poster_found);
         }
-        if(!argument.getString("plot").equals("NULL")){
+        if(argument.getString("plot") != null){
             txt_plot.setText(argument.getString("plot"));
         }
         setTextOtherwiseSetGone(argument,"year",row_year,txt_year);
@@ -67,7 +67,7 @@ public class MoviePageFragment extends Fragment {
     }
 
     private void setTextOtherwiseSetGone(Bundle argument, String name,TableRow row, TextView text){
-        if(argument.getString(name)!=null && !argument.getString(name).equals("NULL")) {
+        if(argument.getString(name)!= null) {
             text.setText(argument.getString(name));
         }
         else{

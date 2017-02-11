@@ -62,7 +62,7 @@ public class MovieListAdapter extends BaseAdapter {
         movie = movieList.get(position);
         viewHolder.txt_title.setText(movie.getTitle());
 
-        if(!movie.getPosterURL().equals("NULL")){
+        if(movie.getPosterURL() != null){
             imageLoader.displayImage(movieList.get(position).getPosterURL(),viewHolder.image_poster);
         }
         else{

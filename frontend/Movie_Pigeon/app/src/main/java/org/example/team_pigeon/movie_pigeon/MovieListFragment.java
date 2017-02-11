@@ -68,17 +68,11 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
         bundle.putString("director",movieListAdapter.getItem(position).getDirector());
         bundle.putString("poster",movieListAdapter.getItem(position).getPosterURL());
         bundle.putString("plot",movieListAdapter.getItem(position).getPlot());
-        if(!movieListAdapter.getItem(position).getGenres().equals("NULL")) {
+        if(movieListAdapter.getItem(position).getGenres() != null) {
             bundle.putString("genres", movieListAdapter.getItem(position).getGenres().replaceAll(", ", " / "));
         }
-        else {
-            bundle.putString("genres", "NULL");
-        }
-        if(!movieListAdapter.getItem(position).getActors().equals("NULL")) {
+        if(movieListAdapter.getItem(position).getActors() != null) {
             bundle.putString("actors", movieListAdapter.getItem(position).getActors().replaceAll(", ", " / "));
-        }
-        else {
-            bundle.putString("actors", "NULL");
         }
         moviePageFragment.setArguments(bundle);
         fragmentTransaction.replace(R.id.fl_content,moviePageFragment);
