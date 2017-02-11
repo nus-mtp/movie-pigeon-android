@@ -33,7 +33,7 @@ public class SearchRequestHttpBuilder {
         request = new Request.Builder().url(url).header("title","%"+keywords+"%").addHeader("Authorization", "Basic c29uZ0B0ZXN0LmNvbTp0ZXN0").build();
         response = client.newCall(request).execute();
         if(!response.isSuccessful()){
-            throw new IOException("Unexpected code" + response);
+            throw new IOException("Unexpected transactionId" + response);
         }
         this.movies = gson.fromJson(response.body().charStream(), new TypeToken<ArrayList<Movie>>(){}.getType());
     }

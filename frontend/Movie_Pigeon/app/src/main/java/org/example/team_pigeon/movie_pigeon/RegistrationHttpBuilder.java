@@ -49,7 +49,7 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
             Log.e("rHttpBuilder", "Finished sending to server");
 
             int status = connection.getResponseCode();
-            Log.e("rHttpBuilder", "response status code is " + status);
+            Log.e("rHttpBuilder", "response status transactionId is " + status);
 
             InputStream response = connection.getInputStream();
             // TODO process the response
