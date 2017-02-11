@@ -14,15 +14,6 @@ public class SearchRequestHttpBuilder {
         this.keywords = keywords;
     }
 
-    public void run() throws IOException {
-        request = new Request.Builder().url(url).header("title","%"+keywords+"%").addHeader("Authorization", "Basic c29uZ0B0ZXN0LmNvbTp0ZXN0").build();
-        response = client.newCall(request).execute();
-        if(!response.isSuccessful()){
-            throw new IOException("Unexpected transactionId" + response);
-        }
-        this.movies = gson.fromJson(response.body().charStream(), new TypeToken<ArrayList<Movie>>(){}.getType());
-    }
-
     public Request getRequest() {
         return new Request.Builder().url(url).header("title", keywords).addHeader("Authorization", "Basic c29uZ0B0ZXN0LmNvbTp0ZXN0").build();
     }
