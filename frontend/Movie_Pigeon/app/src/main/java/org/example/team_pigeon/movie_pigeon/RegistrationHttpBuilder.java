@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -102,7 +103,7 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPostExecute(Void v) {
-        System.out.println("Void v");
+        Toast.makeText(mContext, "Registration successful!", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent("automaticSignin");
         Bundle bundle = new Bundle();
         bundle.putString("email", param1);

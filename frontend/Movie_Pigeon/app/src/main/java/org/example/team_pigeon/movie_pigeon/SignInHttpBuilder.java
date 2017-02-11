@@ -21,6 +21,7 @@ import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import android.provider.Settings.Secure;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.net.URL;
 import java.net.URLEncoder;
@@ -82,9 +83,6 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
 
             id = Secure.getString(mContext.getContentResolver(), Secure.ANDROID_ID);
 
-//            id = "12345";
-
-            // TODO not implemented yet -> secret = id
             secret = id;
 
             query = formQuery(deviceName, id, secret);
@@ -119,12 +117,16 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     System.out.println("Response>>>" + line);
                 }
             } else if (status == 401) {
-                // TODO wrong email or password
                 Log.e("sHttpBuilder", "Unauthorized");
+                Toast.makeText(mContext, "Wrong email or password", Toast.LENGTH_SHORT).show();
 
+            } else {
+                Log.e("sHttpBuilder", "step 1" + status);
+                Toast.makeText(mContext, "Unable to sign in", Toast.LENGTH_SHORT).show();
             }
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(mContext, "Unable to sign in", Toast.LENGTH_SHORT).show();
         }
 
         connection.disconnect();
@@ -181,13 +183,17 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     transactionId = line;
                 }
             } else if (status == 401) {
-                // TODO wrong email or password
+                // will never come here theoretically as email and password must be correct to pass step 1
                 Log.e("sHttpBuilder", "Unauthorized");
 
+            } else {
+                Log.e("sHttpBuilder", "step 2 part 1" + status);
+                Toast.makeText(mContext, "Unable to sign in", Toast.LENGTH_SHORT).show();
             }
 
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(mContext, "Unable to sign in", Toast.LENGTH_SHORT).show();
         }
 
         connection.disconnect();
@@ -228,15 +234,16 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
             Log.e("sHttpBuilder", "transaction body is " + transactionBody);
 
             try (OutputStream output = connection.getOutputStream()) {
-                    output.write(transactionBody.getBytes(charset));
-                } catch (IOException e) {
-                    e.printStackTrace();
+                output.write(transactionBody.getBytes(charset));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
             status = connection.getResponseCode();
             Log.e("sHttpBuilder", "2nd Post response status is " + status);
 
             if (status == 404) {
+                // actually expected 404, code is inside the error message
                 response = connection.getErrorStream();
                 BufferedReader br = new BufferedReader(new InputStreamReader(response));
                 StringBuffer sb = new StringBuffer();
@@ -248,14 +255,18 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     code = line.replaceAll(".*=", "");
                 }
             } else if (status == 401) {
-                // TODO wrong email or password
+                // will never come here theoretically as email and password must be correct to pass step 1
                 Log.e("sHttpBuilder", "Unauthorized");
 
+            } else {
+                Log.e("sHttpBuilder", "step 2 part 2" + status);
+                Toast.makeText(mContext, "Unable to sign in", Toast.LENGTH_SHORT).show();
             }
 
             connection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(mContext, "Unable to sign in", Toast.LENGTH_SHORT).show();
         }
 
         Log.e("sHttpBuilder", "Obtained code: " + code);
@@ -329,24 +340,17 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     token = line;
                 }
             } else if (status == 401) {
-                // TODO wrong email or password
+                // will never come here theoretically as email and password must be correct to pass step 1
                 Log.e("sHttpBuilder", "Unauthorized");
             } else {
-                InputStream is = connection.getErrorStream();
-                BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                StringBuffer sb = new StringBuffer();
-                String line = "";
-                Log.e("rHttpBuilder", "Starting to read response");
-                while ((line = br.readLine()) != null) {
-                    sb.append(line + "\n");
-                    System.out.println("Response>>>" + line);
-                    token = line;
-                }
+                Log.e("sHttpBuilder", "step 3 " + status);
+                Toast.makeText(mContext, "Unable to sign in", Toast.LENGTH_SHORT).show();
             }
 
             connection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(mContext, "Unable to sign in", Toast.LENGTH_SHORT).show();
         }
 
         Log.e("sHttpBuilder", "Obtained token: " + token);
