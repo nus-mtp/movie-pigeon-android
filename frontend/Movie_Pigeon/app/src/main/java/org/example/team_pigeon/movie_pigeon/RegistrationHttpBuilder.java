@@ -1,6 +1,9 @@
 package org.example.team_pigeon.movie_pigeon;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -23,6 +26,11 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
     String charset = java.nio.charset.StandardCharsets.UTF_8.name();
     String param1, param2, param3, query;
     HttpURLConnection connection = null;
+    Context mContext;
+
+    RegistrationHttpBuilder(Context mContext) {
+        this.mContext = mContext;
+    }
 
     private void request(String query) {
         // build registration request here
@@ -45,7 +53,7 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
             Log.e("rHttpBuilder", "response status transactionId is " + status);
 
             InputStream response = connection.getInputStream();
-            // TODO process the response
+            // process the response
             BufferedReader br = new BufferedReader(new InputStreamReader(response));
             StringBuffer sb = new StringBuffer();
             String line = "";
@@ -90,5 +98,16 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
         Log.e("rHttpBuilder", "Query is " + query);
         request(query);
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void v) {
+        System.out.println("Void v");
+        Intent intent = new Intent("automaticSignin");
+        Bundle bundle = new Bundle();
+        bundle.putString("email", param1);
+        bundle.putString("password", param3);
+        intent.putExtras(bundle);
+        mContext.sendBroadcast(intent);
     }
 }

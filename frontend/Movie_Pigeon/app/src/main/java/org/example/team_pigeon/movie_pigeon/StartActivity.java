@@ -16,6 +16,7 @@ public class StartActivity extends AppCompatActivity {
         // set up broadcast receiver to receive request from background thread
         IntentFilter filter = new IntentFilter();
         filter.addAction("startHomePageActivity");
+        filter.addAction("automaticSignin");
         registerReceiver(receiver, filter);
 
         SigninPage sp = new SigninPage(StartActivity.this, this);

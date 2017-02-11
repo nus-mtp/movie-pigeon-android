@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * Created by Guo Mingxuan on 1/2/2017.
@@ -15,7 +16,7 @@ import android.widget.EditText;
 
 class RegisterPage {
 
-    RegisterPage(Context mContext, Activity mActivity, View signin) {
+    RegisterPage(final Context mContext, Activity mActivity, View signin) {
         final String[] email = new String[1];
         final String[] username = new String[1];
         final String[] password = new String[1];
@@ -28,8 +29,6 @@ class RegisterPage {
         final EditText etPassword = (EditText) register.findViewById(R.id.rETPassword);
         final EditText etConfirmPassword = (EditText) register.findViewById(R.id.rETConfirmPassword);
 
-
-
         Button registerButton = (Button) register.findViewById(R.id.rpRegisterButton);
         registerButton.setOnClickListener(new View.OnClickListener() {
 
@@ -39,16 +38,22 @@ class RegisterPage {
                 username[0] = String.valueOf(etUsername.getText());
                 password[0] = String.valueOf(etPassword.getText());
                 confirmPassword[0] = String.valueOf(etConfirmPassword.getText());
-                // TODO double check the password entered are correct
 
-                String[] registrationDetails = new String[3];
-                registrationDetails[0] = email[0];
-                registrationDetails[1] = username[0];
-                registrationDetails[2] = password[0];
+                // double check password match
+                if (!password[0].equals(confirmPassword[0])) {
+                    Toast toast = Toast.makeText(mContext, "Passwords entered don't match!", Toast.LENGTH_SHORT);
+                    toast.show();
 
-                Log.e("RegistrationPage", "3 parameters to be passed are " + registrationDetails[0] + " " + registrationDetails[1] + " " + registrationDetails[2]);
-                new RegistrationHttpBuilder().execute(registrationDetails);
-                // TODO process server response
+                } else {
+                    System.out.println("Registering");
+                    String[] registrationDetails = new String[3];
+                    registrationDetails[0] = email[0];
+                    registrationDetails[1] = username[0];
+                    registrationDetails[2] = password[0];
+
+                    Log.e("RegistrationPage", "3 parameters to be passed are " + registrationDetails[0] + " " + registrationDetails[1] + " " + registrationDetails[2]);
+                    new RegistrationHttpBuilder(mContext).execute(registrationDetails);
+                }
 
             }
         });
