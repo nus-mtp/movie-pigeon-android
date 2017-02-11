@@ -74,8 +74,13 @@ public class SearchPageFragment extends Fragment {
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchTask = new SearchTask();
-                searchTask.execute(etSearch.getText().toString());
+                if(etSearch.getText().toString().isEmpty()){
+                    Toast.makeText(getActivity(),"Please input keywords to search", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    searchTask = new SearchTask();
+                    searchTask.execute(etSearch.getText().toString());
+                }
             }
         });
         return view;
@@ -85,7 +90,8 @@ public class SearchPageFragment extends Fragment {
         private final int SUCCESSFUL = 0;
         private final int ERROR = 1;
         private final int NO_RESULT = 2;
-        int status = SUCCESSFUL;
+        private final int NO_INTERNET = 3;
+        int status;
 
         @Override
         protected Void doInBackground(String... params) {
@@ -94,17 +100,23 @@ public class SearchPageFragment extends Fragment {
                 Request request = new SearchRequestHttpBuilder(params[0]).getRequest();
                 Response response = client.newCall(request).execute();
                 if (!response.isSuccessful()) {
+                    Log.i(TAG,"connect failed");
                     status = ERROR;
                     throw new IOException("Unexpected code" + response);
                 }
                 //Convert json to Arraylist<Movie>
                 movies = gson.fromJson(response.body().charStream(), new TypeToken<ArrayList<Movie>>() {
                 }.getType());
+
                 if (movies.size() == 0) {
                     status = NO_RESULT;
                 }
+                else{
+                    status = SUCCESSFUL;
+                }
                 return null;
             } catch (IOException e) {
+                status = NO_INTERNET;
                 Log.e(TAG, e.getMessage());
             }
             return null;
@@ -141,6 +153,10 @@ public class SearchPageFragment extends Fragment {
                     Toast.makeText(getContext(), "Sorry, the search has no results", Toast.LENGTH_SHORT).show();
                     btnSearch.setEnabled(true);
                     break;
+
+                case NO_INTERNET:
+                    Toast.makeText(getContext(), "Connection error, please make sure that you have Internet connection.", Toast.LENGTH_SHORT).show();
+                    btnSearch.setEnabled(true);
             }
 
         }
