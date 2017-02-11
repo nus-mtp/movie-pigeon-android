@@ -79,7 +79,7 @@ public class SearchPageFragment extends Fragment {
                 }
                 else {
                     searchTask = new SearchTask();
-                    searchTask.execute(etSearch.getText().toString());
+                    searchTask.execute(etSearch.getText().toString(),getActivity().getIntent().getExtras().getString("Token"));
                 }
             }
         });
@@ -97,7 +97,7 @@ public class SearchPageFragment extends Fragment {
         protected Void doInBackground(String... params) {
             try {
                 OkHttpClient client = new OkHttpClient();
-                Request request = new SearchRequestHttpBuilder(params[0]).getRequest();
+                Request request = new SearchRequestHttpBuilder(params[0],params[1]).getRequest();
                 Response response = client.newCall(request).execute();
                 if (!response.isSuccessful()) {
                     Log.i(TAG,"connect failed");
