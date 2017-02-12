@@ -28,6 +28,10 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
     String param1, param2, param3, query;
     HttpURLConnection connection = null;
     Context mContext;
+    private boolean connectionError = false;
+    private boolean userExisted = false;
+    String line;
+    String serverResponse = null;
 
     RegistrationHttpBuilder(Context mContext) {
         this.mContext = mContext;
@@ -53,19 +57,30 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
             int status = connection.getResponseCode();
             Log.e("rHttpBuilder", "response status transactionId is " + status);
 
-            InputStream response = connection.getInputStream();
-            // process the response
-            BufferedReader br = new BufferedReader(new InputStreamReader(response));
-            StringBuffer sb = new StringBuffer();
-            String line = "";
-            Log.e("rHttpBuilder", "Starting to read response");
-            while ((line = br.readLine()) != null) {
-                sb.append(line+"\n");
-                System.out.println("Response>>>" + line);
+            if (status == 200) {
+                InputStream response = connection.getInputStream();
+                // process the response
+                BufferedReader br = new BufferedReader(new InputStreamReader(response));
+                StringBuffer sb = new StringBuffer();
+                Log.e("rHttpBuilder", "Starting to read response");
+                while ((line = br.readLine()) != null) {
+                    sb.append(line + "\n");
+                    serverResponse = "Registration Response>>>" + line;
+                    System.out.println(serverResponse);
+
+                }
+
+                if (serverResponse.contains("fail")) {
+                    userExisted = true;
+                }
+            } else {
+                connectionError = true;
+                System.out.println(status);
             }
 
         } catch (IOException e) {
             e.printStackTrace();
+            connectionError = true;
             System.out.print("Unable to connect to server");
         }
     }
@@ -103,12 +118,18 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPostExecute(Void v) {
-        Toast.makeText(mContext, "Registration successful!", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent("automaticSignin");
-        Bundle bundle = new Bundle();
-        bundle.putString("email", param1);
-        bundle.putString("password", param3);
-        intent.putExtras(bundle);
-        mContext.sendBroadcast(intent);
+        if (connectionError) {
+            Toast.makeText(mContext, "Unable to register", Toast.LENGTH_SHORT).show();
+        } else if (userExisted) {
+            Toast.makeText(mContext, "Email already registered!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(mContext, "Registration successful!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent("automaticSignin");
+            Bundle bundle = new Bundle();
+            bundle.putString("email", param1);
+            bundle.putString("password", param3);
+            intent.putExtras(bundle);
+            mContext.sendBroadcast(intent);
+        }
     }
 }
