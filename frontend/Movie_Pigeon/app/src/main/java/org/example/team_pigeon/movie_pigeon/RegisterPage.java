@@ -50,20 +50,24 @@ class RegisterPage {
                 password[0] = String.valueOf(etPassword.getText());
                 confirmPassword[0] = String.valueOf(etConfirmPassword.getText());
 
-                // double check password match
-                if (!password[0].equals(confirmPassword[0])) {
-                    Toast toast = Toast.makeText(mContext, "Passwords entered don't match!", Toast.LENGTH_SHORT);
-                    toast.show();
-
+                if (email[0].equals("") | username[0].equals("") | password[0].equals("") | confirmPassword[0].equals("")) {
+                    Toast.makeText(mContext, "Must fill in all fields", Toast.LENGTH_SHORT).show();
                 } else {
-                    System.out.println("Registering");
-                    String[] registrationDetails = new String[3];
-                    registrationDetails[0] = email[0];
-                    registrationDetails[1] = username[0];
-                    registrationDetails[2] = password[0];
+                    // double check password match
+                    if (!password[0].equals(confirmPassword[0])) {
+                        Toast toast = Toast.makeText(mContext, "Passwords entered don't match!", Toast.LENGTH_SHORT);
+                        toast.show();
 
-                    Log.e("RegistrationPage", "3 parameters to be passed are " + registrationDetails[0] + " " + registrationDetails[1] + " " + registrationDetails[2]);
-                    new RegistrationHttpBuilder(mContext).execute(registrationDetails);
+                    } else {
+                        System.out.println("Registering");
+                        String[] registrationDetails = new String[3];
+                        registrationDetails[0] = email[0];
+                        registrationDetails[1] = username[0];
+                        registrationDetails[2] = password[0];
+
+                        Log.e("RegistrationPage", "3 parameters to be passed are " + registrationDetails[0] + " " + registrationDetails[1] + " " + registrationDetails[2]);
+                        new RegistrationHttpBuilder(mContext).execute(registrationDetails);
+                    }
                 }
 
             }

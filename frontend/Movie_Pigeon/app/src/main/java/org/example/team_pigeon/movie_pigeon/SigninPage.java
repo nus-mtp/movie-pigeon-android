@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * Created by Guo Mingxuan on 29/1/2017.
@@ -32,15 +33,20 @@ class SigninPage {
 
         BSignIn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
                 // Check Credentials and respond accordingly
                 email[0] = String.valueOf(etEmail.getText());
                 password[0] = String.valueOf(etPassword.getText());
-
-                String[] signInDetails = new String[2];
-                signInDetails[0] = email[0];
-                signInDetails[1] = password[0];
-                SignInHttpBuilder sBuilder = new SignInHttpBuilder(mContext);
-                sBuilder.execute(signInDetails);
+                if (email[0].equals("") | password[0].equals("")) {
+                    Toast.makeText(mContext, "Email or password can't be empty!", Toast.LENGTH_SHORT).show();
+                } else {
+                    System.out.println(email[0] + " and " + password[0]);
+                    String[] signInDetails = new String[2];
+                    signInDetails[0] = email[0];
+                    signInDetails[1] = password[0];
+                    SignInHttpBuilder sBuilder = new SignInHttpBuilder(mContext);
+                    sBuilder.execute(signInDetails);
+                }
             }
         });
 
