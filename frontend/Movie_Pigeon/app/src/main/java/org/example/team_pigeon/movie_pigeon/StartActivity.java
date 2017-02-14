@@ -41,9 +41,7 @@ public class StartActivity extends AppCompatActivity {
 
             Intent homePageIntent = new Intent(this, HomePageActivity.class);
             // pass token to the new activity
-            Bundle bundle = new Bundle();
-            bundle.putString("Token", token);
-            homePageIntent.putExtras(bundle);
+            homePageIntent.putExtra("Token", token);
             this.startActivity(homePageIntent);
             finish();
 

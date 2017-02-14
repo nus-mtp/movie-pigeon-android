@@ -79,7 +79,7 @@ public class SearchPageFragment extends Fragment {
                 }
                 else {
                     searchTask = new SearchTask();
-                    searchTask.execute(etSearch.getText().toString(),getActivity().getIntent().getExtras().getString("Token"));
+                    searchTask.execute(etSearch.getText().toString(), getActivity().getIntent().getExtras().getString("Token").trim());
                 }
             }
         });

@@ -17,6 +17,6 @@ public class SearchRequestHttpBuilder {
     }
 
     public Request getRequest() {
-        return new Request.Builder().url(url).header("title", keywords).addHeader("Authorization", "Bearer "+ token).build();
+        return new Request.Builder().url(url).header("title", keywords).addHeader("Authorization", "Bearer "+ token.trim()).build();
     }
 }
