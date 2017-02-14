@@ -68,7 +68,12 @@ public class MoviePageFragment extends Fragment {
 
     private void setTextOtherwiseSetGone(Bundle argument, String name,TableRow row, TextView text){
         if(argument.getString(name)!= null) {
-            text.setText(argument.getString(name));
+            if(name.equals("length")){
+                text.setText(argument.getString(name) + "min");
+            }
+            else {
+                text.setText(argument.getString(name));
+            }
         }
         else{
             row.setVisibility(View.GONE);
