@@ -4,4 +4,9 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorEditTextGrey">#dfdfdf</color>
+    <color name="div_white">#ffffff</color>
+    <color name="background_white">#ffffff</color>
+    <color name="text_selected">#00caf2</color>
+    <color name="text_unselected">#6c6c6c</color>
+    <color name="transparent">#00ffffff</color>
 </resources>
