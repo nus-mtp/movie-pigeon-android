@@ -29,7 +29,7 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
         fragmentManager = getFragmentManager();
-        movies = (ArrayList<Movie>)getArguments().getSerializable("movies");
+        movies = (ArrayList<Movie>)getArguments().getSerializable("searchMovieList");
         View view = inflater.inflate(R.layout.fragment_movie_list,container,false);
         list_movies = (ListView)view.findViewById(R.id.list_movies);
         footerView = inflater.inflate(R.layout.footer_load_more,null);
