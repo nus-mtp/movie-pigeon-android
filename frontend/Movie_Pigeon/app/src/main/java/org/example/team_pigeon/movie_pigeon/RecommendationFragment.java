@@ -1,0 +1,135 @@
+package org.example.team_pigeon.movie_pigeon;
+
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.SearchView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.example.team_pigeon.movie_pigeon.models.Movie;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+public class RecommendationFragment extends Fragment {
+    private static final String TAG = "RecommendationFragment";
+    private SearchView searchView = null;
+    private Gson gson = new Gson();
+    private SearchTask searchTask;
+    private Bundle arguments;
+    private ArrayList<Movie> searchMovieList;
+    private ArrayList<Movie> topMovieList;
+    private ArrayList<Movie> recommendedMovieList;
+
+    public RecommendationFragment() {
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_recommendation, container, false);
+        searchView = (SearchView) view.findViewById(R.id.search_view);
+        searchView.setSubmitButtonEnabled(true);
+        searchView.clearFocus();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            //Start to search movie if there is query present and submit button is pressed
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d(TAG, "Search query submit = " + query);
+                searchTask = new SearchTask();
+                searchTask.execute(query, getActivity().getIntent().getExtras().getString("Token").trim());
+                return false;
+            }
+            //TODO: Search suggestion
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        return view;
+    }
+
+    //Async thread to handle search request
+    private class SearchTask extends AsyncTask<String, Integer, Void> {
+        private final int SUCCESSFUL = 0;
+        private final int ERROR = 1;
+        private final int NO_RESULT = 2;
+        private final int NO_INTERNET = 3;
+        int status;
+
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                OkHttpClient client = new OkHttpClient();
+                Request request = new SearchRequestHttpBuilder(params[0], params[1]).getRequest();
+                Response response = client.newCall(request).execute();
+                if (!response.isSuccessful()) {
+                    Log.i(TAG, "connect failed");
+                    status = ERROR;
+                    throw new IOException("Unexpected code" + response);
+                }
+                //Convert json to Arraylist<Movie>
+                searchMovieList = gson.fromJson(response.body().charStream(), new TypeToken<ArrayList<Movie>>() {
+                }.getType());
+
+                if (searchMovieList.size() == 0) {
+                    status = NO_RESULT;
+                } else {
+                    status = SUCCESSFUL;
+                }
+                return null;
+            } catch (IOException e) {
+                status = NO_INTERNET;
+                Log.e(TAG, e.getMessage());
+            }
+            return null;
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            Log.i(TAG, "New search request is initialised");
+            return;
+        }
+
+        @Override
+        protected void onPostExecute(Void params) {
+            switch (status) {
+                case SUCCESSFUL:
+                    Log.i(TAG, "Search is completed");
+                    Intent displayActivityIntent = new Intent(getActivity(), DisplayActivity.class);
+                    arguments = new Bundle();
+                    arguments.putSerializable("searchMovieList", searchMovieList);
+                    displayActivityIntent.putExtra("bundle", arguments);
+                    searchView.setQuery("",false);
+                    searchView.clearFocus();
+                    getActivity().startActivity(displayActivityIntent);
+                    break;
+
+                case ERROR:
+                    Toast.makeText(getContext(), "Connection error, please check your connection", Toast.LENGTH_SHORT).show();
+                    break;
+
+                case NO_RESULT:
+                    Toast.makeText(getContext(), "Sorry, the search has no results", Toast.LENGTH_SHORT).show();
+                    break;
+
+                case NO_INTERNET:
+                    Toast.makeText(getContext(), "Connection error, please make sure that you have Internet connection.", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:theme="?attr/actionBarTheme"
+        android:minHeight="?attr/actionBarSize"
+        android:title=""
+        android:id="@+id/me_toolbar" />
+
+    <Button
+        android:text="My Ratings"
+        style="@style/me_page_button"
+        android:id="@+id/button_my_rating" />
+
+    <Button
+        android:text="My Bookmarks"
+        style="@style/me_page_button"
+        android:id="@+id/button_my_bookmarks" />
+
+    <Button
+        android:text="Setting"
+        style="@style/me_page_button"
+        android:id="@+id/button_setting" />
+
+    <Button
+        android:text="Logout"
+        style="@style/me_page_button"
+        android:id="@+id/button_logout" />
+
+</LinearLayout>
