@@ -7,6 +7,7 @@
     <color name="div_white">#ffffff</color>
     <color name="background_white">#ffffff</color>
     <color name="text_selected">#00caf2</color>
+    <color name="toolbar">#4f94d5</color>
     <color name="text_unselected">#6c6c6c</color>
     <color name="transparent">#00ffffff</color>
 </resources>
