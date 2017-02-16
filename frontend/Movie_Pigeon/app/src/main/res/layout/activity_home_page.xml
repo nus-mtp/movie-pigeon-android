@@ -9,7 +9,7 @@
     <RadioGroup
         android:id="@+id/rg_tab_bar"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:background="@color/background_white"
         android:orientation="horizontal">

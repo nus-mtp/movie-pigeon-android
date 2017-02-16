@@ -6,7 +6,7 @@
     android:id="@+id/movie_list_item"
     android:orientation="horizontal"
     android:paddingTop="10dp"
-    android:paddingBottom="3dp">
+    android:paddingBottom="10dp">
 
 
     <ImageView
