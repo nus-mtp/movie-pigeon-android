@@ -32,6 +32,7 @@ public class RecommendationFragment extends Fragment {
     private ArrayList<Movie> searchMovieList;
     private ArrayList<Movie> topMovieList;
     private ArrayList<Movie> recommendedMovieList;
+    private ListRequestHttpBuilderSingleton searchRequestHttpBuilder = ListRequestHttpBuilderSingleton.getInstance();
 
     public RecommendationFragment() {
     }
@@ -72,8 +73,10 @@ public class RecommendationFragment extends Fragment {
         @Override
         protected Void doInBackground(String... params) {
             try {
-                OkHttpClient client = new OkHttpClient();
-                Request request = new SearchRequestHttpBuilder(params[0], params[1]).getRequest();
+                searchRequestHttpBuilder.setKeywords(params[0]);
+                searchRequestHttpBuilder.setToken(params[1]);
+                OkHttpClient client = searchRequestHttpBuilder.getClient();
+                Request request = searchRequestHttpBuilder.getSearchRequest();
                 Response response = client.newCall(request).execute();
                 if (!response.isSuccessful()) {
                     Log.i(TAG, "connect failed");
@@ -112,6 +115,7 @@ public class RecommendationFragment extends Fragment {
                     Intent displayActivityIntent = new Intent(getActivity(), DisplayActivity.class);
                     arguments = new Bundle();
                     arguments.putSerializable("searchMovieList", searchMovieList);
+                    arguments.putString("title", "Result of '" + searchRequestHttpBuilder.getKeywords() + "'");
                     displayActivityIntent.putExtra("bundle", arguments);
                     searchView.setQuery("",false);
                     searchView.clearFocus();
