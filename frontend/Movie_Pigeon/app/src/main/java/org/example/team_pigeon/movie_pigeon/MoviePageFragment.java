@@ -24,6 +24,7 @@ public class MoviePageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_movie_page,container,false);
         loadViews(view);
         setContent(getArguments());
+        row_title.setVisibility(View.GONE);
         return view;
     }
 
@@ -47,7 +48,6 @@ public class MoviePageFragment extends Fragment {
     }
 
     private void setContent(Bundle argument){
-        txt_title.setText(argument.getString("title"));
         if(argument.getString("poster") != null){
             ImageLoader.getInstance().displayImage(argument.getString("poster"),image_poster);
         }
@@ -69,7 +69,7 @@ public class MoviePageFragment extends Fragment {
     private void setTextOtherwiseSetGone(Bundle argument, String name,TableRow row, TextView text){
         if(argument.getString(name)!= null) {
             if(name.equals("length")){
-                text.setText(argument.getString(name) + "min");
+                text.setText(argument.getString(name) + " min");
             }
             else {
                 text.setText(argument.getString(name));
