@@ -63,6 +63,7 @@ public class MovieListAdapter extends BaseAdapter {
         viewHolder.txt_title.setText(movie.getTitle());
 
         if(movie.getPosterURL() != null){
+            viewHolder.image_poster.setImageResource(R.mipmap.image_poster_loading);
             imageLoader.displayImage(movieList.get(position).getPosterURL(),viewHolder.image_poster);
         }
         else{
