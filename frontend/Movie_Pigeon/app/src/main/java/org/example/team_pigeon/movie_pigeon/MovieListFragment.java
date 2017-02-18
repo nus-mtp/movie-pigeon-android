@@ -84,19 +84,7 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
         android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         MoviePageFragment moviePageFragment = new MoviePageFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("title",movieListAdapter.getItem(position).getTitle());
-        bundle.putString("year",movieListAdapter.getItem(position).getProductionYear());
-        bundle.putString("country",movieListAdapter.getItem(position).getCountry());
-        bundle.putString("length",movieListAdapter.getItem(position).getLength());
-        bundle.putString("director",movieListAdapter.getItem(position).getDirector());
-        bundle.putString("poster",movieListAdapter.getItem(position).getPosterURL());
-        bundle.putString("plot",movieListAdapter.getItem(position).getPlot());
-        if(movieListAdapter.getItem(position).getGenres() != null) {
-            bundle.putString("genres", movieListAdapter.getItem(position).getGenres().replaceAll(", ", " / "));
-        }
-        if(movieListAdapter.getItem(position).getActors() != null) {
-            bundle.putString("actors", movieListAdapter.getItem(position).getActors().replaceAll(", ", " / "));
-        }
+        bundle.putSerializable("movie", movieListAdapter.getItem(position));
         Toolbar toolbar = (Toolbar)getActivity().findViewById(R.id.toolbar_display_page);
         toolbar.setTitle(movieListAdapter.getItem(position).getTitle());
         moviePageFragment.setArguments(bundle);
