@@ -41,9 +41,6 @@ public class Movie implements Serializable{
     @Expose
     @SerializedName("genre")
     private String genres;
-    @Expose
-    @SerializedName("public_ratings")
-    private ArrayList<PublicRating> publicRatingses;
     private boolean isRated;
     private boolean isReleased;
     private boolean isBookmarked;
@@ -171,13 +168,5 @@ public class Movie implements Serializable{
 
     public void setGenres(String genres) {
         this.genres = genres;
-    }
-
-    public ArrayList<PublicRating> getPublicRatingses() {
-        return publicRatingses;
-    }
-
-    public void setPublicRatingses(ArrayList<PublicRating> publicRatingses) {
-        this.publicRatingses = publicRatingses;
     }
 }
