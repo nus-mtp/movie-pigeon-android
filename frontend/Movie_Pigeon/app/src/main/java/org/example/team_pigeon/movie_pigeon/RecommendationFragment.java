@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.example.team_pigeon.movie_pigeon.models.Movie;
+import org.example.team_pigeon.movie_pigeon.models.MovieWithCount;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,7 +33,9 @@ public class RecommendationFragment extends Fragment {
     private ArrayList<Movie> searchMovieList;
     private ArrayList<Movie> topMovieList;
     private ArrayList<Movie> recommendedMovieList;
-    private ListRequestHttpBuilderSingleton searchRequestHttpBuilder = ListRequestHttpBuilderSingleton.getInstance();
+    private MovieWithCount movieWithCount;
+    private int resultCount = 0;
+    private RequestHttpBuilderSingleton searchRequestHttpBuilder = RequestHttpBuilderSingleton.getInstance();
 
     public RecommendationFragment() {
     }
@@ -50,7 +53,7 @@ public class RecommendationFragment extends Fragment {
             public boolean onQueryTextSubmit(String query) {
                 Log.d(TAG, "Search query submit = " + query);
                 searchTask = new SearchTask();
-                searchTask.execute(query, getActivity().getIntent().getExtras().getString("Token").trim());
+                searchTask.execute(query);
                 return false;
             }
             //TODO: Search suggestion
@@ -74,7 +77,6 @@ public class RecommendationFragment extends Fragment {
         protected Void doInBackground(String... params) {
             try {
                 searchRequestHttpBuilder.setKeywords(params[0]);
-                searchRequestHttpBuilder.setToken(params[1]);
                 OkHttpClient client = searchRequestHttpBuilder.getClient();
                 Request request = searchRequestHttpBuilder.getSearchRequest();
                 Response response = client.newCall(request).execute();
@@ -84,10 +86,12 @@ public class RecommendationFragment extends Fragment {
                     throw new IOException("Unexpected code" + response);
                 }
                 //Convert json to Arraylist<Movie>
-                searchMovieList = gson.fromJson(response.body().charStream(), new TypeToken<ArrayList<Movie>>() {
+                movieWithCount = gson.fromJson(response.body().charStream(), new TypeToken<MovieWithCount>() {
                 }.getType());
+                searchMovieList = movieWithCount.getMovies();
+                resultCount = movieWithCount.getCount();
 
-                if (searchMovieList.size() == 0) {
+                if (resultCount == 0) {
                     status = NO_RESULT;
                 } else {
                     status = SUCCESSFUL;
@@ -114,8 +118,10 @@ public class RecommendationFragment extends Fragment {
                     Log.i(TAG, "Search is completed");
                     Intent displayActivityIntent = new Intent(getActivity(), DisplayActivity.class);
                     arguments = new Bundle();
-                    arguments.putSerializable("searchMovieList", searchMovieList);
+                    arguments.putSerializable("movieList", searchMovieList);
+                    arguments.putString("type","search");
                     arguments.putString("title", "Result of '" + searchRequestHttpBuilder.getKeywords() + "'");
+                    arguments.putString("count", "Found "+String.valueOf(resultCount)+ " movies");
                     displayActivityIntent.putExtra("bundle", arguments);
                     searchView.setQuery("",false);
                     searchView.clearFocus();
@@ -132,6 +138,7 @@ public class RecommendationFragment extends Fragment {
 
                 case NO_INTERNET:
                     Toast.makeText(getContext(), "Connection error, please make sure that you have Internet connection.", Toast.LENGTH_SHORT).show();
+                    break;
             }
 
         }

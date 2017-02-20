@@ -1,11 +1,8 @@
 package org.example.team_pigeon.movie_pigeon;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +18,7 @@ import com.google.gson.reflect.TypeToken;
 
 import org.example.team_pigeon.movie_pigeon.adapters.MovieListAdapter;
 import org.example.team_pigeon.movie_pigeon.models.Movie;
+import org.example.team_pigeon.movie_pigeon.models.MovieWithCount;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,42 +38,51 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
     private ListView list_movies;
     private SearchMoreTask searchMoreTask;
     private MovieListAdapter movieListAdapter;
-    private ListRequestHttpBuilderSingleton searchRequestHttpBuilder;
+    private RequestHttpBuilderSingleton searchRequestHttpBuilder;
     private Gson gson = new Gson();
     public View footerView;
     public boolean isLoading = false;
     public boolean noMoreResult = false;
     private ArrayList<Movie> searchMovieList;
+    private MovieWithCount movieListWithCount;
+    private int resultCount;
+    private Toolbar toolbar;
+    private Bundle bundle;
+    private String type;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
+        //Load common views
         fragmentManager = getFragmentManager();
-        movies = (ArrayList<Movie>)getArguments().getSerializable("searchMovieList");
         View view = inflater.inflate(R.layout.fragment_movie_list,container,false);
-        Toolbar toolbar = (Toolbar)getActivity().findViewById(R.id.toolbar_display_page);
-        toolbar.setTitle(getActivity().getIntent().getBundleExtra("bundle").getString("title"));
         list_movies = (ListView)view.findViewById(R.id.list_movies);
         footerView = inflater.inflate(R.layout.footer_load_more,null);
+        toolbar = (Toolbar)getActivity().findViewById(R.id.toolbar_display_page);
+        //Load pass-in content
+        bundle = getActivity().getIntent().getBundleExtra("bundle");
+        type = bundle.getString("type");
+        movies = (ArrayList<Movie>)getArguments().getSerializable("movieList");
         movieListAdapter = new MovieListAdapter(movies,getActivity());
         list_movies.setAdapter(movieListAdapter);
-
-        //Scrolling to load more function will be implement in the next version
-        list_movies.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if(view.getLastVisiblePosition() == totalItemCount-1 && list_movies.getCount() >= 20 && !isLoading && !noMoreResult) {
-                    isLoading = true;
-                    searchMoreTask = new SearchMoreTask();
-                    searchMoreTask.execute();
-                }
-            }
-        });
+        toolbar.setTitle(bundle.getString("title"));
         list_movies.setOnItemClickListener(this);
+        if(type.equals("search")){
+            toolbar.setSubtitle(bundle.getString("count"));
+            list_movies.setOnScrollListener(new AbsListView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
+                }
+
+                @Override
+                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                    if(view.getLastVisiblePosition() == totalItemCount-1 && list_movies.getCount() >= 20 && !isLoading && !noMoreResult) {
+                        isLoading = true;
+                        searchMoreTask = new SearchMoreTask();
+                        searchMoreTask.execute();
+                    }
+                }
+            });
+        }
         return view;
     }
 
@@ -85,8 +92,8 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
         MoviePageFragment moviePageFragment = new MoviePageFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("movie", movieListAdapter.getItem(position));
-        Toolbar toolbar = (Toolbar)getActivity().findViewById(R.id.toolbar_display_page);
         toolbar.setTitle(movieListAdapter.getItem(position).getTitle());
+        toolbar.setSubtitle(null);
         moviePageFragment.setArguments(bundle);
         fragmentTransaction.replace(R.id.fl_content,moviePageFragment);
         fragmentTransaction.addToBackStack(null);
@@ -105,7 +112,7 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                searchRequestHttpBuilder = ListRequestHttpBuilderSingleton.getInstance();
+                searchRequestHttpBuilder = RequestHttpBuilderSingleton.getInstance();
                 OkHttpClient client = searchRequestHttpBuilder.getClient();
                 Request request = searchRequestHttpBuilder.getNextSearchRequest();
                 Response response = client.newCall(request).execute();
@@ -115,13 +122,14 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
                     throw new IOException("Unexpected code" + response);
                 }
                 //Convert json to Arraylist<Movie>
-                searchMovieList = gson.fromJson(response.body().charStream(), new TypeToken<ArrayList<Movie>>() {
-                }.getType());
-                Log.i(TAG,String.valueOf(searchMovieList.size()));
+                movieListWithCount = gson.fromJson(response.body().charStream(), new TypeToken<MovieWithCount>() {}.getType());
+                resultCount = movieListWithCount.getCount();
+                searchMovieList = movieListWithCount.getMovies();
 
-                if (searchMovieList.size() == 0) {
+                if (resultCount == 0) {
                     status = NO_RESULT;
-                } else if(searchMovieList.size() < searchRequestHttpBuilder.getLimit()){
+                }
+                else if(searchMovieList.size() < searchRequestHttpBuilder.getLimit()){
                     status = NO_MORE_RESULT;
                 }
                 else {
@@ -177,6 +185,7 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
                     Toast.makeText(getContext(), "Connection error, please make sure that you have Internet connection.", Toast.LENGTH_SHORT).show();
                     list_movies.removeFooterView(footerView);
                     isLoading = false;
+                    break;
             }
 
         }
