@@ -29,6 +29,7 @@ public class HomePageActivity extends AppCompatActivity implements RadioGroup.On
     private Context mContext;
     private android.app.FragmentManager fragmentManager = null;
     private HomeViewPagerAdapter homeViewPagerAdapter;
+    private RequestHttpBuilderSingleton requestHttpBuilderSingleton = RequestHttpBuilderSingleton.getInstance();
     private long exitTime = 0;
 
     public static final int PAGE_RECOMMENDATION = 0;
@@ -38,6 +39,7 @@ public class HomePageActivity extends AppCompatActivity implements RadioGroup.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initImageLoaderConfig();
+        requestHttpBuilderSingleton.setToken(getIntent().getExtras().getString("Token").trim());
         setContentView(R.layout.activity_home_page);
         homeViewPagerAdapter = new HomeViewPagerAdapter(getSupportFragmentManager());
         fragmentManager = getFragmentManager();
