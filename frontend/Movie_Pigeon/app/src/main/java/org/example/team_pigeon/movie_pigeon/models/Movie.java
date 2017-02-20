@@ -4,6 +4,8 @@ package org.example.team_pigeon.movie_pigeon.models;
  * Created by SHENGX on 2017/2/3.
  */
 
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -30,6 +32,8 @@ public class Movie implements Serializable{
     private String posterURL;
     @Expose
     private String director;
+    @Expose
+    @SerializedName("rated")
     private String rating;
     @Expose
     @SerializedName("runtime")
@@ -44,6 +48,13 @@ public class Movie implements Serializable{
     @Expose
     @SerializedName("public_ratings")
     private ArrayList<PublicRating> publicRatingses;
+    @Expose
+    @SerializedName("user_ratings")
+    private ArrayList<UserRating> userRating;
+    @Expose
+    @SerializedName("bookmarks")
+    private ArrayList<UserBookmark> userBookmark;
+    private String tempRating;
     private boolean isRated;
     private boolean isReleased;
     private boolean isBookmarked;
@@ -179,5 +190,29 @@ public class Movie implements Serializable{
 
     public void setPublicRatingses(ArrayList<PublicRating> publicRatingses) {
         this.publicRatingses = publicRatingses;
+    }
+
+    public ArrayList<UserRating> getUserRating() {
+        return userRating;
+    }
+
+    public void setUserRating(ArrayList<UserRating> userRating) {
+        this.userRating = userRating;
+    }
+
+    public String getTempRating() {
+        return tempRating;
+    }
+
+    public void setTempRating(String tempRating) {
+        this.tempRating = tempRating;
+    }
+
+    public ArrayList<UserBookmark> getUserBookmark() {
+        return userBookmark;
+    }
+
+    public void setUserBookmark(ArrayList<UserBookmark> userBookmark) {
+        this.userBookmark = userBookmark;
     }
 }
