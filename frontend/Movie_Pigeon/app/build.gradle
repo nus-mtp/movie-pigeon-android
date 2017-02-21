@@ -43,5 +43,7 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
     compile 'com.squareup.okio:okio:1.11.0'
     compile 'com.google.code.gson:gson:2.8.0'
+    compile 'org.greenrobot:eventbus:3.0.0'
     compile files('libs/gson-2.8.0.jar')
+    compile files('libs/eventbus-3.0.0.jar')
 }
