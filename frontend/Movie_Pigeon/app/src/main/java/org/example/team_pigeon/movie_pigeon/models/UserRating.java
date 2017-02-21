@@ -16,8 +16,16 @@ public class UserRating implements Serializable{
     @Expose
     @SerializedName("movie_id")
     private String movieId;
+
+    public UserRating(String movieId, String score) {
+        this.movieId = movieId;
+        this.score = score;
+    }
+
     @Expose
     @SerializedName("score")
+
+
     private String score;
 
     public String getUserId() {

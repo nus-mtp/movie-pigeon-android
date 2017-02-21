@@ -17,6 +17,10 @@ public class UserBookmark implements Serializable {
     @SerializedName("movie_id")
     private String movieId;
 
+    public UserBookmark(String movieId) {
+        this.movieId = movieId;
+    }
+
     public String getUserId() {
         return userId;
     }
