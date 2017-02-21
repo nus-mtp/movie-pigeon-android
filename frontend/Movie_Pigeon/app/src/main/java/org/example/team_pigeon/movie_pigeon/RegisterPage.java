@@ -57,7 +57,8 @@ class RegisterPage {
                     if (!password[0].equals(confirmPassword[0])) {
                         Toast toast = Toast.makeText(mContext, "Passwords entered don't match!", Toast.LENGTH_SHORT);
                         toast.show();
-
+                    } else if (!email[0].contains("@")) {
+                        Toast.makeText(mContext, "Please enter correct email address", Toast.LENGTH_SHORT).show();
                     } else {
                         System.out.println("Registering");
                         String[] registrationDetails = new String[3];

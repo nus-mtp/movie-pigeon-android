@@ -39,6 +39,8 @@ class SigninPage {
                 password[0] = String.valueOf(etPassword.getText());
                 if (email[0].equals("") | password[0].equals("")) {
                     Toast.makeText(mContext, "Email or password can't be empty!", Toast.LENGTH_SHORT).show();
+                } else if (!email[0].contains("@")) {
+                    Toast.makeText(mContext, "Please enter correct email address", Toast.LENGTH_SHORT).show();
                 } else {
                     System.out.println(email[0] + " and " + password[0]);
                     String[] signInDetails = new String[2];
