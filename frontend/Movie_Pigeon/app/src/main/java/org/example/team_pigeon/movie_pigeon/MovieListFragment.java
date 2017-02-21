@@ -17,8 +17,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.example.team_pigeon.movie_pigeon.adapters.MovieListAdapter;
+import org.example.team_pigeon.movie_pigeon.eventCenter.AddMovieToMovieListEvent;
+import org.example.team_pigeon.movie_pigeon.eventCenter.DeleteMovieFromMovieListEvent;
+import org.example.team_pigeon.movie_pigeon.eventCenter.UpdateMovieListEvent;
 import org.example.team_pigeon.movie_pigeon.models.Movie;
 import org.example.team_pigeon.movie_pigeon.models.MovieWithCount;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,6 +71,9 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
         list_movies.setAdapter(movieListAdapter);
         toolbar.setTitle(bundle.getString("title"));
         list_movies.setOnItemClickListener(this);
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
         if(type.equals("search")){
             toolbar.setSubtitle(bundle.getString("count"));
             list_movies.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -92,12 +100,38 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
         MoviePageFragment moviePageFragment = new MoviePageFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("movie", movieListAdapter.getItem(position));
+        bundle.putInt("position", position);
+        bundle.putString("type", type);
         toolbar.setTitle(movieListAdapter.getItem(position).getTitle());
         toolbar.setSubtitle(null);
         moviePageFragment.setArguments(bundle);
         fragmentTransaction.replace(R.id.fl_content,moviePageFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onEvent(AddMovieToMovieListEvent event){
+        movieListAdapter.addMovieItemToAdapter(event.movie, event.position);
+        Log.i(TAG, "New movie is added to local list");
+    }
+
+    @Subscribe
+    public void onEvent(DeleteMovieFromMovieListEvent event){
+        movieListAdapter.removeMovieItemToAdapter(event.position);
+        Log.i(TAG, "A movie is removed from local list");
+    }
+
+    @Subscribe
+    public void onEvent(UpdateMovieListEvent event){
+        movieListAdapter.updateMovieItemToAdapter(event.movie, event.position);
+        Log.i(TAG, "A movie is updated to local list");
     }
 
     //Async thread to handle search request

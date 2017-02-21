@@ -31,6 +31,21 @@ public class MovieListAdapter extends BaseAdapter {
         this.notifyDataSetChanged();
     }
 
+    public void removeMovieItemToAdapter(int position) {
+        movieList.remove(position);
+        this.notifyDataSetChanged();
+    }
+
+    public void addMovieItemToAdapter(Movie movie, int position) {
+        movieList.add(position,movie);
+        this.notifyDataSetChanged();
+    }
+
+    public void updateMovieItemToAdapter(Movie movieNew, int position) {
+        movieList.set(position,movieNew);
+        this.notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return movieList.size();
