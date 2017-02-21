@@ -218,32 +218,30 @@
             </LinearLayout>
 
         </RelativeLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/movie_page_top_part"
-            android:id="@+id/movie_page_buttons"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal">
+            android:id="@+id/movie_page_rating"
+            android:layout_below="@id/movie_page_top_part">
 
-            <Button
-                android:id="@+id/button_bookmark"
+            <TextView
+                android:text="Your Rating"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:text="Bookmark"
-                android:layout_weight="1"
-                android:textAllCaps="false"
-                android:textSize="15sp" />
+                android:layout_marginStart="5dp"
+                android:layout_gravity="center_vertical"
+                android:textSize="15sp"/>
 
-            <Button
-                android:id="@+id/button_rate"
+            <RatingBar
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Rate Now"
-                android:textAllCaps="false"
-                android:textSize="15sp" />
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="5dp"
+                android:id="@+id/ratingBar"
+                android:numStars="5"
+                android:rating="0.0"
+                android:stepSize="1.0"
+                style="@style/Widget.AppCompat.RatingBar" />
 
         </LinearLayout>
 
@@ -252,7 +250,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@id/movie_page_buttons"
+            android:layout_below="@id/movie_page_rating"
             android:layout_marginTop="10dp"
             android:text="Plot:" />
 
