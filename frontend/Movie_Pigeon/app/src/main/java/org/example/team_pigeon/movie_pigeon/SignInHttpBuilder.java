@@ -33,6 +33,7 @@ import java.util.Map;
  */
 
 class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
+    private final String TAG = "sHttpBuilder";
     String registerClientUrl = "http://128.199.231.190:8080/api/clients";
     String getUrl;
     String authorizeUrl;
@@ -77,7 +78,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     (email + ":" + password).getBytes(),
                     Base64.NO_WRAP);
 
-            Log.e("sHttpBuilder", "1st ciphertext is " + base64EncodedCredentials);
+            Log.e(TAG, "1st ciphertext is " + base64EncodedCredentials);
 
             connection.setRequestProperty("Authorization", base64EncodedCredentials);
 
@@ -90,7 +91,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
 
             query = formQuery(deviceName, id, secret);
 
-            Log.e("sHttpBuilder", "query is " + query);
+            Log.e(TAG, "query is " + query);
 
             connection.connect();
 
@@ -102,7 +103,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
 
             status = connection.getResponseCode();
 
-            Log.e("sHttpBuilder", "registering client response status is " + status);
+            Log.e(TAG, "registering client response status is " + status);
 
             if (status == 200) {
                 try {
@@ -120,10 +121,10 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 }
                 correctEmailPassword = true;
             } else if (status == 401) {
-                Log.e("sHttpBuilder", "Unauthorized");
+                Log.e(TAG, "Unauthorized");
 
             } else {
-                Log.e("sHttpBuilder", "step 1" + status);
+                Log.e(TAG, "step 1" + status);
                 connectionError = true;
             }
         } catch (IOException e) {
@@ -138,9 +139,9 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
         if (correctEmailPassword) {
          /*-------------------Login step 2-------------------------------*/
 
-            Log.e("sHttpBuilder", "id is " + id);
+            Log.e(TAG, "id is " + id);
             getUrl = "http://128.199.231.190:8080/api/oauth2/authorize/transactionId?client_id=" + id + "&response_type=code&redirect_uri=moviepigeon/";
-            Log.e("sHttpBuilder", "get url is " + getUrl);
+            Log.e(TAG, "get url is " + getUrl);
 
             try {
                 connection = (HttpURLConnection) new URL(getUrl).openConnection();
@@ -160,10 +161,10 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                         msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
                     }
                 }
-                Log.e("sHttpBuilder", "Cookies stored");
+                Log.e(TAG, "Cookies stored");
 
                 status = connection.getResponseCode();
-                Log.e("sHttpBuilder", "1st post response status is " + status);
+                Log.e(TAG, "1st post response status is " + status);
 
                 try {
                     response = connection.getInputStream();
@@ -187,10 +188,10 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     }
                 } else if (status == 401) {
                     // will never come here theoretically as email and password must be correct to pass step 1
-                    Log.e("sHttpBuilder", "Unauthorized");
+                    Log.e(TAG, "Unauthorized");
 
                 } else {
-                    Log.e("sHttpBuilder", "step 2 part 1" + status);
+                    Log.e(TAG, "step 2 part 1" + status);
                     connectionError = true;
                 }
 
@@ -199,7 +200,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
             }
 
             connection.disconnect();
-            Log.e("sHttpBuilder", "Obtained transactionId: " + transactionId);
+            Log.e(TAG, "Obtained transactionId: " + transactionId);
 
             // step 2 part 2
             authorizeUrl = "http://128.199.231.190:8080/api/oauth2/authorize/";
@@ -233,7 +234,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     System.out.println("Unable to encode message");
                 }
 
-                Log.e("sHttpBuilder", "transaction body is " + transactionBody);
+                Log.e(TAG, "transaction body is " + transactionBody);
 
                 try (OutputStream output = connection.getOutputStream()) {
                     output.write(transactionBody.getBytes(charset));
@@ -242,7 +243,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 }
 
                 status = connection.getResponseCode();
-                Log.e("sHttpBuilder", "2nd Post response status is " + status);
+                Log.e(TAG, "2nd Post response status is " + status);
 
                 if (status == 404) {
                     // actually expected 404, code is inside the error message
@@ -258,10 +259,10 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     }
                 } else if (status == 401) {
                     // will never come here theoretically as email and password must be correct to pass step 1
-                    Log.e("sHttpBuilder", "Unauthorized");
+                    Log.e(TAG, "Unauthorized");
 
                 } else {
-                    Log.e("sHttpBuilder", "step 2 part 2" + status);
+                    Log.e(TAG, "step 2 part 2" + status);
                     connectionError = true;
                 }
 
@@ -270,7 +271,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 e.printStackTrace();
             }
 
-            Log.e("sHttpBuilder", "Obtained code: " + code);
+            Log.e(TAG, "Obtained code: " + code);
         /*-------------------End of Login step 2-------------------------------*/
 
         /*-------------------Login step 3-------------------------------*/
@@ -313,7 +314,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     System.out.println("Unable to encode message");
                 }
 
-                Log.e("sHttpBuilder", "body for requesting token is " + tokenBody);
+                Log.e(TAG, "body for requesting token is " + tokenBody);
 
                 try (OutputStream output = connection.getOutputStream()) {
                     output.write(tokenBody.getBytes(charset));
@@ -322,7 +323,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 }
 
                 status = connection.getResponseCode();
-                Log.e("sHttpBuilder", "Login step 3 response status is " + status);
+                Log.e(TAG, "Login step 3 response status is " + status);
 
                 try {
                     response = connection.getInputStream();
@@ -342,9 +343,9 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     }
                 } else if (status == 401) {
                     // will never come here theoretically as email and password must be correct to pass step 1
-                    Log.e("sHttpBuilder", "Unauthorized");
+                    Log.e(TAG, "Unauthorized");
                 } else {
-                    Log.e("sHttpBuilder", "step 3 " + status);
+                    Log.e(TAG, "step 3 " + status);
                     connectionError = true;
                 }
 
@@ -353,7 +354,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 e.printStackTrace();
             }
 
-            Log.e("sHttpBuilder", "Obtained token: " + token);
+            Log.e(TAG, "Obtained token: " + token);
 
         /*-------------------End of Login step 3-------------------------------*/
 
@@ -376,7 +377,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 // magic number 17 - remove part:   {"access_token":"
                 // read till right before the last colon (the colon before "token_type") and -1 for the " sign
                 token = token.substring(17, token.lastIndexOf(",") - 1);
-                Log.e("sHttpBuilder", "Trimmed token is " + token);
+                Log.e(TAG, "Trimmed token is " + token);
 
                 try {
                     fos = new FileOutputStream(credential);
@@ -435,7 +436,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
         String p1, p2;
         p1=params[0];
         p2=params[1];
-        Log.e("sHttpBuilder", "Passed in parameters are " + p1 + " " + p2);
+        Log.e(TAG, "Passed in parameters are " + p1 + " " + p2);
         request(mContext, p1, p2);
         return null;
     }

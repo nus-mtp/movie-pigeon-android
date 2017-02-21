@@ -22,6 +22,7 @@ import java.net.URLEncoder;
  */
 
 class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
+    String TAG = "rHttpBuilder";
     String url = "http://128.199.231.190:8080";
     String registrationURL = "http://128.199.231.190:8080/api/users";
     String charset = java.nio.charset.StandardCharsets.UTF_8.name();
@@ -52,17 +53,17 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
                 output.write(query.getBytes(charset));
             }
 
-            Log.e("rHttpBuilder", "Finished sending to server");
+            Log.e(TAG, "Finished sending to server");
 
             int status = connection.getResponseCode();
-            Log.e("rHttpBuilder", "response status transactionId is " + status);
+            Log.e(TAG, "response status transactionId is " + status);
 
             if (status == 200) {
                 InputStream response = connection.getInputStream();
                 // process the response
                 BufferedReader br = new BufferedReader(new InputStreamReader(response));
                 StringBuffer sb = new StringBuffer();
-                Log.e("rHttpBuilder", "Starting to read response");
+                Log.e(TAG, "Starting to read response");
                 while ((line = br.readLine()) != null) {
                     sb.append(line + "\n");
                     serverResponse = "Registration Response>>>" + line;
@@ -108,10 +109,10 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
         p1=params[0];
         p2=params[1];
         p3=params[2];
-        Log.e("rHttpBuilder", "Passed in parameters are " + p1 + " " + p2 + " " + p3);
+        Log.e(TAG, "Passed in parameters are " + p1 + " " + p2 + " " + p3);
         query = formQuery(p1, p2, p3);
-        Log.e("rHttpBuilder", "query formed");
-        Log.e("rHttpBuilder", "Query is " + query);
+        Log.e(TAG, "query formed");
+        Log.e(TAG, "Query is " + query);
         request(query);
         return null;
     }
