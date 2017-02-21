@@ -4,6 +4,7 @@ package org.example.team_pigeon.movie_pigeon;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.google.gson.reflect.TypeToken;
 
 import org.example.team_pigeon.movie_pigeon.models.Movie;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -31,6 +33,8 @@ public class MeFragment extends Fragment {
     private Gson gson = new Gson();
     private MyTask myTask;
     private ArrayList<Movie> movieList;
+    private File credential;
+
     public MeFragment() {
     }
 
@@ -53,7 +57,34 @@ public class MeFragment extends Fragment {
                 myTask.execute("bookmark");
             }
         });
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e(TAG, "Logout button pressed");
+                loggingOut();
+            }
+        });
         return view;
+    }
+
+    private void loggingOut() {
+        Intent loadStartActivity = new Intent(getActivity(), StartActivity.class);
+        credential = new File(Environment.getExternalStorageDirectory() + "/MoviePigeon/Signin/credential");
+        if (credential.exists()) {
+            Log.e(TAG, "Deleting existing credentials");
+            credential.delete();
+        }
+
+        if (!credential.exists()) {
+            Log.e(TAG, "Starting sign in activity");
+            getActivity().startActivity(loadStartActivity);
+            Log.e(TAG, "Finishing current activity");
+            getActivity().finish();
+        } else {
+            Log.e(TAG, "Failed to delete credential");
+            Toast.makeText(getContext(), "Failed to logout", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void bindViews(View view){
