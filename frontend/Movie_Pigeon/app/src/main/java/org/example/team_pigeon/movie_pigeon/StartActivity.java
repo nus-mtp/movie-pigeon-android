@@ -2,6 +2,7 @@ package org.example.team_pigeon.movie_pigeon;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Disable Landscape Mode
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         credential = new File(Environment.getExternalStorageDirectory() + "/MoviePigeon/Signin/credential");
 
         // set up broadcast receiver to receive request from background thread

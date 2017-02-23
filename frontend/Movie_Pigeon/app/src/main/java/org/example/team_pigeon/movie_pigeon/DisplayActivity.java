@@ -2,6 +2,7 @@ package org.example.team_pigeon.movie_pigeon;
 
 
 
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +16,8 @@ public class DisplayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Disable Landscape Mode
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_display);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_display_page);
         setSupportActionBar(toolbar);

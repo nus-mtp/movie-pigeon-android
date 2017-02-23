@@ -1,6 +1,7 @@
 package org.example.team_pigeon.movie_pigeon;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
@@ -38,6 +39,8 @@ public class HomePageActivity extends AppCompatActivity implements RadioGroup.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Disable Landscape Mode
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         initImageLoaderConfig();
         requestHttpBuilderSingleton.setToken(getIntent().getExtras().getString("Token").trim());
         setContentView(R.layout.activity_home_page);
