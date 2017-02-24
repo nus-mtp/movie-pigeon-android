@@ -34,6 +34,7 @@ public class MeFragment extends Fragment {
     private MyTask myTask;
     private ArrayList<Movie> movieList;
     private File credential;
+    private View view;
 
     public MeFragment() {
     }
@@ -41,7 +42,7 @@ public class MeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_me, container, false);
+        view = inflater.inflate(R.layout.fragment_me, container, false);
         bindViews(view);
         myRatingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +66,18 @@ public class MeFragment extends Fragment {
                 loggingOut();
             }
         });
+
+        settingButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Log.e(TAG, "Setting Button clicked");
+                Intent loadSettingActivity = new Intent(getActivity(), SettingActivity.class);
+                getActivity().startActivity(loadSettingActivity);
+
+            }
+        });
+
         return view;
     }
 

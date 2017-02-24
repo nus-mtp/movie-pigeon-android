@@ -38,6 +38,9 @@ class Receiver extends BroadcastReceiver {
             signInDetails[1] = passwordSignin[0];
             SignInHttpBuilder sBuilder = new SignInHttpBuilder(context);
             sBuilder.execute(signInDetails);
+        } else if (intent.getAction().equals("UserUpdate")) {
+            System.out.println("User Update received");
+            ((Activity)context).finish();
         }
     }
 }

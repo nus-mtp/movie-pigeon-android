@@ -25,6 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".DisplayActivity" android:exported="true"></activity>
+        <activity android:name=".SettingActivity" android:exported="true"></activity>
     </application>
 
 </manifest>
