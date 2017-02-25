@@ -13,4 +13,4 @@ dependencies:
 test:
   override:
     - (echo "Running JUnit tests!")
-    - (./gradlew connectedAndroidTest)
+    - (./frontend/Movie_Pigeon/gradlew connectedAndroidTest)
