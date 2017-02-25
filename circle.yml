@@ -11,6 +11,8 @@ dependencies:
     - if [ ! -d "/usr/local/android_sdk/extras/android/m2repository/com/android/support/support-core-utils/24.2.1" ]; then echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"; fi
 
 test:
+  pre:
+    - chmod +x gradlew
   override:
     - (echo "Running JUnit tests!")
     - (./frontend/Movie_Pigeon/gradlew connectedAndroidTest)
