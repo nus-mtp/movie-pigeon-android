@@ -14,8 +14,8 @@ import okhttp3.RequestBody;
 public class RequestHttpBuilderSingleton {
     private static RequestHttpBuilderSingleton instance = null;
     private OkHttpClient client = null;
-    private String keywords;
-    private String token;
+    private String keywords = "";
+    private String token = "";
     private int offset = 0;
     private final int LIMIT = 20;
     private final String searchUrl = new String("http://128.199.231.190:8080/api/movies/title");
@@ -112,5 +112,17 @@ public class RequestHttpBuilderSingleton {
 
     public int getLimit() {
         return LIMIT;
+    }
+
+    public String getSearchUrl() {
+        return searchUrl;
+    }
+
+    public String getRatingUrl() {
+        return ratingUrl;
+    }
+
+    public String getBookmarkUrl() {
+        return bookmarkUrl;
     }
 }
