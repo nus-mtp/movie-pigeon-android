@@ -1,6 +1,4 @@
 machine:
-  environment:
-    ANDROID_HOME: /home/ubuntu/android
   java:
       version: oraclejdk8
 
@@ -14,6 +12,6 @@ dependencies:
 test:
   override:
     - (echo "Running JUnit tests!")
-    post:
+  post:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
     - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
