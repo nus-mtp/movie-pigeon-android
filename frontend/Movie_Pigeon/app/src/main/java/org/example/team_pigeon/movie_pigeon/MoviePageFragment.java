@@ -163,9 +163,9 @@ public class MoviePageFragment extends Fragment {
             if (publicRatings.isEmpty()) {
                 linearLayout_ratings.setVisibility(View.GONE);
             } else {
-                setRatingsOthersSetGone(publicRatings.get(0).getScore(), score_imdb, image_imdb);
-                setRatingsOthersSetGone(publicRatings.get(1).getScore(), score_douban, image_douban);
-                setRatingsOthersSetGone(publicRatings.get(2).getScore(), score_trakt, image_trakt);
+                setRatingsOtherwiseSetGone(publicRatings.get(0).getScore(), score_imdb, image_imdb);
+                setRatingsOtherwiseSetGone(publicRatings.get(1).getScore(), score_douban, image_douban);
+                setRatingsOtherwiseSetGone(publicRatings.get(2).getScore(), score_trakt, image_trakt);
             }
 
             //Set Rating Bar
@@ -198,7 +198,7 @@ public class MoviePageFragment extends Fragment {
         }
     }
 
-    private void setRatingsOthersSetGone(String rating, TextView score, ImageView icon) {
+    private void setRatingsOtherwiseSetGone(String rating, TextView score, ImageView icon) {
         if (rating != null) {
             if (rating.length() >= 5) {
                 rating = rating.substring(0, 3);
@@ -231,18 +231,30 @@ public class MoviePageFragment extends Fragment {
 
         @Override
         protected Integer doInBackground(String... params) {
+            String requestType = null;
+            String movieId = null;
+            String score = null;
+            if(params.length==2) {
+                requestType = params[0];
+                movieId = params[1];
+            }
+            if(params.length>2) {
+                requestType = params[0];
+                movieId = params[1];
+                score = params[2];
+            }
             Request request = null;
-            switch (params[0]) {
+            switch (requestType) {
                 case (POST_RATING):
-                    request = requestHttpBuilder.getPostRatingRequest(params[1], params[2]);
+                    request = requestHttpBuilder.getPostRatingRequest(movieId, score);
                     successfulStatus = SUCCESSFUL_RATE;
                     break;
                 case (BOOKMARK):
-                    request = requestHttpBuilder.getPostBookmarkRequest(params[1]);
+                    request = requestHttpBuilder.getPostBookmarkRequest(movieId);
                     successfulStatus = SUCCESSFUL_BOOKMARK;
                     break;
                 case (UNBOOKMARK):
-                    request = requestHttpBuilder.getPostUnbookmarkRequest(params[1]);
+                    request = requestHttpBuilder.getPostUnbookmarkRequest(movieId);
                     successfulStatus = SUCCESSFUL_UNBOOKMARK;
                     break;
             }
@@ -300,7 +312,6 @@ public class MoviePageFragment extends Fragment {
                     isBookmarked = false;
                     movie.getUserBookmark().clear();
                     if(sourceType.equals("bookmark")){
-                        Log.i(TAG,"******************************************************" + sourceType.equals("bookmark"));
                         eventBus.post(new DeleteMovieFromMovieListEvent(position));
                     }
                     else{
