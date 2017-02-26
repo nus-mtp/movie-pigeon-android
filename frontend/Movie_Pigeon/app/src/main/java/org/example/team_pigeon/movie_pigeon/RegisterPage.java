@@ -17,11 +17,10 @@ import android.widget.Toast;
 
 class RegisterPage {
 
-    RegisterPage(final Context mContext, final Activity mActivity, View signin) {
-        final String[] email = new String[1];
-        final String[] username = new String[1];
-        final String[] password = new String[1];
-        final String[] confirmPassword = new String[1];
+    String email, username, password, confirmPassword;
+
+    RegisterPage(final Context mContext, final Activity mActivity) {
+
         final View register = LayoutInflater.from(mActivity.getApplication()).inflate(R.layout.register_page, null);
         mActivity.setContentView(register);
 
@@ -45,26 +44,26 @@ class RegisterPage {
 
             @Override
             public void onClick(View v) {
-                email[0] = String.valueOf(etEmail.getText());
-                username[0] = String.valueOf(etUsername.getText());
-                password[0] = String.valueOf(etPassword.getText());
-                confirmPassword[0] = String.valueOf(etConfirmPassword.getText());
+                email = String.valueOf(etEmail.getText());
+                username = String.valueOf(etUsername.getText());
+                password = String.valueOf(etPassword.getText());
+                confirmPassword = String.valueOf(etConfirmPassword.getText());
 
-                if (email[0].equals("") | username[0].equals("") | password[0].equals("") | confirmPassword[0].equals("")) {
+                if (email.equals("") | username.equals("") | password.equals("") | confirmPassword.equals("")) {
                     Toast.makeText(mContext, "Must fill in all fields", Toast.LENGTH_SHORT).show();
                 } else {
                     // double check password match
-                    if (!password[0].equals(confirmPassword[0])) {
+                    if (!password.equals(confirmPassword)) {
                         Toast toast = Toast.makeText(mContext, "Passwords entered don't match!", Toast.LENGTH_SHORT);
                         toast.show();
-                    } else if (!email[0].contains("@")) {
+                    } else if (!email.contains("@")) {
                         Toast.makeText(mContext, "Please enter correct email address", Toast.LENGTH_SHORT).show();
                     } else {
                         System.out.println("Registering");
                         String[] registrationDetails = new String[3];
-                        registrationDetails[0] = email[0];
-                        registrationDetails[1] = username[0];
-                        registrationDetails[2] = password[0];
+                        registrationDetails[0] = email;
+                        registrationDetails[1] = username;
+                        registrationDetails[2] = password;
 
                         Log.e("RegistrationPage", "3 parameters to be passed are " + registrationDetails[0] + " " + registrationDetails[1] + " " + registrationDetails[2]);
                         new RegistrationHttpBuilder(mContext).execute(registrationDetails);

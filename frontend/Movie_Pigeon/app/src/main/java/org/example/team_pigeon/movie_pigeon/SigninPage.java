@@ -54,7 +54,7 @@ class SigninPage {
 
         BRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                RegisterPage register = new RegisterPage(mContext, mActivity, signin);
+                RegisterPage register = new RegisterPage(mContext, mActivity);
             }
         });
     }
