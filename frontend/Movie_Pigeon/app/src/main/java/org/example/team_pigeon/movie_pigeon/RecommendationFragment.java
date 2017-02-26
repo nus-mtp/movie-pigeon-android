@@ -72,11 +72,13 @@ public class RecommendationFragment extends Fragment {
         private final int NO_RESULT = 2;
         private final int NO_INTERNET = 3;
         int status;
+        String keyword = null;
 
         @Override
         protected Void doInBackground(String... params) {
             try {
-                searchRequestHttpBuilder.setKeywords(params[0]);
+                keyword = params[0];
+                searchRequestHttpBuilder.setKeywords(keyword);
                 OkHttpClient client = searchRequestHttpBuilder.getClient();
                 Request request = searchRequestHttpBuilder.getSearchRequest();
                 Response response = client.newCall(request).execute();
