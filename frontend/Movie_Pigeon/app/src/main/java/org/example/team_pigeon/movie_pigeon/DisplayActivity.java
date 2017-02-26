@@ -20,8 +20,9 @@ public class DisplayActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_display);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_display_page);
-        setSupportActionBar(toolbar);
         Bundle argument = getIntent().getBundleExtra("bundle");
+        toolbar.setTitle(argument.getString("title"));
+        setSupportActionBar(toolbar);
         fragmentManager = getFragmentManager();
         frameLayout = (FrameLayout) findViewById(R.id.fl_content);
         MovieListFragment movieListFragment = new MovieListFragment();
