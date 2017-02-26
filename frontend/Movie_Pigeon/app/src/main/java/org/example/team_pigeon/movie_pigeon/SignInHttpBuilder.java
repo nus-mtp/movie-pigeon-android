@@ -78,7 +78,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     (email + ":" + password).getBytes(),
                     Base64.NO_WRAP);
 
-            Log.e(TAG, "1st ciphertext is " + base64EncodedCredentials);
+            Log.i(TAG, "1st ciphertext is " + base64EncodedCredentials);
 
             connection.setRequestProperty("Authorization", base64EncodedCredentials);
 
@@ -91,7 +91,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
 
             query = formQuery(deviceName, id, secret);
 
-            Log.e(TAG, "query is " + query);
+            Log.i(TAG, "query is " + query);
 
             connection.connect();
 
@@ -103,7 +103,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
 
             status = connection.getResponseCode();
 
-            Log.e(TAG, "registering client response status is " + status);
+            Log.i(TAG, "registering client response status is " + status);
 
             if (status == 200) {
                 try {
@@ -114,7 +114,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 BufferedReader br = new BufferedReader(new InputStreamReader(response));
                 StringBuffer sb = new StringBuffer();
                 String line = "";
-                Log.e("rHttpBuilder", "Starting to read response");
+                Log.i("rHttpBuilder", "Starting to read response");
                 while ((line = br.readLine()) != null) {
                     sb.append(line + "\n");
                     System.out.println("Response>>>" + line);
@@ -139,9 +139,9 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
         if (correctEmailPassword) {
          /*-------------------Login step 2-------------------------------*/
 
-            Log.e(TAG, "id is " + id);
+            Log.i(TAG, "id is " + id);
             getUrl = "http://128.199.231.190:8080/api/oauth2/authorize/transactionId?client_id=" + id + "&response_type=code&redirect_uri=moviepigeon/";
-            Log.e(TAG, "get url is " + getUrl);
+            Log.i(TAG, "get url is " + getUrl);
 
             try {
                 connection = (HttpURLConnection) new URL(getUrl).openConnection();
@@ -161,10 +161,10 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                         msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
                     }
                 }
-                Log.e(TAG, "Cookies stored");
+                Log.i(TAG, "Cookies stored");
 
                 status = connection.getResponseCode();
-                Log.e(TAG, "1st post response status is " + status);
+                Log.i(TAG, "1st post response status is " + status);
 
                 try {
                     response = connection.getInputStream();
@@ -180,7 +180,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     BufferedReader br = new BufferedReader(new InputStreamReader(response));
                     StringBuffer sb = new StringBuffer();
                     String line = "";
-                    Log.e("rHttpBuilder", "Starting to read response");
+                    Log.i("rHttpBuilder", "Starting to read response");
                     while ((line = br.readLine()) != null) {
                         sb.append(line + "\n");
                         System.out.println("Response>>>" + line);
@@ -200,7 +200,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
             }
 
             connection.disconnect();
-            Log.e(TAG, "Obtained transactionId: " + transactionId);
+            Log.i(TAG, "Obtained transactionId: " + transactionId);
 
             // step 2 part 2
             authorizeUrl = "http://128.199.231.190:8080/api/oauth2/authorize/";
@@ -234,7 +234,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     System.out.println("Unable to encode message");
                 }
 
-                Log.e(TAG, "transaction body is " + transactionBody);
+                Log.i(TAG, "transaction body is " + transactionBody);
 
                 try (OutputStream output = connection.getOutputStream()) {
                     output.write(transactionBody.getBytes(charset));
@@ -243,7 +243,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 }
 
                 status = connection.getResponseCode();
-                Log.e(TAG, "2nd Post response status is " + status);
+                Log.i(TAG, "2nd Post response status is " + status);
 
                 if (status == 404) {
                     // actually expected 404, code is inside the error message
@@ -251,7 +251,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     BufferedReader br = new BufferedReader(new InputStreamReader(response));
                     StringBuffer sb = new StringBuffer();
                     String line = "";
-                    Log.e("rHttpBuilder", "Starting to read response");
+                    Log.i("rHttpBuilder", "Starting to read response");
                     while ((line = br.readLine()) != null) {
                         sb.append(line + "\n");
                         System.out.println("Response>>>" + line);
@@ -271,7 +271,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 e.printStackTrace();
             }
 
-            Log.e(TAG, "Obtained code: " + code);
+            Log.i(TAG, "Obtained code: " + code);
         /*-------------------End of Login step 2-------------------------------*/
 
         /*-------------------Login step 3-------------------------------*/
@@ -314,7 +314,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     System.out.println("Unable to encode message");
                 }
 
-                Log.e(TAG, "body for requesting token is " + tokenBody);
+                Log.i(TAG, "body for requesting token is " + tokenBody);
 
                 try (OutputStream output = connection.getOutputStream()) {
                     output.write(tokenBody.getBytes(charset));
@@ -323,7 +323,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 }
 
                 status = connection.getResponseCode();
-                Log.e(TAG, "Login step 3 response status is " + status);
+                Log.i(TAG, "Login step 3 response status is " + status);
 
                 try {
                     response = connection.getInputStream();
@@ -335,7 +335,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     BufferedReader br = new BufferedReader(new InputStreamReader(response));
                     StringBuffer sb = new StringBuffer();
                     String line = "";
-                    Log.e("rHttpBuilder", "Starting to read response");
+                    Log.i("rHttpBuilder", "Starting to read response");
                     while ((line = br.readLine()) != null) {
                         sb.append(line + "\n");
                         System.out.println("Response>>>" + line);
@@ -354,7 +354,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 e.printStackTrace();
             }
 
-            Log.e(TAG, "Obtained token: " + token);
+            Log.i(TAG, "Obtained token: " + token);
 
         /*-------------------End of Login step 3-------------------------------*/
 
@@ -377,7 +377,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 // magic number 17 - remove part:   {"access_token":"
                 // read till right before the last colon (the colon before "token_type") and -1 for the " sign
                 token = token.substring(17, token.lastIndexOf(",") - 1);
-                Log.e(TAG, "Trimmed token is " + token);
+                Log.i(TAG, "Trimmed token is " + token);
 
                 try {
                     fos = new FileOutputStream(credential);
@@ -436,7 +436,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
         String p1, p2;
         p1=params[0];
         p2=params[1];
-        Log.e(TAG, "Passed in parameters are " + p1 + " " + p2);
+        Log.i(TAG, "Passed in parameters are " + p1 + " " + p2);
         request(mContext, p1, p2);
         return null;
     }

@@ -53,17 +53,17 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
                 output.write(query.getBytes(charset));
             }
 
-            Log.e(TAG, "Finished sending to server");
+            Log.i(TAG, "Finished sending to server");
 
             int status = connection.getResponseCode();
-            Log.e(TAG, "response status transactionId is " + status);
+            Log.i(TAG, "response status transactionId is " + status);
 
             if (status == 200) {
                 InputStream response = connection.getInputStream();
                 // process the response
                 BufferedReader br = new BufferedReader(new InputStreamReader(response));
                 StringBuffer sb = new StringBuffer();
-                Log.e(TAG, "Starting to read response");
+                Log.i(TAG, "Starting to read response");
                 while ((line = br.readLine()) != null) {
                     sb.append(line + "\n");
                     serverResponse = "Registration Response>>>" + line;
@@ -109,10 +109,10 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
         p1=params[0];
         p2=params[1];
         p3=params[2];
-        Log.e(TAG, "Passed in parameters are " + p1 + " " + p2 + " " + p3);
+        Log.i(TAG, "Passed in parameters are " + p1 + " " + p2 + " " + p3);
         query = formQuery(p1, p2, p3);
-        Log.e(TAG, "query formed");
-        Log.e(TAG, "Query is " + query);
+        Log.i(TAG, "query formed");
+        Log.i(TAG, "Query is " + query);
         request(query);
         return null;
     }

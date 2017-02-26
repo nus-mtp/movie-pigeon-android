@@ -72,7 +72,7 @@ class RegisterPage {
                             registrationDetails[1] = username;
                             registrationDetails[2] = password;
 
-                            Log.e("RegistrationPage", "3 parameters to be passed are " + registrationDetails[0] + " " + registrationDetails[1] + " " + registrationDetails[2]);
+                            Log.i("RegistrationPage", "3 parameters to be passed are " + registrationDetails[0] + " " + registrationDetails[1] + " " + registrationDetails[2]);
                             new RegistrationHttpBuilder(mContext).execute(registrationDetails);
                         }
                     }

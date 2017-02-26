@@ -69,10 +69,10 @@ public class SettingActivity extends AppCompatActivity {
                 } else {
                     String[] toPassIn = new String[3];
                     toPassIn[0] = choice;
-                    Log.e(TAG, "User wants to change " + choice);
+                    Log.i(TAG, "User wants to change " + choice);
                     toPassIn[1] = input;
                     toPassIn[2] = singleton.getToken();
-                    Log.e(TAG, "Starting working thread");
+                    Log.i(TAG, "Starting working thread");
                     new WorkingThread(mContext).execute(toPassIn);
                 }
             }
@@ -120,7 +120,7 @@ class WorkingThread extends AsyncTask<String, Void, Void> {
         }
         modification = inputParams[1];
         token = inputParams[2];
-        Log.e(TAG, "Type is " + type + " and modification is " + modification);
+        Log.i(TAG, "Type is " + type + " and modification is " + modification);
         body = formBody();
         request(type);
 
@@ -158,17 +158,17 @@ class WorkingThread extends AsyncTask<String, Void, Void> {
                 output.write(body.getBytes(charset));
             }
 
-            Log.e(TAG, "Finished sending to server");
+            Log.i(TAG, "Finished sending to server");
 
             int status = connection.getResponseCode();
-            Log.e(TAG, "response status transactionId is " + status);
+            Log.i(TAG, "response status transactionId is " + status);
 
             if (status == 200) {
                 InputStream response = connection.getInputStream();
                 // process the response
                 BufferedReader br = new BufferedReader(new InputStreamReader(response));
                 StringBuffer sb = new StringBuffer();
-                Log.e(TAG, "Starting to read response");
+                Log.i(TAG, "Starting to read response");
                 String line, serverResponse = "";
                 while ((line = br.readLine()) != null) {
                     sb.append(line + "\n");

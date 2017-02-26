@@ -62,7 +62,7 @@ public class MeFragment extends Fragment {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e(TAG, "Logout button pressed");
+                Log.i(TAG, "Logout button pressed");
                 loggingOut();
             }
         });
@@ -71,7 +71,7 @@ public class MeFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                Log.e(TAG, "Setting Button clicked");
+                Log.i(TAG, "Setting Button clicked");
                 Intent loadSettingActivity = new Intent(getActivity(), SettingActivity.class);
                 getActivity().startActivity(loadSettingActivity);
 
@@ -85,14 +85,14 @@ public class MeFragment extends Fragment {
         Intent loadStartActivity = new Intent(getActivity(), StartActivity.class);
         credential = new File(Environment.getExternalStorageDirectory() + "/MoviePigeon/Signin/credential");
         if (credential.exists()) {
-            Log.e(TAG, "Deleting existing credentials");
+            Log.i(TAG, "Deleting existing credentials");
             credential.delete();
         }
 
         if (!credential.exists()) {
-            Log.e(TAG, "Starting sign in activity");
+            Log.i(TAG, "Starting sign in activity");
             getActivity().startActivity(loadStartActivity);
-            Log.e(TAG, "Finishing current activity");
+            Log.i(TAG, "Finishing current activity");
             getActivity().finish();
         } else {
             Log.e(TAG, "Failed to delete credential");

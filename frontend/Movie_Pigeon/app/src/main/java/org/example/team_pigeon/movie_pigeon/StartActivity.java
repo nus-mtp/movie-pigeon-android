@@ -40,7 +40,7 @@ public class StartActivity extends AppCompatActivity {
             // sign-in automatically
             // read token from file first
             token = getStringFromFile(credential.getAbsolutePath());
-            Log.e("StartActivity", "Token read is " + token);
+            Log.i("StartActivity", "Token read is " + token);
 
             Intent homePageIntent = new Intent(this, HomePageActivity.class);
             // pass token to the new activity
