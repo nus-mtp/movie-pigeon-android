@@ -96,6 +96,7 @@ public class MeFragment extends Fragment {
             getActivity().finish();
         } else {
             Log.e(TAG, "Failed to delete credential");
+            Toast.makeText(getContext(), "Failed to logout. Please check storage permissions.", Toast.LENGTH_SHORT).show();
         }
     }
 
