@@ -117,7 +117,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 Log.i("rHttpBuilder", "Starting to read response");
                 while ((line = br.readLine()) != null) {
                     sb.append(line + "\n");
-                    System.out.println("Response>>>" + line);
+                    Log.i(TAG, "Response>>>" + line);
                 }
                 correctEmailPassword = true;
             } else if (status == 401) {
@@ -173,7 +173,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 }
 
                 for (String header : connection.getHeaderFields().keySet()) {
-                    System.out.println(header + ":" + connection.getHeaderField(header));
+                    Log.i(TAG, header + ":" + connection.getHeaderField(header));
                 }
 
                 if (status == 200) {
@@ -183,7 +183,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     Log.i("rHttpBuilder", "Starting to read response");
                     while ((line = br.readLine()) != null) {
                         sb.append(line + "\n");
-                        System.out.println("Response>>>" + line);
+                        Log.i(TAG, "Response>>>" + line);
                         transactionId = line;
                     }
                 } else if (status == 401) {
@@ -231,7 +231,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                             URLEncoder.encode(param2, charset));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
-                    System.out.println("Unable to encode message");
+                    Log.e(TAG, "Unable to encode message");
                 }
 
                 Log.i(TAG, "transaction body is " + transactionBody);
@@ -254,7 +254,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     Log.i("rHttpBuilder", "Starting to read response");
                     while ((line = br.readLine()) != null) {
                         sb.append(line + "\n");
-                        System.out.println("Response>>>" + line);
+                        Log.i(TAG, "Response>>>" + line);
                         code = line.replaceAll(".*=", "");
                     }
                 } else if (status == 401) {
@@ -311,7 +311,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                             URLEncoder.encode(param3, charset));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
-                    System.out.println("Unable to encode message");
+                    Log.e(TAG, "Unable to encode message");
                 }
 
                 Log.i(TAG, "body for requesting token is " + tokenBody);
@@ -338,7 +338,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     Log.i("rHttpBuilder", "Starting to read response");
                     while ((line = br.readLine()) != null) {
                         sb.append(line + "\n");
-                        System.out.println("Response>>>" + line);
+                        Log.i(TAG, "Response>>>" + line);
                         token = line;
                     }
                 } else if (status == 401) {
@@ -371,7 +371,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 }
 
                 credential = new File(signinFolder.getAbsolutePath(), "credential");
-                System.out.println(credential.getAbsolutePath());
+                Log.i(TAG, credential.getAbsolutePath());
 
                 // original token received is like: {"access_token":"AInKmwQRJLvylHTojqcNMqP7FvdXhWVoEIdgtTdRJW7rv68XHz6NpJ32dJPMUE8ZpYqF8zw8dOBGPRHtBJhWAHvniswYXynjH0xKnziVVYN486MLwiUd1WiuVntrTMBq","token_type":"Bearer"}
                 // magic number 17 - remove part:   {"access_token":"
@@ -407,7 +407,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     URLEncoder.encode(param3, charset));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            System.out.println("Unable to encode message");
+            Log.e(TAG, "Unable to encode message");
             return "";
         }
     }

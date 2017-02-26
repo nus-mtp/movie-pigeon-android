@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Switch;
 
 /**
@@ -13,6 +14,7 @@ import android.widget.Switch;
 
 class GlobalReceiver extends BroadcastReceiver {
     String emailSignin, passwordSignin;
+    String TAG = "GlobalReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -33,7 +35,7 @@ class GlobalReceiver extends BroadcastReceiver {
 
             case "automaticSignin":
                 // sign-in after registration
-                System.out.println("Registration completed. Proceed to sign in");
+                Log.i(TAG, "Registration completed. Proceed to sign in");
                 bundle = intent.getExtras();
                 String email = bundle.getString("email");
                 String password = bundle.getString("password");
@@ -48,7 +50,7 @@ class GlobalReceiver extends BroadcastReceiver {
                 break;
 
             case "UserUpdate":
-                System.out.println("User Update received");
+                Log.i(TAG, "User Update received");
                 ((Activity) context).finish();
                 break;
         }

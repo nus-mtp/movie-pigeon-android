@@ -133,7 +133,7 @@ class WorkingThread extends AsyncTask<String, Void, Void> {
             return String.format(field, URLEncoder.encode(modification, charset));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            System.out.println("Unable to encode message");
+            Log.e(TAG, "Unable to encode message");
             return "";
         }
     }
@@ -173,17 +173,17 @@ class WorkingThread extends AsyncTask<String, Void, Void> {
                 while ((line = br.readLine()) != null) {
                     sb.append(line + "\n");
                     serverResponse = "Registration Response>>>" + line;
-                    System.out.println(serverResponse);
+                    Log.i(TAG, serverResponse);
                 }
             } else {
                 connectionError = true;
-                System.out.println(status);
+                Log.i(TAG, "Error code " + status);
             }
 
         } catch (IOException e) {
             e.printStackTrace();
             connectionError = true;
-            System.out.print("Unable to connect to server");
+            Log.e(TAG, "Unable to connect to server");
         }
     }
 

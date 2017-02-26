@@ -67,7 +67,7 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
                 while ((line = br.readLine()) != null) {
                     sb.append(line + "\n");
                     serverResponse = "Registration Response>>>" + line;
-                    System.out.println(serverResponse);
+                    Log.i(TAG, serverResponse);
 
                 }
 
@@ -76,13 +76,13 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
                 }
             } else {
                 connectionError = true;
-                System.out.println(status);
+                Log.e(TAG, "Error code " + status);
             }
 
         } catch (IOException e) {
             e.printStackTrace();
             connectionError = true;
-            System.out.print("Unable to connect to server");
+            Log.e(TAG,"Unable to connect to server");
         }
     }
 
@@ -97,7 +97,7 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
                     URLEncoder.encode(param3, charset));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            System.out.println("Unable to encode message");
+            Log.e(TAG, "Unable to encode message");
             return "";
         }
     }
