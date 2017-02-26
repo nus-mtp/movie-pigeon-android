@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">MoviePigeon</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_movie_page_title">Title</string>
+    <string name="text_movie_page_year">Year</string>
+    <string name="text_movie_page_country">Country</string>
+    <string name="text_movie_page_length">Length</string>
+    <string name="text_movie_page_actors">Actors</string>
+    <string name="text_movie_page_director">Director</string>
+    <string name="text_movie_page_genres">Genres</string>
+    
+    <string-array name="updateUserInfo">
+        <item>Change Username</item>
+        <item>Change Password</item>
+    </string-array>
+</resources>
