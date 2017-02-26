@@ -18,7 +18,7 @@ import java.io.InputStreamReader;
 
 public class StartActivity extends AppCompatActivity {
 
-    private final Receiver receiver = new Receiver();
+    private final GlobalReceiver globalReceiver = new GlobalReceiver();
     private File credential;
     private FileInputStream fis;
     private String token = "";
@@ -30,11 +30,11 @@ public class StartActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         credential = new File(Environment.getExternalStorageDirectory() + "/MoviePigeon/Signin/credential");
 
-        // set up broadcast receiver to receive request from background thread
+        // set up broadcast globalReceiver to receive request from background thread
         IntentFilter filter = new IntentFilter();
         filter.addAction("startHomePageActivity");
         filter.addAction("automaticSignin");
-        registerReceiver(receiver, filter);
+        registerReceiver(globalReceiver, filter);
 
         if (credential.exists()) {
             // sign-in automatically
@@ -58,7 +58,7 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(receiver);
+        unregisterReceiver(globalReceiver);
     }
 
     String convertStreamToString(InputStream is) {

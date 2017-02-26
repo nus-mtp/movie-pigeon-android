@@ -1,14 +1,11 @@
 package org.example.team_pigeon.movie_pigeon;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +38,7 @@ public class SettingActivity extends AppCompatActivity {
     String choice;
     private String TAG = "SettingActivity";
     private RequestHttpBuilderSingleton singleton = RequestHttpBuilderSingleton.getInstance();
-    private Receiver receiver;
+    private GlobalReceiver globalReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +48,11 @@ public class SettingActivity extends AppCompatActivity {
         View settingView = inflater.inflate(R.layout.activity_setting, null);
         setContentView(settingView);
 
-        // set up broadcast receiver to receive request from background thread
-        receiver = new Receiver();
+        // set up broadcast globalReceiver to receive request from background thread
+        globalReceiver = new GlobalReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction("UserUpdate");
-        registerReceiver(receiver, filter);
+        registerReceiver(globalReceiver, filter);
 
         userInput = (EditText) settingView.findViewById(R.id.popupUserUpdate);
         bConfirm = (Button) settingView.findViewById(R.id.popupButtonConfirm);
@@ -92,7 +89,7 @@ public class SettingActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(receiver);
+        unregisterReceiver(globalReceiver);
     }
 }
 

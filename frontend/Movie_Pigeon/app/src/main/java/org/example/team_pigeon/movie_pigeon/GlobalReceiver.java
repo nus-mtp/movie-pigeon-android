@@ -10,7 +10,7 @@ import android.os.Bundle;
  * Created by Guo Mingxuan on 11/2/2017.
  */
 
-class Receiver extends BroadcastReceiver {
+class GlobalReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("startHomePageActivity")) {
