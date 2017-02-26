@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by Guo Mingxuan on 1/2/2017.
  */
@@ -18,6 +21,7 @@ import android.widget.Toast;
 class RegisterPage {
 
     String email, username, password, confirmPassword;
+    int count = 0;
 
     RegisterPage(final Context mContext, final Activity mActivity) {
 
@@ -35,7 +39,7 @@ class RegisterPage {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((ViewGroup)register.getParent()).removeView(register);
+                ((ViewGroup) register.getParent()).removeView(register);
                 SigninPage sp = new SigninPage(mContext, mActivity);
             }
         });
@@ -56,21 +60,36 @@ class RegisterPage {
                     if (!password.equals(confirmPassword)) {
                         Toast toast = Toast.makeText(mContext, "Passwords entered don't match!", Toast.LENGTH_SHORT);
                         toast.show();
-                    } else if (!email.contains("@")) {
-                        Toast.makeText(mContext, "Please enter correct email address", Toast.LENGTH_SHORT).show();
                     } else {
-                        System.out.println("Registering");
-                        String[] registrationDetails = new String[3];
-                        registrationDetails[0] = email;
-                        registrationDetails[1] = username;
-                        registrationDetails[2] = password;
+                        count = emailChecker(email);
+                        // check whether email field contains: no @, or 2 or more @ or does not have enough length as format a@b
+                        if (count == 0 || count > 1 || email.length()<=2) {
+                            Toast.makeText(mContext, "Please enter correct email address", Toast.LENGTH_SHORT).show();
+                        } else {
+                            System.out.println("Registering");
+                            String[] registrationDetails = new String[3];
+                            registrationDetails[0] = email;
+                            registrationDetails[1] = username;
+                            registrationDetails[2] = password;
 
-                        Log.e("RegistrationPage", "3 parameters to be passed are " + registrationDetails[0] + " " + registrationDetails[1] + " " + registrationDetails[2]);
-                        new RegistrationHttpBuilder(mContext).execute(registrationDetails);
+                            Log.e("RegistrationPage", "3 parameters to be passed are " + registrationDetails[0] + " " + registrationDetails[1] + " " + registrationDetails[2]);
+                            new RegistrationHttpBuilder(mContext).execute(registrationDetails);
+                        }
                     }
                 }
 
             }
         });
+
+    }
+
+    private int emailChecker(String email) {
+        Pattern pattern = Pattern.compile("[@]");
+        Matcher matcher = pattern.matcher(email);
+        int countCharacter = 0;
+        while(matcher.find()) {
+            countCharacter++;
+        }
+        return countCharacter;
     }
 }
