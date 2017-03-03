@@ -18,8 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.example.team_pigeon.movie_pigeon.configs.ImageConfig;
 import org.example.team_pigeon.movie_pigeon.eventCenter.AddMovieToMovieListEvent;
 import org.example.team_pigeon.movie_pigeon.eventCenter.DeleteMovieFromMovieListEvent;
 import org.example.team_pigeon.movie_pigeon.eventCenter.UpdateMovieListEvent;
@@ -60,6 +62,7 @@ public class MoviePageFragment extends Fragment {
     private UserBookmark userBookmark;
     private UserRating userRating;
     private EventBus eventBus = EventBus.getDefault();
+    private DisplayImageOptions options = new ImageConfig().getDisplayImageOption();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -139,11 +142,7 @@ public class MoviePageFragment extends Fragment {
         if (movie != null) {
 
             //Set movie poster
-            if (movie.getPosterURL() != null) {
-                ImageLoader.getInstance().displayImage(movie.getPosterURL(), image_poster);
-            } else {
-                image_poster.setImageResource(R.mipmap.image_no_poster_found);
-            }
+            ImageLoader.getInstance().displayImage(movie.getPosterURL(), image_poster,options);
 
             //Set plot
             if (movie.getPlot() != null) {

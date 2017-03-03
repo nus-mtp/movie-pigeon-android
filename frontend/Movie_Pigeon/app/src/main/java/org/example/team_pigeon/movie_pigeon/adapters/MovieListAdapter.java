@@ -8,9 +8,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.example.team_pigeon.movie_pigeon.R;
+import org.example.team_pigeon.movie_pigeon.configs.ImageConfig;
 import org.example.team_pigeon.movie_pigeon.models.Movie;
 
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ public class MovieListAdapter extends BaseAdapter {
     private Context mContext;
     private Movie movie;
     private ImageLoader imageLoader = ImageLoader.getInstance();
+    private DisplayImageOptions options = new ImageConfig().getDisplayImageOption();
 
     public MovieListAdapter(ArrayList<Movie>movieList,Context mContext) {
         this.mContext = mContext;
@@ -76,14 +79,8 @@ public class MovieListAdapter extends BaseAdapter {
         }
         movie = movieList.get(position);
         viewHolder.txt_title.setText(movie.getTitle());
+        imageLoader.displayImage(movieList.get(position).getPosterURL(),viewHolder.image_poster,options);
 
-        if(movie.getPosterURL() != null){
-            viewHolder.image_poster.setImageResource(R.mipmap.image_poster_loading);
-            imageLoader.displayImage(movieList.get(position).getPosterURL(),viewHolder.image_poster);
-        }
-        else{
-            viewHolder.image_poster.setImageResource(R.mipmap.image_no_poster_found);
-        }
 
         return convertView;
     }
