@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 public class DisplayActivity extends AppCompatActivity {
@@ -23,6 +24,11 @@ public class DisplayActivity extends AppCompatActivity {
         Bundle argument = getIntent().getBundleExtra("bundle");
         toolbar.setTitle(argument.getString("title"));
         setSupportActionBar(toolbar);
+        // add back arrow to toolbar
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
         fragmentManager = getFragmentManager();
         frameLayout = (FrameLayout) findViewById(R.id.fl_content);
         MovieListFragment movieListFragment = new MovieListFragment();
@@ -37,6 +43,20 @@ public class DisplayActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if(fragmentManager.getBackStackEntryCount()==0){
+                    super.onBackPressed();
+                }
+                else{
+                    fragmentManager.popBackStack();
+                }
+        }
+        return false;
     }
 
 }
