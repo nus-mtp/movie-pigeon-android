@@ -14,11 +14,17 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.utils.StorageUtils;
 
 import org.example.team_pigeon.movie_pigeon.adapters.HomeViewPagerAdapter;
+
+import java.io.File;
 
 public class HomePageActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener, ViewPager.OnPageChangeListener{
     private TextView txt_title;
@@ -76,10 +82,15 @@ public class HomePageActivity extends AppCompatActivity implements RadioGroup.On
     }
 
     private void initImageLoaderConfig(){
+        File cacheDir = StorageUtils.getOwnCacheDirectory(getApplicationContext(), "MoviePigeon/cache/poster");
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
                 .threadPoolSize(5)
                 .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
-                .memoryCacheSize(2 * 1024 * 1024)
+                .memoryCacheSize(5 * 1024 * 1024)
+                .tasksProcessingOrder(QueueProcessingType.LIFO)
+                .diskCacheSize(50 * 1024 * 1024)
+                .diskCacheFileCount(200)
+                .diskCache(new UnlimitedDiskCache(cacheDir))
                 .writeDebugLogs()
                 .build();
         ImageLoader.getInstance().init(config);
