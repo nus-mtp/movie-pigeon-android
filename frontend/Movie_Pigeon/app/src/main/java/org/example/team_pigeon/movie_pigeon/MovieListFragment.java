@@ -1,6 +1,8 @@
 package org.example.team_pigeon.movie_pigeon;
 
 import android.app.Fragment;
+import android.drm.DrmEvent;
+import android.drm.DrmManagerClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +17,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 
 import org.example.team_pigeon.movie_pigeon.adapters.MovieListAdapter;
 import org.example.team_pigeon.movie_pigeon.eventCenter.AddMovieToMovieListEvent;
@@ -76,7 +80,7 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
         }
         if(type.equals("search")){
             toolbar.setSubtitle(bundle.getString("count"));
-            list_movies.setOnScrollListener(new AbsListView.OnScrollListener() {
+            list_movies.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(),true,true,new AbsListView.OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(AbsListView view, int scrollState) {
                 }
@@ -89,7 +93,10 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
                         searchMoreTask.execute();
                     }
                 }
-            });
+            }));
+        }
+        else{
+            list_movies.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(),true,true));
         }
         return view;
     }
