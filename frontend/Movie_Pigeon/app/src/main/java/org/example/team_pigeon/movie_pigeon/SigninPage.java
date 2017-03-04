@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -17,35 +18,37 @@ import android.widget.Toast;
 class SigninPage {
     Context mContext;
     Activity mActivity;
+    View signin;
+    String email, password;
+    EditText etEmail, etPassword;
+    String TAG = "SigninPage";
 
     SigninPage(final Context mContext, final Activity mActivity) {
         this.mContext = mContext;
         this.mActivity = mActivity;
-        final View signin = LayoutInflater.from(mActivity.getApplication()).inflate(R.layout.signin_page, null);
-        final String[] email = new String[1];
-        final String[] password = new String[1];
+        signin = LayoutInflater.from(mActivity.getApplication()).inflate(R.layout.signin_page, null);
         Button BSignIn = (Button) signin.findViewById(R.id.buttonSignIn);
         Button BRegister = (Button) signin.findViewById(R.id.buttonRegister);
         mActivity.setContentView(signin);
 
-        final EditText etEmail = (EditText) signin.findViewById(R.id.editTextUsername);
-        final EditText etPassword = (EditText) signin.findViewById(R.id.editTextPassword);
+        etEmail = (EditText) signin.findViewById(R.id.editTextUsername);
+        etPassword = (EditText) signin.findViewById(R.id.editTextPassword);
 
         BSignIn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
                 // Check Credentials and respond accordingly
-                email[0] = String.valueOf(etEmail.getText());
-                password[0] = String.valueOf(etPassword.getText());
-                if (email[0].equals("") | password[0].equals("")) {
+                email = String.valueOf(etEmail.getText());
+                password = String.valueOf(etPassword.getText());
+                if (email.equals("") | password.equals("")) {
                     Toast.makeText(mContext, "Email or password can't be empty!", Toast.LENGTH_SHORT).show();
-                } else if (!email[0].contains("@")) {
+                } else if (!email.contains("@")) {
                     Toast.makeText(mContext, "Please enter correct email address", Toast.LENGTH_SHORT).show();
                 } else {
-                    System.out.println(email[0] + " and " + password[0]);
+                    Log.i(TAG, email + " and " + password);
                     String[] signInDetails = new String[2];
-                    signInDetails[0] = email[0];
-                    signInDetails[1] = password[0];
+                    signInDetails[0] = email;
+                    signInDetails[1] = password;
                     SignInHttpBuilder sBuilder = new SignInHttpBuilder(mContext);
                     sBuilder.execute(signInDetails);
                 }
