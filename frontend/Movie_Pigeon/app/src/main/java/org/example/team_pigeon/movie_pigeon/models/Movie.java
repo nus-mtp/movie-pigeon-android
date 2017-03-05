@@ -4,15 +4,11 @@ package org.example.team_pigeon.movie_pigeon.models;
  * Created by SHENGX on 2017/2/3.
  */
 
-import android.os.Parcelable;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Movie implements Serializable{
     @Expose
@@ -47,7 +43,7 @@ public class Movie implements Serializable{
     private String genres;
     @Expose
     @SerializedName("public_ratings")
-    private ArrayList<PublicRating> publicRatingses;
+    private ArrayList<PublicRating> publicRatings;
     @Expose
     @SerializedName("user_ratings")
     private ArrayList<UserRating> userRating;
@@ -55,6 +51,9 @@ public class Movie implements Serializable{
     @SerializedName("bookmarks")
     private ArrayList<UserBookmark> userBookmark;
     private String tempRating;
+    @Expose
+    @SerializedName("showings")
+    private ArrayList<Schedule> schedule;
     private boolean isRated;
     private boolean isReleased;
     private boolean isBookmarked;
@@ -185,11 +184,11 @@ public class Movie implements Serializable{
     }
 
     public ArrayList<PublicRating> getPublicRatingses() {
-        return publicRatingses;
+        return publicRatings;
     }
 
-    public void setPublicRatingses(ArrayList<PublicRating> publicRatingses) {
-        this.publicRatingses = publicRatingses;
+    public void setPublicRatingses(ArrayList<PublicRating> publicRatings) {
+        this.publicRatings = publicRatings;
     }
 
     public ArrayList<UserRating> getUserRating() {
@@ -214,5 +213,13 @@ public class Movie implements Serializable{
 
     public void setUserBookmark(ArrayList<UserBookmark> userBookmark) {
         this.userBookmark = userBookmark;
+    }
+
+    public ArrayList<Schedule> getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(ArrayList<Schedule> schedule) {
+        this.schedule = schedule;
     }
 }
