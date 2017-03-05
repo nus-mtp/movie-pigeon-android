@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 public class DisplayActivity extends AppCompatActivity {
     private FrameLayout frameLayout;
     private android.app.FragmentManager fragmentManager = null;
+    private String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,20 +23,32 @@ public class DisplayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_display);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_display_page);
         Bundle argument = getIntent().getBundleExtra("bundle");
+        type = argument.getString("type");
         toolbar.setTitle(argument.getString("title"));
         setSupportActionBar(toolbar);
+        fragmentManager = getFragmentManager();
+        frameLayout = (FrameLayout) findViewById(R.id.fl_content);
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        fragmentManager = getFragmentManager();
-        frameLayout = (FrameLayout) findViewById(R.id.fl_content);
-        MovieListFragment movieListFragment = new MovieListFragment();
-        movieListFragment.setArguments(argument);
-        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fl_content,movieListFragment);
-        fragmentTransaction.commit();
+        //Handle single movie info passed in from showing page
+        if(type.equals("moviePage")){
+            MoviePageFragment moviePageFragment = new MoviePageFragment();
+            moviePageFragment.setArguments(argument);
+            android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fl_content,moviePageFragment);
+            fragmentTransaction.commit();
+        }
+        //Handle movie list requests
+        else {
+            MovieListFragment movieListFragment = new MovieListFragment();
+            movieListFragment.setArguments(argument);
+            android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fl_content, movieListFragment);
+            fragmentTransaction.commit();
+        }
 
     }
 
