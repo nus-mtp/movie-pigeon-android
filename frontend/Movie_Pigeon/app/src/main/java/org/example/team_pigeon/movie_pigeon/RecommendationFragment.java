@@ -46,7 +46,6 @@ public class RecommendationFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_recommendation, container, false);
         searchView = (SearchView) view.findViewById(R.id.search_view);
         searchView.setSubmitButtonEnabled(true);
-        searchView.clearFocus();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             //Start to search movie if there is query present and submit button is pressed
             @Override

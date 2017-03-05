@@ -1,8 +1,6 @@
 package org.example.team_pigeon.movie_pigeon;
 
 import android.app.Fragment;
-import android.drm.DrmEvent;
-import android.drm.DrmManagerClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
