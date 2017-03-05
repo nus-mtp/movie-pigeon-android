@@ -34,16 +34,16 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile files('libs/universal-image-loader-1.9.5.jar')
+    compile files('libs/gson-2.8.0.jar')
+    compile files('libs/eventbus-3.0.0.jar')
     compile 'com.android.support:appcompat-v7:25.1.1'
     compile 'com.android.support:support-v4:25.1.1'
     compile 'com.android.support:recyclerview-v7:25.1.1'
-    testCompile 'junit:junit:4.12'
-    compile files('libs/universal-image-loader-1.9.5.jar')
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
     compile 'com.squareup.okio:okio:1.11.0'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'org.greenrobot:eventbus:3.0.0'
-    compile files('libs/gson-2.8.0.jar')
-    compile files('libs/eventbus-3.0.0.jar')
+    testCompile 'junit:junit:4.12'
 }

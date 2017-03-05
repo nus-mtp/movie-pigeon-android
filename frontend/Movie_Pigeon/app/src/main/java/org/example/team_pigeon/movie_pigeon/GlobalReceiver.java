@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Switch;
 
 /**
  * Created by Guo Mingxuan on 11/2/2017.
