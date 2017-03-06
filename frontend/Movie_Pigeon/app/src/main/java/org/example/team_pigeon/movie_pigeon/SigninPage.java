@@ -29,6 +29,7 @@ class SigninPage {
         signin = LayoutInflater.from(mActivity.getApplication()).inflate(R.layout.signin_page, null);
         Button BSignIn = (Button) signin.findViewById(R.id.buttonSignIn);
         Button BRegister = (Button) signin.findViewById(R.id.buttonRegister);
+        Button BForgetPassword = (Button) signin.findViewById(R.id.buttonForgetPassword);
         mActivity.setContentView(signin);
 
         etEmail = (EditText) signin.findViewById(R.id.editTextUsername);
@@ -60,5 +61,15 @@ class SigninPage {
                 RegisterPage register = new RegisterPage(mContext, mActivity);
             }
         });
+
+        BForgetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent resetIntent = new Intent(mContext, ResetPasswordActivity.class);
+                mContext.startActivity(resetIntent);
+            }
+        });
+
+
     }
 }

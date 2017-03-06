@@ -14,29 +14,27 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:layout_width="200dp"
+    <Button
+        android:text="Forget Password?"
+        android:textColor="@android:color/holo_blue_dark"
+        android:id="@+id/buttonForgetPassword"
+        android:background="@color/transparent"
+        android:textAllCaps="false"
         android:layout_height="wrap_content"
-        android:text="New to Movie Pigeon?"
-        android:visibility="invisible"
-        android:textColor="#77BEDC"
-        android:gravity="center"
-        android:id="@+id/textView"
-        android:layout_alignBottom="@+id/buttonRegister"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="40dp" />
+        android:layout_width="150dp"/>
 
     <Button
         android:text="Register Here"
         android:textColor="@android:color/holo_blue_dark"
         android:id="@+id/buttonRegister"
         android:background="@color/transparent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:textAllCaps="false"
-        android:layout_marginBottom="13dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_width="150dp" />
+        android:layout_width="150dp"
+        android:layout_above="@+id/buttonForgetPassword"
+        android:layout_alignStart="@+id/imageViewProfile" />
 
     <Button
         android:text="Sign in"
