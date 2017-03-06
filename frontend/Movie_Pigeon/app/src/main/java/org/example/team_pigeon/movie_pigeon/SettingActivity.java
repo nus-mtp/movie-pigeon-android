@@ -64,9 +64,11 @@ public class SettingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 input = String.valueOf(userInput.getText());
                 choice = spinnerList.getSelectedItem().toString();
-                if (input.equals("")) {
+                if (choice.equals("Please Choose One...")) {
+                    Toast.makeText(mContext, "Please select what to change", Toast.LENGTH_SHORT).show();
+                }else if (input.equals("")) {
                     Toast.makeText(mContext, "Please enter your change", Toast.LENGTH_SHORT).show();
-                } else {
+                } else  {
                     String[] toPassIn = new String[3];
                     toPassIn[0] = choice;
                     Log.i(TAG, "User wants to change " + choice);
