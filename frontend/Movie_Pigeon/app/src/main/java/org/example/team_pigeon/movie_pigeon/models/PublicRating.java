@@ -23,7 +23,7 @@ public class PublicRating implements Serializable {
     @SerializedName("score")
     private String score;
 
-    public PublicRating(){};
+    public PublicRating(){}
 
     public String getMovieID() {
         return movieID;

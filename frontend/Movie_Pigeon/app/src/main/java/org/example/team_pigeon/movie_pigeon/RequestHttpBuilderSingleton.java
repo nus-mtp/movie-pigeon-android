@@ -1,11 +1,8 @@
 package org.example.team_pigeon.movie_pigeon;
-import android.util.Log;
 
 import okhttp3.FormBody;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 
 /**
  * Created by SHENGX on 2017/2/8.
@@ -18,9 +15,11 @@ public class RequestHttpBuilderSingleton {
     private String token = "";
     private int offset = 0;
     private final int LIMIT = 20;
-    private final String searchUrl = new String("http://128.199.231.190:8080/api/movies/title");
-    private final String ratingUrl = new String("http://128.199.231.190:8080/api/ratings");
-    private final String bookmarkUrl = new String("http://128.199.231.190:8080/api/bookmarks");
+    private final String searchUrl = "http://128.199.231.190:8080/api/movies/title";
+    private final String ratingUrl = "http://128.199.231.190:8080/api/ratings";
+    private final String bookmarkUrl = "http://128.199.231.190:8080/api/bookmarks";
+    private final String cinemaUrl = "http://128.199.231.190:8080/api/cinemas";
+    private final String nowShowingUrl = "http://128.199.231.190:8080/api/showing";
 
     protected RequestHttpBuilderSingleton() {}
 
@@ -77,6 +76,14 @@ public class RequestHttpBuilderSingleton {
 
     public Request getBookmarkListRequest(){
         return new Request.Builder().url(bookmarkUrl).header("Authorization", "Bearer "+ token.trim()).build();
+    }
+
+    public Request getCinemasRequest(){
+        return new Request.Builder().url(cinemaUrl).header("Authorization", "Bearer "+ token.trim()).build();
+    }
+
+    public Request getShowingListRequest(String cinemaId){
+        return new Request.Builder().url(nowShowingUrl).header("Authorization", "Bearer "+ token.trim()).addHeader("cinema_id",cinemaId).build();
     }
 
     public String getKeywords() {
