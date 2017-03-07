@@ -23,12 +23,24 @@ public class RegistrationActivity extends AppCompatActivity {
     View register;
     int count = 0;
     GlobalReceiver globalReceiver = new GlobalReceiver();
+    String thirdParty = "NONE";
+    String userInfo = "NONE";
+    String TAG = "RegActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         register = getLayoutInflater().inflate(R.layout.register_page, null);
         setContentView(register);
+
+        try {
+            Bundle bundle = getIntent().getExtras();
+            thirdParty = bundle.getString("ThirdParty");
+            userInfo = bundle.getString("UserInfo");
+            Log.i(TAG, "3rd party sign up");
+        } catch (NullPointerException e) {
+            Log.e(TAG, "No 3rd party sign up");
+        }
 
         IntentFilter filter = new IntentFilter();
         filter.addAction("killRegistration");
@@ -41,6 +53,11 @@ public class RegistrationActivity extends AppCompatActivity {
 
         Button registerButton = (Button) register.findViewById(R.id.rpRegisterButton);
         Button backButton = (Button) register.findViewById(R.id.rpBackButton);
+
+        // checking whether using third party sign up
+        if (thirdParty.equals("TraktTV")) {
+            etUsername.setText(userInfo);
+        }
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,12 +89,14 @@ public class RegistrationActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Please enter correct email address", Toast.LENGTH_SHORT).show();
                         } else {
                             System.out.println("Registering");
-                            String[] registrationDetails = new String[3];
+                            String[] registrationDetails = new String[5];
                             registrationDetails[0] = email;
                             registrationDetails[1] = username;
                             registrationDetails[2] = password;
+                            registrationDetails[3] = thirdParty;
+                            registrationDetails[4] = userInfo;
 
-                            Log.i("RegistrationPage", "3 parameters to be passed are " + registrationDetails[0] + " " + registrationDetails[1] + " " + registrationDetails[2]);
+                            Log.i("RegistrationPage", "5 parameters to be passed are " + registrationDetails[0] + " " + registrationDetails[1] + " " + registrationDetails[2] + " " + registrationDetails[3] + " " + registrationDetails[4]);
                             new RegistrationHttpBuilder(getApplicationContext()).execute(registrationDetails);
                         }
                     }

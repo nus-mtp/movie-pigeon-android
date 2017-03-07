@@ -79,6 +79,15 @@ class GlobalReceiver extends BroadcastReceiver {
                 Log.i(TAG, "Successful VCode received");
                 uiHandler.sendEmptyMessage(ResetSuccess);
                 break;
+
+            case "dataPullingSuccess":
+                Log.i(TAG, "Successful data pulling received");
+                Intent startRegistration = new Intent(context, RegistrationActivity.class);
+                bundle = intent.getExtras();
+                startRegistration.putExtras(bundle);
+                context.startActivity(startRegistration);
+                ((Activity)context).finish();
+                break;
         }
     }
 }

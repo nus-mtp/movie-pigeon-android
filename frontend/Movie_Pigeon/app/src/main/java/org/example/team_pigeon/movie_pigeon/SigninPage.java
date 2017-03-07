@@ -3,6 +3,7 @@ package org.example.team_pigeon.movie_pigeon;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,6 +71,15 @@ class SigninPage {
             }
         });
 
-
+        BTrakt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent thirdPartySignup = new Intent(mContext, ThirdPartySignupActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("thirdParty", "TraktTV");
+                thirdPartySignup.putExtras(bundle);
+                mContext.startActivity(thirdPartySignup);
+            }
+        });
     }
 }

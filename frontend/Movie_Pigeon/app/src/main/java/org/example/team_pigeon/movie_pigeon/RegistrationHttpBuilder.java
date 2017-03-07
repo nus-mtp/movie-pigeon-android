@@ -1,6 +1,5 @@
 package org.example.team_pigeon.movie_pigeon;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -27,7 +26,8 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
     String url = "http://128.199.231.190:8080";
     String registrationURL = "http://128.199.231.190:8080/api/users";
     String charset = java.nio.charset.StandardCharsets.UTF_8.name();
-    String param1, param2, param3, query;
+    String uEmail, uUsername, uPassword, u3rdInfo, query;
+    String u3rdParty = "NONE";
     HttpURLConnection connection = null;
     Context mContext;
     private boolean connectionError = false;
@@ -42,6 +42,10 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
     private void request(String query) {
         // build registration request here
         try {
+            // check if using 3rd party sign up
+            if (u3rdParty.equalsIgnoreCase("TraktTV")) {
+                registrationURL = "http://128.199.231.190:8080/api/traktTV";
+            }
             connection = (HttpURLConnection) new URL(registrationURL).openConnection();
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
@@ -88,14 +92,14 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
     }
 
     private String formQuery(String email, String username, String password) {
-        param1 = email;
-        param2 = username;
-        param3 = password;
+        uEmail = email;
+        uUsername = username;
+        uPassword = password;
         try {
             return String.format("email=%s&username=%s&password=%s",
-                    URLEncoder.encode(param1, charset),
-                    URLEncoder.encode(param2, charset),
-                    URLEncoder.encode(param3, charset));
+                    URLEncoder.encode(uEmail, charset),
+                    URLEncoder.encode(uUsername, charset),
+                    URLEncoder.encode(uPassword, charset));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             Log.e(TAG, "Unable to encode message");
@@ -103,18 +107,52 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
         }
     }
 
+    private String formQuery3rdParty(String email, String username, String password, String thirdParty, String thirdPartyInfo) {
+        uEmail = email;
+        uUsername = username;
+        uPassword = password;
+        u3rdParty = thirdParty;
+        u3rdInfo = thirdPartyInfo;
+        String thirdPartyBodyField="";
+        if (thirdParty.equalsIgnoreCase("TraktTV")) {
+            thirdPartyBodyField = "traktTVId";
+        } else {
+            Log.e(TAG, "Error in identifying 3rd party");
+        }
+        String strFormat = "email=%s&username=%s&password=%s&" + thirdPartyBodyField + "=%s";
+        try {
+            return String.format(strFormat,
+                    URLEncoder.encode(uEmail, charset),
+                    URLEncoder.encode(uUsername, charset),
+                    URLEncoder.encode(uPassword, charset),
+                    URLEncoder.encode(u3rdInfo, charset));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Unable to encode message");
+            return "";
+        }
+    }
 
     @Override
     protected Void doInBackground(String... params) {
-        String p1, p2, p3;
-        p1=params[0];
-        p2=params[1];
-        p3=params[2];
-        Log.i(TAG, "Passed in parameters are " + p1 + " " + p2 + " " + p3);
-        query = formQuery(p1, p2, p3);
-        Log.i(TAG, "query formed");
-        Log.i(TAG, "Query is " + query);
-        request(query);
+        String pEmail, pUsername, pPassword, pThirdParty, pUserInfo;
+        pEmail=params[0];
+        pUsername=params[1];
+        pPassword=params[2];
+        pThirdParty=params[3];
+        pUserInfo=params[4];
+        Log.i(TAG, "Passed in parameters are " + pEmail + " " + pUsername + " " + pPassword + " " + pThirdParty + " " + pUserInfo);
+        if (pThirdParty.equals("TraktTV")) {
+            query = formQuery3rdParty(pEmail, pUsername, pPassword, pThirdParty, pUserInfo);
+            Log.i(TAG, "3rd party query formed");
+            Log.i(TAG, "Query is " + query);
+            request(query);
+        } else {
+            query = formQuery(pEmail, pUsername, pPassword);
+            Log.i(TAG, "non 3rd party query formed");
+            Log.i(TAG, "Query is " + query);
+            request(query);
+        }
         return null;
     }
 
@@ -128,8 +166,8 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
             Toast.makeText(mContext, "Registration successful!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent("automaticSignin");
             Bundle bundle = new Bundle();
-            bundle.putString("email", param1);
-            bundle.putString("password", param3);
+            bundle.putString("email", uEmail);
+            bundle.putString("password", uPassword);
             intent.putExtras(bundle);
             mContext.sendBroadcast(intent);
         }
