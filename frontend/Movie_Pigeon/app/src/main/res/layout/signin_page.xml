@@ -133,7 +133,7 @@
         android:layout_height="30dp"
         android:id="@+id/buttonTrakt"
         android:drawableTop="@drawable/ic_trakt"
-        android:background="#FFFFF"
+        android:background="#FFFFFF"
         android:layout_above="@+id/buttonRegister"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="13dp" />
