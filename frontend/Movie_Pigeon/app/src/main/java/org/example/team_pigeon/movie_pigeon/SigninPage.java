@@ -3,7 +3,6 @@ package org.example.team_pigeon.movie_pigeon;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +29,7 @@ class SigninPage {
         Button BSignIn = (Button) signin.findViewById(R.id.buttonSignIn);
         Button BRegister = (Button) signin.findViewById(R.id.buttonRegister);
         Button BForgetPassword = (Button) signin.findViewById(R.id.buttonForgetPassword);
+        Button BTrakt = (Button) signin.findViewById(R.id.buttonTrakt);
         mActivity.setContentView(signin);
 
         etEmail = (EditText) signin.findViewById(R.id.editTextUsername);
@@ -58,7 +58,7 @@ class SigninPage {
 
         BRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                RegisterPage register = new RegisterPage(mContext, mActivity);
+                RegistrationActivity register = new RegistrationActivity(mContext, mActivity);
             }
         });
 
