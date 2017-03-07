@@ -451,6 +451,10 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
             mContext.sendBroadcast(intent);
 
         /*--------------------End of starting HomePageActivity-------------------*/
+
+            // kill off registration page if there is any
+            Intent killRegistration = new Intent("killRegistration");
+            mContext.sendBroadcast(killRegistration);
         }
     }
 }

@@ -60,6 +60,11 @@ class GlobalReceiver extends BroadcastReceiver {
                 sBuilder.execute(signInDetails);
                 break;
 
+            case "killRegistration":
+                Log.i(TAG, "Kill Registration received");
+                ((Activity) context).finish();
+                break;
+
             case "UserUpdate":
                 Log.i(TAG, "User Update received");
                 ((Activity) context).finish();
