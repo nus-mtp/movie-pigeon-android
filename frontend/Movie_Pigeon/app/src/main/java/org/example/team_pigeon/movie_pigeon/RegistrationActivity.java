@@ -1,14 +1,10 @@
 package org.example.team_pigeon.movie_pigeon;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -28,7 +24,6 @@ public class RegistrationActivity extends AppCompatActivity {
     int count = 0;
     GlobalReceiver globalReceiver = new GlobalReceiver();
 
-    //    RegistrationActivity(final Context mContext, final Activity mActivity) {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +45,6 @@ public class RegistrationActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                ((ViewGroup) register.getParent()).removeView(register);
-//                SigninPage sp = new SigninPage(mContext, mActivity);
                 finish();
             }
         });

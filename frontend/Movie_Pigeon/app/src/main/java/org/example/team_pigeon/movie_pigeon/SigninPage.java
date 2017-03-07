@@ -58,7 +58,6 @@ class SigninPage {
 
         BRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-//                RegistrationActivity register = new RegistrationActivity(mContext, mActivity);
                 mContext.startActivity(new Intent(mContext, RegistrationActivity.class));
             }
         });
