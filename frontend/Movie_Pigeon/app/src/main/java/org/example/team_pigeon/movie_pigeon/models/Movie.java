@@ -54,6 +54,7 @@ public class Movie implements Serializable{
     @Expose
     @SerializedName("showings")
     private ArrayList<Schedule> schedule;
+    private ArrayList<String> showTimes;
     private boolean isRated;
     private boolean isReleased;
     private boolean isBookmarked;
@@ -221,5 +222,13 @@ public class Movie implements Serializable{
 
     public void setSchedule(ArrayList<Schedule> schedule) {
         this.schedule = schedule;
+    }
+
+    public ArrayList<String> getShowTimes() {
+        return showTimes;
+    }
+
+    public void setShowTimes(ArrayList<String> showTimes) {
+        this.showTimes = showTimes;
     }
 }
