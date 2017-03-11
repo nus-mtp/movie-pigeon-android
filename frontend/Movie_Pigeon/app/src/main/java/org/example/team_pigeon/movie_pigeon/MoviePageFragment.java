@@ -61,7 +61,6 @@ public class MoviePageFragment extends Fragment {
     private String sourceType;
     private UserBookmark userBookmark;
     private UserRating userRating;
-    private EventBus eventBus = EventBus.getDefault();
     private DisplayImageOptions options = new ImageConfig().getDisplayImageOption();
 
     @Override
@@ -285,42 +284,42 @@ public class MoviePageFragment extends Fragment {
             switch (status) {
                 case SUCCESSFUL_RATE:
                     Log.i(TAG, "Rating is completed");
-                    Toast.makeText(getContext(), "Update rating successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Update rating successfully!", Toast.LENGTH_SHORT).show();
                     movie.getUserRating().clear();
                     movie.getUserRating().add(userRating);
-                    eventBus.post(new UpdateMovieListEvent(position, movie));
+                    EventBus.getDefault().post(new UpdateMovieListEvent(position, movie));
                     break;
 
                 case SUCCESSFUL_BOOKMARK:
                     Log.i(TAG, "Bookmark is completed");
-                    Toast.makeText(getContext(), "Bookmark successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Bookmark successfully!", Toast.LENGTH_SHORT).show();
                     setBookmarkIcon(true);
                     isBookmarked = true;
                     movie.getUserBookmark().add(userBookmark);
                     if(sourceType.equals("bookmark")){
-                        eventBus.post(new AddMovieToMovieListEvent(position, movie));
+                        EventBus.getDefault().post(new AddMovieToMovieListEvent(position, movie));
                     }
                     else{
-                        eventBus.post(new UpdateMovieListEvent(position, movie));
+                        EventBus.getDefault().post(new UpdateMovieListEvent(position, movie));
                     }
                     break;
 
                 case SUCCESSFUL_UNBOOKMARK:
                     Log.i(TAG, "Unbookmark is completed");
-                    Toast.makeText(getContext(), "Unbookmark successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Unbookmark successfully!", Toast.LENGTH_SHORT).show();
                     setBookmarkIcon(false);
                     isBookmarked = false;
                     movie.getUserBookmark().clear();
                     if(sourceType.equals("bookmark")){
-                        eventBus.post(new DeleteMovieFromMovieListEvent(position));
+                        EventBus.getDefault().post(new DeleteMovieFromMovieListEvent(position));
                     }
                     else{
-                        eventBus.post(new UpdateMovieListEvent(position, movie));
+                        EventBus.getDefault().post(new UpdateMovieListEvent(position, movie));
                     }
                     break;
 
                 case NO_INTERNET:
-                    Toast.makeText(getContext(), "Connection error, please make sure that you have Internet connection.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Connection error, please make sure that you have Internet connection.", Toast.LENGTH_SHORT).show();
                     break;
             }
 

@@ -130,15 +130,15 @@ public class RecommendationFragment extends Fragment {
                     break;
 
                 case ERROR:
-                    Toast.makeText(getContext(), "Connection error, please check your connection", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Connection error, please check your connection", Toast.LENGTH_SHORT).show();
                     break;
 
                 case NO_RESULT:
-                    Toast.makeText(getContext(), "Sorry, the search has no results", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Sorry, the search has no results", Toast.LENGTH_SHORT).show();
                     break;
 
                 case NO_INTERNET:
-                    Toast.makeText(getContext(), "Connection error, please make sure that you have Internet connection.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Connection error, please make sure that you have Internet connection.", Toast.LENGTH_SHORT).show();
                     break;
             }
 
