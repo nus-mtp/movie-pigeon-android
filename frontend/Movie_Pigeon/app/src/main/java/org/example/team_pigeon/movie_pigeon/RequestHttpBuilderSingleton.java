@@ -20,6 +20,9 @@ public class RequestHttpBuilderSingleton {
     private final String bookmarkUrl = "http://128.199.231.190:8080/api/bookmarks";
     private final String cinemaUrl = "http://128.199.231.190:8080/api/cinemas";
     private final String nowShowingUrl = "http://128.199.231.190:8080/api/showing";
+    //Same address as bookmark for testing
+    private final String recommendationUrl = "http://128.199.231.190:8080/api/bookmarks";
+    private final String nowShowingHomePageUrl = "http://128.199.231.190:8080/api/showing/all";
 
     protected RequestHttpBuilderSingleton() {}
 
@@ -72,6 +75,14 @@ public class RequestHttpBuilderSingleton {
 
     public Request getRatingListRequest(){
         return new Request.Builder().url(ratingUrl).header("Authorization", "Bearer "+ token.trim()).build();
+    }
+
+    public Request getNowShowingListRequest(){
+        return new Request.Builder().url(nowShowingHomePageUrl).header("Authorization", "Bearer "+ token.trim()).build();
+    }
+
+    public Request getRecommendationRequest(){
+        return new Request.Builder().url(recommendationUrl).header("Authorization", "Bearer "+ token.trim()).build();
     }
 
     public Request getBookmarkListRequest(){
