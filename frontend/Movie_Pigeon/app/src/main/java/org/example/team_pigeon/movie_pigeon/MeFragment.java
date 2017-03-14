@@ -1,10 +1,13 @@
 package org.example.team_pigeon.movie_pigeon;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,15 +15,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.example.team_pigeon.movie_pigeon.models.Movie;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import com.google.gson.stream.JsonReader;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -35,6 +46,8 @@ public class MeFragment extends Fragment {
     private ArrayList<Movie> movieList;
     private File credential;
     private View view;
+    private Toolbar tbMe;
+    private GlobalReceiver receiver;
 
     public MeFragment() {
     }
@@ -77,6 +90,9 @@ public class MeFragment extends Fragment {
 
             }
         });
+
+        tbMe = (Toolbar) view.findViewById(R.id.me_toolbar);
+        new UserInfoGetter(getContext()).execute();
 
         return view;
     }
@@ -186,6 +202,97 @@ public class MeFragment extends Fragment {
                     break;
             }
 
+        }
+    }
+
+    private class UserInfoGetter extends AsyncTask<Void, Void, Void> {
+        private HttpURLConnection connection;
+        private String token, serverResponse;
+        private String charset = java.nio.charset.StandardCharsets.UTF_8.name();
+        private boolean connectionError = false;
+        private Context mContext;
+        private String[] userInfo = new String[2];
+
+        UserInfoGetter(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            token = RequestHttpBuilderSingleton.getInstance().getToken();
+            request();
+            return null;
+        }
+
+        private void request() {
+            String url = "http://128.199.231.190:8080/api/users/";
+
+            try {
+                connection = (HttpURLConnection) new URL(url).openConnection();
+                connection.setRequestMethod("GET");
+                connection.setRequestProperty("Authorization", "Bearer " + token);
+                connection.setRequestProperty("Accept-Charset", charset);
+
+                connection.connect();
+
+                Log.i(TAG, "Finished sending to server");
+
+                int status = connection.getResponseCode();
+                Log.i(TAG, "get user info status is " + status);
+
+                if (status == 200) {
+                    InputStream response = connection.getInputStream();
+                    // process the response
+                    BufferedReader br = new BufferedReader(new InputStreamReader(response));
+                    StringBuffer sb = new StringBuffer();
+                    Log.i(TAG, "Starting to read response");
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line + "\n");
+                        serverResponse = line;
+                        Log.i(TAG, "Registration Response>>>" + serverResponse);
+                    }
+                    try {
+                        JsonReader reader = new JsonReader(new StringReader(serverResponse));
+                        reader.beginObject();
+                        while (reader.hasNext()) {
+                            String readStr = reader.nextName();
+                            if (readStr.equals("email")) {
+                                userInfo[0] = reader.nextString();
+                                System.out.println(userInfo[0]);
+                            } else if (readStr.equals("username")) {
+                                userInfo[1] = reader.nextString();
+                                System.out.println(userInfo[1]);
+                            } else {
+                                reader.skipValue(); //avoid some unhandled events
+                            }
+                        }
+                        reader.endObject();
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    connectionError = true;
+                    Log.i(TAG, "Error code " + status);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                connectionError = true;
+                Log.e(TAG, "Unable to connect to server");
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            if (connectionError) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.i(TAG, "Getting user info successful");
+                tbMe.setTitle("Welcome " + userInfo[1]);
+                tbMe.setSubtitle(userInfo[0]);
+            }
         }
     }
 
