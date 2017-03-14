@@ -1,9 +1,12 @@
 package org.example.team_pigeon.movie_pigeon.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -14,6 +17,8 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.example.team_pigeon.movie_pigeon.DisplayActivity;
+import org.example.team_pigeon.movie_pigeon.NowShowingFragment;
 import org.example.team_pigeon.movie_pigeon.R;
 import org.example.team_pigeon.movie_pigeon.configs.ImageConfig;
 import org.example.team_pigeon.movie_pigeon.models.Movie;
@@ -74,8 +79,9 @@ public class NowShowingListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
+        final int parentPosition = position;
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.now_showing_list_item, parent, false);
             viewHolder = new ViewHolder();
@@ -95,9 +101,25 @@ public class NowShowingListAdapter extends BaseAdapter {
         viewHolder.txt_length.setText(movie.getLength() + " Min");
         setRatingBar(viewHolder.ratingBar, movie);
         viewHolder.grid_schedule.setAdapter(new ArrayAdapter<>(this.mContext, R.layout.now_showing_schedule_cell, movie.getShowTimes()));
-        viewHolder.grid_schedule.setEnabled(false);
+        viewHolder.grid_schedule.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startActivity(parentPosition);
+            }
+        });
         imageLoader.displayImage(movieList.get(position).getPosterURL(), viewHolder.image_poster, options);
         return convertView;
+    }
+
+    private void startActivity(int position){
+        Intent displayActivityIntent = new Intent(this.mContext, DisplayActivity.class);
+        Bundle arguments = new Bundle();
+        arguments.putSerializable("movie",movieList.get(position));
+        arguments.putString("type", "moviePage");
+        arguments.putInt("position",position);
+        arguments.putString("title", movieList.get(position).getTitle());
+        displayActivityIntent.putExtra("bundle", arguments);
+        this.mContext.startActivity(displayActivityIntent);
     }
 
     private void setRatingBar(RatingBar ratingBar, Movie movie) {

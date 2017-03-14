@@ -207,12 +207,18 @@ public class NowShowingFragment extends Fragment implements AdapterView.OnItemSe
                         if(nowShowingListAdapter==null) {
                             //init adapter
                             moviesOfTheDay.addAll(oneWeekMovieList.get(currentDay));
-                            nowShowingListAdapter = new NowShowingListAdapter(moviesOfTheDay, this.getContext());
+                            if(moviesOfTheDay.isEmpty()){
+                                Toast.makeText(getActivity(), "Opps, there is no movie schedule on this day yet.", Toast.LENGTH_SHORT).show();
+                            }
+                            nowShowingListAdapter = new NowShowingListAdapter(moviesOfTheDay, this.getActivity());
                             movieListView.setAdapter(nowShowingListAdapter);
                         }
                         else{
                             moviesOfTheDay.clear();
                             moviesOfTheDay.addAll(oneWeekMovieList.get(currentDay));
+                            if(moviesOfTheDay.isEmpty()){
+                                Toast.makeText(getActivity(), "Opps, there is no movie schedule on this day yet.", Toast.LENGTH_SHORT).show();
+                            }
                             nowShowingListAdapter.notifyDataSetChanged();
                         }
                         movieListView.setVisibility(View.VISIBLE);
@@ -240,11 +246,11 @@ public class NowShowingFragment extends Fragment implements AdapterView.OnItemSe
     private CinemaAdapter getOutletSpinnerAdapter(int position) {
         switch (position) {
             case POS_GV:
-                return new CinemaAdapter(this.getContext(), gvCinemas);
+                return new CinemaAdapter(this.getActivity(), gvCinemas);
             case POS_CATHAY:
-                return new CinemaAdapter(this.getContext(), cathayCinemas);
+                return new CinemaAdapter(this.getActivity(), cathayCinemas);
             case POS_SB:
-                return new CinemaAdapter(this.getContext(), sbCinemas);
+                return new CinemaAdapter(this.getActivity(), sbCinemas);
         }
         return null;
     }
@@ -255,19 +261,19 @@ public class NowShowingFragment extends Fragment implements AdapterView.OnItemSe
     }
 
     @Subscribe
-    public void onEvent(AddMovieToMovieListEvent event){
+    public void onAddMovieToMovieListEvent(AddMovieToMovieListEvent event){
         nowShowingListAdapter.addMovieItemToAdapter(event.movie, event.position);
         Log.i(TAG, "New movie is added to local list");
     }
 
     @Subscribe
-    public void onEvent(DeleteMovieFromMovieListEvent event){
+    public void onDeleteMovieFromMovieListEvent(DeleteMovieFromMovieListEvent event){
         nowShowingListAdapter.removeMovieItemToAdapter(event.position);
         Log.i(TAG, "A movie is removed from local list");
     }
 
     @Subscribe
-    public void onEvent(UpdateMovieListEvent event){
+    public void onUpdateMovieListEvent(UpdateMovieListEvent event){
         nowShowingListAdapter.updateMovieItemToAdapter(event.movie, event.position);
         Log.i(TAG, "A movie is updated to local list at pos "+String.valueOf(event.position));
     }
@@ -322,15 +328,15 @@ public class NowShowingFragment extends Fragment implements AdapterView.OnItemSe
                     dateSpinner.setVisibility(View.VISIBLE);
                     break;
                 case ERROR:
-                    Toast.makeText(getContext(), "Connection error, please check your connection", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Connection error, please check your connection", Toast.LENGTH_SHORT).show();
                     break;
 
                 case NO_RESULT:
-                    Toast.makeText(getContext(), "Sorry, there is no results", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Sorry, there is no results", Toast.LENGTH_SHORT).show();
                     break;
 
                 case NO_INTERNET:
-                    Toast.makeText(getContext(), "Connection error, please make sure that you have Internet connection.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Connection error, please make sure that you have Internet connection.", Toast.LENGTH_SHORT).show();
                     break;
             }
 
