@@ -24,10 +24,12 @@ import org.example.team_pigeon.movie_pigeon.eventCenter.DeleteMovieFromMovieList
 import org.example.team_pigeon.movie_pigeon.eventCenter.UpdateMovieListEvent;
 import org.example.team_pigeon.movie_pigeon.models.Cinema;
 import org.example.team_pigeon.movie_pigeon.models.Movie;
+import org.example.team_pigeon.movie_pigeon.models.Schedule;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,13 +61,16 @@ public class NowShowingFragment extends Fragment implements AdapterView.OnItemSe
     private ArrayList<Cinema> gvCinemas = new ArrayList<>();
     private ArrayList<Cinema> sbCinemas = new ArrayList<>();
     private ArrayList<Cinema> cathayCinemas = new ArrayList<>();
-    private ArrayList<Movie> movieList,moviesOfTheDay;
+    private ArrayList<ArrayList<Movie>> oneWeekMovieList;
+    private ArrayList<Movie> movieList;
+    private ArrayList<Movie> moviesOfTheDay = new ArrayList<>();
     private NowShowingTask nowShowingTask;
     private List<String> dateListInString;
     private List<Date> dateList;
     private CinemaAdapter cinemaAdapter = null;
     private NowShowingListAdapter nowShowingListAdapter = null;
     private boolean isCinemasLoaded = false;
+    private int currentDay;
 
 
     public NowShowingFragment() {
@@ -102,6 +107,50 @@ public class NowShowingFragment extends Fragment implements AdapterView.OnItemSe
         movieListView.setOnItemClickListener(this);
     }
 
+    private ArrayList<ArrayList<Movie>> getOneWeekMovieList (ArrayList<Movie> movieList, List<Date> dateList) throws ParseException {
+        ArrayList<ArrayList<Movie>> oneWeekMovieList = new ArrayList<>();
+        for(int i=0;i<7;i++){
+            oneWeekMovieList.add(new ArrayList<Movie>());
+        }
+        for(int i = 0; i<dateList.size();i++){
+            for(int j = 0; j<movieList.size();j++){
+                Movie movie = movieList.get(j);
+                Date date = dateList.get(i);
+                ArrayList<String> showTime = convertToShowTimeArray(date,movie.getSchedule());
+                if(!showTime.isEmpty()){
+                    movie.setShowTimes(showTime);
+                    oneWeekMovieList.get(i).add(movie);
+                }
+            }
+        }
+        return oneWeekMovieList;
+    }
+
+    private ArrayList<String> convertToShowTimeArray(Date date, ArrayList<Schedule> scheduleArrayList) {
+        String timeString;
+        Calendar calendarOne = Calendar.getInstance();
+        Calendar calendarTwo = Calendar.getInstance();
+        calendarOne.setTime(date);
+        ArrayList<String> showTimeList = new ArrayList<>();
+        Date time;
+        SimpleDateFormat stringToDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        SimpleDateFormat dateToString = new SimpleDateFormat("HH:mm");
+        for (Schedule schedule : scheduleArrayList) {
+            timeString = schedule.getTime();
+            try {
+                time = stringToDate.parse(timeString);
+            } catch (ParseException e) {
+                Log.d(TAG,"Parsing schedule with a mistake. TimeString:"+timeString);
+                return null;
+            }
+            calendarTwo.setTime(time);
+            if (calendarOne.get(Calendar.DAY_OF_MONTH) == calendarTwo.get(Calendar.DAY_OF_MONTH)) {
+                showTimeList.add(dateToString.format(time));
+            }
+        }
+        return showTimeList;
+    }
+
     private List<Date> getDateList(){
         List<Date> week = new ArrayList<>();
         Calendar timeToAdd = Calendar.getInstance();
@@ -135,6 +184,11 @@ public class NowShowingFragment extends Fragment implements AdapterView.OnItemSe
                         outletSpinner.setVisibility(View.VISIBLE);
                         dateSpinner.setVisibility(View.INVISIBLE);
                     }
+                    else{
+                        outletSpinner.setVisibility(View.GONE);
+                    }
+                    dateSpinner.setVisibility(View.GONE);
+                    movieListView.setVisibility(View.GONE);
                     break;
                 case R.id.spinner_cinema_outlet:
                     if(position!=0) {
@@ -142,12 +196,29 @@ public class NowShowingFragment extends Fragment implements AdapterView.OnItemSe
                         nowShowingTask = new NowShowingTask();
                         nowShowingTask.execute(GET_MOVIES, cinemaId);
                     }
+                    else {
+                        dateSpinner.setVisibility(View.GONE);
+                    }
+                    movieListView.setVisibility(View.GONE);
                     break;
                 case R.id.spinner_date:
                     if(position!=0) {
-                        nowShowingListAdapter = new NowShowingListAdapter(movieList, dateList.get(position-1), this.getContext());
-                        movieListView.setAdapter(nowShowingListAdapter);
-                        nowShowingListAdapter.notifyDataSetChanged();
+                        currentDay = position-1;
+                        if(nowShowingListAdapter==null) {
+                            //init adapter
+                            moviesOfTheDay.addAll(oneWeekMovieList.get(currentDay));
+                            nowShowingListAdapter = new NowShowingListAdapter(moviesOfTheDay, this.getContext());
+                            movieListView.setAdapter(nowShowingListAdapter);
+                        }
+                        else{
+                            moviesOfTheDay.clear();
+                            moviesOfTheDay.addAll(oneWeekMovieList.get(currentDay));
+                            nowShowingListAdapter.notifyDataSetChanged();
+                        }
+                        movieListView.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        movieListView.setVisibility(View.GONE);
                     }
                     break;
             }
@@ -242,6 +313,11 @@ public class NowShowingFragment extends Fragment implements AdapterView.OnItemSe
                     break;
                 case SUCCESSFUL_MOVIELIST:
                     Log.i(TAG,"Request is completed");
+                    try {
+                        oneWeekMovieList = getOneWeekMovieList(movieList,dateList);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                     dateSpinner.setAdapter(new ArrayAdapter<>(getActivity(), R.layout.spinner_list_item, dateListInString));
                     dateSpinner.setVisibility(View.VISIBLE);
                     break;
@@ -308,7 +384,7 @@ public class NowShowingFragment extends Fragment implements AdapterView.OnItemSe
                 }
                 //Convert json to Arraylist<Movie>
                 movieList = gson.fromJson(response.body().charStream(), new TypeToken<ArrayList<Movie>>() {}.getType());
-                if (cinemas.size() == 0) {
+                if (movieList.size() == 0) {
                     status = NO_RESULT;
                     return;
                 } else {

@@ -169,6 +169,7 @@ public class MoviePageFragment extends Fragment {
 
             //Set Rating Bar
             if(!movie.getUserRating().isEmpty()){
+                ratingBar.setNumStars(5);
                 ratingBar.setRating(Float.parseFloat(movie.getUserRating().get(0).getScore())/2);
             }
 

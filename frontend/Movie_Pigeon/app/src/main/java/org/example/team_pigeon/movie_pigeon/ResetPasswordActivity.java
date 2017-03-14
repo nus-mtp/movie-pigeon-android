@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,10 +33,11 @@ import java.net.URLEncoder;
  */
 
 public class ResetPasswordActivity extends AppCompatActivity {
-    EditText emailField, vCodeField, newPwdField;
+    EditText emailField, vCodeField, newPwdField, confirmPwdField;
+    TextView tvEmail, tvVcode, tvNewPwd, tvConfirmPwd;
     Button BConfirm, BBack;
     Boolean vCodeButtonClicked = false;
-    String email, type, vCode, newPwd;
+    String email, type, vCode, newPwd, confirmPwd;
     String TAG = "ResetPwd";
     String[] vCodeBundle = new String[2];
     String[] resetBundle = new String[3];
@@ -52,8 +54,22 @@ public class ResetPasswordActivity extends AppCompatActivity {
         setContentView(resetView);
 
         emailField = (EditText) resetView.findViewById(R.id.rsETEmail);
-        vCodeField = (EditText) resetView.findViewById(R.id.rsETVerificationCode);
-        newPwdField = (EditText) resetView.findViewById(R.id.rsETNewPwd);
+        vCodeField = (EditText) resetView.findViewById(R.id.rsETVCode);
+        newPwdField = (EditText) resetView.findViewById(R.id.rsETPassword);
+        confirmPwdField = (EditText) resetView.findViewById(R.id.rsETConfirmPassword);
+
+        tvEmail = (TextView) resetView.findViewById(R.id.rsTVEmail);
+        tvVcode = (TextView) resetView.findViewById(R.id.rsTVVCode);
+        tvNewPwd = (TextView) resetView.findViewById(R.id.rsTVPassword);
+        tvConfirmPwd = (TextView) resetView.findViewById(R.id.rsTVConfirmPassword);
+
+        tvVcode.setVisibility(View.INVISIBLE);
+        tvNewPwd.setVisibility(View.INVISIBLE);
+        tvConfirmPwd.setVisibility(View.INVISIBLE);
+        vCodeField.setVisibility(View.INVISIBLE);
+        newPwdField.setVisibility(View.INVISIBLE);
+        confirmPwdField.setVisibility(View.INVISIBLE);
+
         BConfirm = (Button) resetView.findViewById(R.id.rsBVerificationCode);
         BBack = (Button) resetView.findViewById(R.id.rsBBack);
         hint = (TextView) resetView.findViewById(R.id.rsHint);
@@ -65,6 +81,15 @@ public class ResetPasswordActivity extends AppCompatActivity {
                     case VCodeSuccess:
                         Toast.makeText(getApplicationContext(), "Email sent to " + email, Toast.LENGTH_SHORT).show();
                         BConfirm.setText("Confirm");
+                        tvVcode.setVisibility(View.VISIBLE);
+                        tvNewPwd.setVisibility(View.VISIBLE);
+                        tvConfirmPwd.setVisibility(View.VISIBLE);
+                        vCodeField.setVisibility(View.VISIBLE);
+                        newPwdField.setVisibility(View.VISIBLE);
+                        confirmPwdField.setVisibility(View.VISIBLE);
+                        vCodeField.requestFocus();
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(vCodeField, InputMethodManager.SHOW_IMPLICIT);
                         vCodeButtonClicked = true;
                         hint.setText("Please fill in the rest and click 'Confirm'");
                         Log.i(TAG, "Successfully sent VCode");
@@ -97,10 +122,13 @@ public class ResetPasswordActivity extends AppCompatActivity {
                     // send to server with vCode
                     vCode = String.valueOf(vCodeField.getText());
                     newPwd = String.valueOf(newPwdField.getText());
+                    confirmPwd = String.valueOf(confirmPwdField.getText());
                     if (vCode.equals("")) {
                         Toast.makeText(getApplicationContext(), "Verification code can't be empty", Toast.LENGTH_SHORT).show();
                     } else if (newPwd.equals("")) {
                         Toast.makeText(getApplicationContext(), "New password can't be empty", Toast.LENGTH_SHORT).show();
+                    } else if (!newPwd.equals(confirmPwd)) {
+                        Toast.makeText(getApplicationContext(), "Passwords don't match", Toast.LENGTH_SHORT).show();
                     } else {
                         resetBundle[0] = vCode;
                         resetBundle[1] = "Reset";
