@@ -3,17 +3,15 @@ package org.example.team_pigeon.movie_pigeon;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.TableRow;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
@@ -39,7 +37,7 @@ import okhttp3.Response;
 
 public class MeFragment extends Fragment {
     private final String TAG = "MePage";
-    private Button myRatingsButton, myBookmarksButton, settingButton, logoutButton;
+    private TableRow myRatingsRow, myBookmarksRow, settingsRow, logoutRow;
     private RequestHttpBuilderSingleton requestHttpBuilder = RequestHttpBuilderSingleton.getInstance();
     private Gson gson = new Gson();
     private MyTask myTask;
@@ -47,7 +45,6 @@ public class MeFragment extends Fragment {
     private File credential;
     private View view;
     private Toolbar tbMe;
-    private GlobalReceiver receiver;
 
     public MeFragment() {
     }
@@ -57,14 +54,14 @@ public class MeFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_me, container, false);
         bindViews(view);
-        myRatingsButton.setOnClickListener(new View.OnClickListener() {
+        myRatingsRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 myTask = new MyTask();
                 myTask.execute("rating");
             }
         });
-        myBookmarksButton.setOnClickListener(new View.OnClickListener() {
+        myBookmarksRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 myTask = new MyTask();
@@ -72,7 +69,7 @@ public class MeFragment extends Fragment {
             }
         });
 
-        logoutButton.setOnClickListener(new View.OnClickListener() {
+        logoutRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "Logout button pressed");
@@ -80,7 +77,7 @@ public class MeFragment extends Fragment {
             }
         });
 
-        settingButton.setOnClickListener(new View.OnClickListener() {
+        settingsRow.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -117,10 +114,10 @@ public class MeFragment extends Fragment {
     }
 
     private void bindViews(View view){
-        myBookmarksButton = (Button)view.findViewById(R.id.button_my_bookmarks);
-        myRatingsButton = (Button)view.findViewById(R.id.button_my_rating);
-        logoutButton = (Button)view.findViewById(R.id.button_logout);
-        settingButton = (Button)view.findViewById(R.id.button_setting);
+        myBookmarksRow = (TableRow) view.findViewById(R.id.me_bookmark);
+        myRatingsRow = (TableRow)view.findViewById(R.id.me_rating);
+        logoutRow = (TableRow)view.findViewById(R.id.me_logout);
+        settingsRow = (TableRow)view.findViewById(R.id.me_settings);
     }
 
     //Async thread to handle myBookmarks and myRatings request
