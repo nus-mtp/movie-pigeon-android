@@ -96,7 +96,6 @@ public class SearchPageFragment extends Fragment implements AdapterView.OnItemCl
 
         movieListView.setOnItemClickListener(this);
         movieListView.setAdapter(movieListAdapter);
-        Log.e(TAG,String.valueOf(movieListAdapter.getCount()));
 
         toolbar.setTitle(bundle.getString("title"));
         toolbar.setSubtitle(bundle.getString("count"));
@@ -107,7 +106,6 @@ public class SearchPageFragment extends Fragment implements AdapterView.OnItemCl
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                Log.e(TAG,String.valueOf(view.getLastVisiblePosition())+" "+String.valueOf(totalItemCount)+" "+movieListView.getCount()+" "+isLoading+" "+noMoreResult);
                 int movieCountThreshold = nowShowingCount==0? 20 : 21+nowShowingCount;
                 if (view.getLastVisiblePosition() == totalItemCount-1 && movieListView.getCount() >= movieCountThreshold && !isLoading && !noMoreResult) {
                     isLoading = true;
@@ -155,7 +153,6 @@ public class SearchPageFragment extends Fragment implements AdapterView.OnItemCl
     @Override
     public void onResume() {
         super.onResume();
-        Log.e(TAG,String.valueOf(movieListAdapter.getCount()));
     }
 
     public void onPause() {
