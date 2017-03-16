@@ -34,9 +34,9 @@ class GlobalReceiver extends BroadcastReceiver {
 
         switch (action) {
             case "startHomePageActivity":
-                // get token from the broadcast
+                // get criticalInfo from the broadcast
                 Intent homePageIntent = new Intent(context, HomePageActivity.class);
-                // pass token to the new activity
+                // pass criticalInfo to the new activity
                 bundle = new Bundle();
                 bundle.putString("Token", intent.getStringExtra("Token"));
                 homePageIntent.putExtras(bundle);
@@ -65,7 +65,7 @@ class GlobalReceiver extends BroadcastReceiver {
                 ((Activity) context).finish();
                 break;
 
-            case "UserUpdate":
+            case "userUpdate":
                 Log.i(TAG, "User Update received");
                 ((Activity) context).finish();
                 break;

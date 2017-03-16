@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -16,13 +16,14 @@
         android:id="@+id/me_toolbar" />
 
     <TableLayout
-        android:paddingTop="25dp"
+        android:layout_below="@+id/me_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TableRow
             android:id="@+id/me_rating"
             android:padding="10dp"
-            android:background="@drawable/setting_menu">
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp">
             <ImageView
                 android:src="@drawable/ic_rating_star"
                 android:layout_width="wrap_content"
@@ -39,7 +40,8 @@
         <TableRow
             android:id="@+id/me_bookmark"
             android:padding="10dp"
-            android:background="@drawable/setting_menu">
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp">
             <ImageView
                 android:src="@drawable/ic_bookmark_full"
                 android:layout_gravity="left"
@@ -52,7 +54,8 @@
         <TableRow
             android:id="@+id/me_settings"
             android:padding="10dp"
-            android:background="@drawable/setting_menu">
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp">
             <ImageView
                 android:src="@drawable/ic_settings"
                 android:layout_gravity="left"
@@ -65,9 +68,9 @@
         </TableRow>
         <TableRow
             android:id="@+id/me_logout"
-            android:layout_marginTop="250dp"
+            android:layout_marginTop="180dp"
             android:padding="10dp"
-            android:background="@drawable/setting_menu">
+            android:layout_marginLeft="10dp">
             <ImageView
                 android:src="@drawable/ic_logout"
                 android:layout_gravity="left"
@@ -80,4 +83,4 @@
         </TableRow>
     </TableLayout>
 
-</LinearLayout>
+</RelativeLayout>

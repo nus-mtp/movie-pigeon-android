@@ -82,12 +82,12 @@ public class StartActivity extends AppCompatActivity {
         credential = new File(Environment.getExternalStorageDirectory() + "/MoviePigeon/Signin/credential");
         if (credential.exists()) {
             // sign-in automatically
-            // read token from file first
+            // read criticalInfo from file first
             token = getStringFromFile(credential.getAbsolutePath());
             Log.i("StartActivity", "Token read is " + token);
 
             Intent homePageIntent = new Intent(this, HomePageActivity.class);
-            // pass token to the new activity
+            // pass criticalInfo to the new activity
             homePageIntent.putExtra("Token", token);
             this.startActivity(homePageIntent);
             finish();

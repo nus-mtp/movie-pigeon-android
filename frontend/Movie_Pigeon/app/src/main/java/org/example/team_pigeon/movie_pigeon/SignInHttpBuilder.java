@@ -37,7 +37,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
     String registerClientUrl = "http://128.199.167.57:8080/api/clients";
     String getUrl;
     String authorizeUrl;
-    String tokenUrl = "http://128.199.167.57:8080/api/oauth2/token";
+    String tokenUrl = "http://128.199.167.57:8080/api/oauth2/criticalInfo";
     HttpURLConnection connection;
     String charset = java.nio.charset.StandardCharsets.UTF_8.name();
     String query, param1, param2, param3;
@@ -314,7 +314,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     Log.e(TAG, "Unable to encode message");
                 }
 
-                Log.i(TAG, "body for requesting token is " + tokenBody);
+                Log.i(TAG, "body for requesting criticalInfo is " + tokenBody);
 
                 try (OutputStream output = connection.getOutputStream()) {
                     output.write(tokenBody.getBytes(charset));
@@ -354,11 +354,11 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 e.printStackTrace();
             }
 
-            Log.i(TAG, "Obtained token: " + token);
+            Log.i(TAG, "Obtained criticalInfo: " + token);
 
         /*-------------------End of Login step 3-------------------------------*/
 
-        /*--------------------save token into a local file--------------------*/
+        /*--------------------save criticalInfo into a local file--------------------*/
             // check external sd card mounted and create folders
             if (isExternalStorageReadable() && isExternalStorageWritable()) {
                 mainFolder = new File(Environment.getExternalStorageDirectory(), folderMain);
@@ -373,11 +373,11 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 credential = new File(signinFolder.getAbsolutePath(), "credential");
                 Log.i(TAG, credential.getAbsolutePath());
 
-                // original token received is like: {"access_token":"AInKmwQRJLvylHTojqcNMqP7FvdXhWVoEIdgtTdRJW7rv68XHz6NpJ32dJPMUE8ZpYqF8zw8dOBGPRHtBJhWAHvniswYXynjH0xKnziVVYN486MLwiUd1WiuVntrTMBq","token_type":"Bearer"}
+                // original criticalInfo received is like: {"access_token":"AInKmwQRJLvylHTojqcNMqP7FvdXhWVoEIdgtTdRJW7rv68XHz6NpJ32dJPMUE8ZpYqF8zw8dOBGPRHtBJhWAHvniswYXynjH0xKnziVVYN486MLwiUd1WiuVntrTMBq","token_type":"Bearer"}
                 // magic number 17 - remove part:   {"access_token":"
                 // read till right before the last colon (the colon before "token_type") and -1 for the " sign
                 token = token.substring(17, token.lastIndexOf(",") - 1);
-                Log.i(TAG, "Trimmed token is " + token);
+                Log.i(TAG, "Trimmed criticalInfo is " + token);
 
                 try {
                     fos = new FileOutputStream(credential);
