@@ -17,21 +17,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 
 /**
- * Created by Giemecs on 7/3/2017.
+ * Created by Guo Mingxuan on 7/3/2017.
  */
 
 public class ThirdPartySignupActivity extends AppCompatActivity {
     View mainView;
-    TextView title;
-    EditText inputField;
-    String thirdParty, userInput;
+    TextView title, passwordTitle;
+    EditText inputField, passwordField;
+    String thirdParty, username, password;
     GlobalReceiver globalReceiver = new GlobalReceiver();
     Button BConfirm, BBack;
     String[] checkBundle;
@@ -50,23 +47,47 @@ public class ThirdPartySignupActivity extends AppCompatActivity {
         thirdParty = getIntent().getExtras().getString("thirdParty");
 
         inputField = (EditText) mainView.findViewById(R.id.tpsInput);
+        passwordField = (EditText) mainView.findViewById(R.id.tpsPassword);
         title = (TextView) mainView.findViewById(R.id.tpsTitle);
         title.setText("Username/Email/ID for " + thirdParty);
+        passwordTitle = (TextView) mainView.findViewById(R.id.tpsPasswordTitle);
         BConfirm = (Button) mainView.findViewById(R.id.tpsConfirmButton);
         BBack = (Button) mainView.findViewById(R.id.tpsBackButton);
+
+        if (thirdParty.equals("TraktTV")) {
+            passwordTitle.setVisibility(View.GONE);
+            passwordField.setVisibility(View.GONE);
+        } else if (thirdParty.equals("The Movie DB")) {
+            // nothing right now
+        }
 
         BConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userInput = String.valueOf(inputField.getText());
-                if (userInput.equals("")) {
-                    Toast.makeText(getApplicationContext(), "Username or email can't be empty", Toast.LENGTH_SHORT).show();
-                } else {
-                    checkBundle = new String[2];
-                    checkBundle[0] = userInput;
-                    checkBundle[1] = thirdParty;
-                    new TPSWorkingThread(getApplicationContext()).execute(checkBundle);
-                    Toast.makeText(getApplicationContext(), "Checking with " + thirdParty + " server", Toast.LENGTH_SHORT).show();
+                if (thirdParty.equals("TraktTV")) {
+                    username = String.valueOf(inputField.getText());
+                    if (username.equals("")) {
+                        Toast.makeText(getApplicationContext(), "Username or email can't be empty", Toast.LENGTH_SHORT).show();
+                    } else {
+                        checkBundle = new String[2];
+                        checkBundle[0] = username;
+                        checkBundle[1] = thirdParty;
+                        new TPSWorkingThread(getApplicationContext()).execute(checkBundle);
+                        Toast.makeText(getApplicationContext(), "Checking with " + thirdParty + " server", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (thirdParty.equals("The Movie DB")) {
+                    username = String.valueOf(inputField.getText());
+                    password = String.valueOf(passwordField.getText());
+                    if (username.equals("") || password.equals("")) {
+                        Toast.makeText(getApplicationContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                    } else {
+                        checkBundle = new String[3];
+                        checkBundle[0] = username;
+                        checkBundle[1] = thirdParty;
+                        checkBundle[2] = password;
+                        new TPSWorkingThread(getApplicationContext()).execute(checkBundle);
+                        Toast.makeText(getApplicationContext(), "Checking with " + thirdParty + " server", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -88,8 +109,7 @@ public class ThirdPartySignupActivity extends AppCompatActivity {
 
 class TPSWorkingThread extends AsyncTask<String, Void, Void> {
     Context mContext;
-    String userInfo;
-    String thirdParty;
+    String userInfo, thirdParty, password;
     String url="";
     String TAG = "TPSWT";
     HttpURLConnection connection;
@@ -108,6 +128,10 @@ class TPSWorkingThread extends AsyncTask<String, Void, Void> {
         Log.i(TAG, "User info and tp are " + userInfo + " " + thirdParty);
         if (thirdParty.equals("TraktTV")) {
             url = "http://128.199.167.57:8080/api/traktTV";
+            password = "NONE";
+        } else if (thirdParty.equals("The Movie DB")) {
+            url = "http://128.199.167.57:8080/api/tmdb";
+            password = params[2];
         } else {
             Log.e(TAG, "Wrong type of third party");
         }
@@ -122,6 +146,9 @@ class TPSWorkingThread extends AsyncTask<String, Void, Void> {
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept-Charset", charset);
             connection.setRequestProperty("username", userInfo);
+            if (thirdParty.equals("The Movie DB")) {
+                connection.setRequestProperty("password", password);
+            }
 
             connection.connect();
 
@@ -161,12 +188,13 @@ class TPSWorkingThread extends AsyncTask<String, Void, Void> {
         if (connectionError) {
             Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
         } else if (!validated) {
-            Toast.makeText(mContext, "User does not exist", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Can't find the user you entered", Toast.LENGTH_SHORT).show();
         } else {
             Intent intent = new Intent("dataPullingSuccess");
             Bundle bundle = new Bundle();
             bundle.putString("ThirdParty", thirdParty);
             bundle.putString("UserInfo", userInfo);
+            bundle.putString("ThirdPartyPassword", password);
             intent.putExtras(bundle);
             mContext.sendBroadcast(intent);
         }

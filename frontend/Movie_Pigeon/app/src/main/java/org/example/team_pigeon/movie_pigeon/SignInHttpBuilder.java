@@ -37,7 +37,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
     String registerClientUrl = "http://128.199.167.57:8080/api/clients";
     String getUrl;
     String authorizeUrl;
-    String tokenUrl = "http://128.199.167.57:8080/api/oauth2/criticalInfo";
+    String tokenUrl = "http://128.199.167.57:8080/api/oauth2/token";
     HttpURLConnection connection;
     String charset = java.nio.charset.StandardCharsets.UTF_8.name();
     String query, param1, param2, param3;
@@ -121,6 +121,17 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 }
                 correctEmailPassword = true;
             } else if (status == 401) {
+
+                response = connection.getErrorStream();
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(response));
+                StringBuffer sb = new StringBuffer();
+                String line = "";
+                Log.i("rHttpBuilder", "Starting to read response");
+                while ((line = br.readLine()) != null) {
+                    sb.append(line + "\n");
+                    Log.i(TAG, "Response>>>" + line);
+                }
                 Log.e(TAG, "Unauthorized");
 
             } else {
@@ -314,7 +325,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                     Log.e(TAG, "Unable to encode message");
                 }
 
-                Log.i(TAG, "body for requesting criticalInfo is " + tokenBody);
+                Log.i(TAG, "body for requesting token is " + tokenBody);
 
                 try (OutputStream output = connection.getOutputStream()) {
                     output.write(tokenBody.getBytes(charset));
@@ -344,6 +355,16 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 } else if (status == 401) {
                     // will never come here theoretically as email and password must be correct to pass step 1
                     Log.e(TAG, "Unauthorized");
+                } else if (status == 404) {
+                    response = connection.getErrorStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(response));
+                    StringBuffer sb = new StringBuffer();
+                    String line = "";
+                    Log.i("rHttpBuilder", "Starting to read response");
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line + "\n");
+                        Log.i(TAG, "Response>>>" + line);
+                    }
                 } else {
                     Log.e(TAG, "step 3 " + status);
                     connectionError = true;
@@ -354,11 +375,11 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 e.printStackTrace();
             }
 
-            Log.i(TAG, "Obtained criticalInfo: " + token);
+            Log.i(TAG, "Obtained token: " + token);
 
         /*-------------------End of Login step 3-------------------------------*/
 
-        /*--------------------save criticalInfo into a local file--------------------*/
+        /*--------------------save token into a local file--------------------*/
             // check external sd card mounted and create folders
             if (isExternalStorageReadable() && isExternalStorageWritable()) {
                 mainFolder = new File(Environment.getExternalStorageDirectory(), folderMain);
@@ -373,11 +394,11 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 credential = new File(signinFolder.getAbsolutePath(), "credential");
                 Log.i(TAG, credential.getAbsolutePath());
 
-                // original criticalInfo received is like: {"access_token":"AInKmwQRJLvylHTojqcNMqP7FvdXhWVoEIdgtTdRJW7rv68XHz6NpJ32dJPMUE8ZpYqF8zw8dOBGPRHtBJhWAHvniswYXynjH0xKnziVVYN486MLwiUd1WiuVntrTMBq","token_type":"Bearer"}
+                // original token received is like: {"access_token":"AInKmwQRJLvylHTojqcNMqP7FvdXhWVoEIdgtTdRJW7rv68XHz6NpJ32dJPMUE8ZpYqF8zw8dOBGPRHtBJhWAHvniswYXynjH0xKnziVVYN486MLwiUd1WiuVntrTMBq","token_type":"Bearer"}
                 // magic number 17 - remove part:   {"access_token":"
                 // read till right before the last colon (the colon before "token_type") and -1 for the " sign
                 token = token.substring(17, token.lastIndexOf(",") - 1);
-                Log.i(TAG, "Trimmed criticalInfo is " + token);
+                Log.i(TAG, "Trimmed token is " + token);
 
                 try {
                     fos = new FileOutputStream(credential);
