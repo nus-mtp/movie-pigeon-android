@@ -49,6 +49,7 @@ public class MeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        userInfoBulk.reset();
         view = inflater.inflate(R.layout.fragment_me, container, false);
         bindViews(view);
         myRatingsRow.setOnClickListener(new View.OnClickListener() {
@@ -95,6 +96,7 @@ public class MeFragment extends Fragment {
     public void onResume(){
         super.onResume();
         Log.i(TAG, "Me fragment resumed");
+        userInfoBulk.reset();
         tbMe.setTitle("Welcome " + userInfoBulk.getUsername() + "!");
         tbMe.setSubtitle(userInfoBulk.getEmail());
         Log.i(TAG, "Username now is " + userInfoBulk.getUsername());

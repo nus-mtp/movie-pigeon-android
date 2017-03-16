@@ -123,7 +123,7 @@ class SFWorkingThread extends AsyncTask<String, Void, Void> {
     String charset = java.nio.charset.StandardCharsets.UTF_8.name();
     String body;
     private HttpURLConnection connection;
-    String criticalInfo;
+    String criticalInfo; // token or base 64 encoded email + password
     Boolean connectionError = false;
     Boolean authorized = true;
     Boolean newPassword = true;

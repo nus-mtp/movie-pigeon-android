@@ -2,12 +2,16 @@ package org.example.team_pigeon.movie_pigeon;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.stream.JsonReader;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,6 +28,7 @@ class UserInfoSingleton {
     private static String TAG = "UserInfo";
     private static String email, username;
     private static String token;
+    private File credential = new File(Environment.getExternalStorageDirectory() + "/MoviePigeon/Signin/credential");
 
     protected UserInfoSingleton() {
     }
@@ -31,7 +36,7 @@ class UserInfoSingleton {
     static UserInfoSingleton getInstance() {
         if (instance == null) {
             instance = new UserInfoSingleton();
-            new UserInfoGetter().execute();
+            instance.reset();
         }
         return instance;
     }
@@ -44,17 +49,46 @@ class UserInfoSingleton {
         return username;
     }
 
-    void setToken(String t) {
-        token = t;
-        reset();
-    }
-
     String getToken() {
         return token;
     }
 
     void reset() {
+        token = getStringFromFile(credential.getAbsolutePath());
         new UserInfoGetter().execute();
+    }
+
+    String getStringFromFile (String filePath) {
+        File fl = new File(filePath);
+        FileInputStream fin = null;
+        String result = null;
+        try {
+            fin = new FileInputStream(fl);
+            result = convertStreamToString(fin);
+            fin.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    String convertStreamToString(InputStream is) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
     }
 
     static class UserInfoGetter extends AsyncTask<Void, Void, Void> {
@@ -108,10 +142,10 @@ class UserInfoSingleton {
                             String readStr = reader.nextName();
                             if (readStr.equals("email")) {
                                 userInfo[0] = reader.nextString();
-                                System.out.println(userInfo[0]);
+                                Log.i(TAG, userInfo[0]);
                             } else if (readStr.equals("username")) {
                                 userInfo[1] = reader.nextString();
-                                System.out.println(userInfo[1]);
+                                Log.i(TAG, userInfo[1]);
                             } else {
                                 reader.skipValue(); //avoid some unhandled events
                             }
@@ -122,6 +156,19 @@ class UserInfoSingleton {
                         e.printStackTrace();
                     }
                 } else if (status == 400) {
+                    Log.i(TAG, "Error code " + status);
+                    InputStream response = connection.getErrorStream();
+                    // process the response
+                    BufferedReader br = new BufferedReader(new InputStreamReader(response));
+                    StringBuffer sb = new StringBuffer();
+                    Log.i(TAG, "Starting to read response");
+                    String line, serverResponse = "";
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line + "\n");
+                        serverResponse = "Retrieve userInfo Response>>>" + line;
+                        Log.i(TAG, serverResponse);
+                    }
+                } else if (status == 401) {
                     Log.i(TAG, "Error code " + status);
                     InputStream response = connection.getErrorStream();
                     // process the response

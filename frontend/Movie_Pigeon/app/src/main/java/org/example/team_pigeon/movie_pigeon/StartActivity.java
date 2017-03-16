@@ -85,7 +85,6 @@ public class StartActivity extends AppCompatActivity {
             // read token from file first
             token = getStringFromFile(credential.getAbsolutePath());
             Log.i("StartActivity", "Token read is " + token);
-            UserInfoSingleton.getInstance().setToken(token);
 
             Intent homePageIntent = new Intent(this, HomePageActivity.class);
             // pass token to the new activity

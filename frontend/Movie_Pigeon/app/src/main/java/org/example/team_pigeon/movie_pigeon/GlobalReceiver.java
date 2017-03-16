@@ -37,6 +37,8 @@ class GlobalReceiver extends BroadcastReceiver {
 
         switch (action) {
             case "startHomePageActivity":
+                // refresh user info singleton
+                userInfoBulk.reset();
                 // get token from the broadcast
                 Intent homePageIntent = new Intent(context, HomePageActivity.class);
                 // pass token to the new activity
