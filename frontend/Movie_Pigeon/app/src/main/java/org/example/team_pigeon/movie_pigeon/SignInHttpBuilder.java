@@ -34,10 +34,10 @@ import java.util.Map;
 
 class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
     private final String TAG = "sHttpBuilder";
-    String registerClientUrl = "http://128.199.231.190:8080/api/clients";
+    String registerClientUrl = "http://128.199.167.57:8080/api/clients";
     String getUrl;
     String authorizeUrl;
-    String tokenUrl = "http://128.199.231.190:8080/api/oauth2/token";
+    String tokenUrl = "http://128.199.167.57:8080/api/oauth2/token";
     HttpURLConnection connection;
     String charset = java.nio.charset.StandardCharsets.UTF_8.name();
     String query, param1, param2, param3;
@@ -140,7 +140,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
          /*-------------------Login step 2-------------------------------*/
 
             Log.i(TAG, "id is " + id);
-            getUrl = "http://128.199.231.190:8080/api/oauth2/authorize/transactionId?client_id=" + id + "&response_type=code&redirect_uri=moviepigeon/";
+            getUrl = "http://128.199.167.57:8080/api/oauth2/authorize/transactionId?client_id=" + id + "&response_type=code&redirect_uri=moviepigeon/";
             Log.i(TAG, "get url is " + getUrl);
 
             try {
@@ -203,7 +203,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
             Log.i(TAG, "Obtained transactionId: " + transactionId);
 
             // step 2 part 2
-            authorizeUrl = "http://128.199.231.190:8080/api/oauth2/authorize/";
+            authorizeUrl = "http://128.199.167.57:8080/api/oauth2/authorize/";
             try {
                 connection = (HttpURLConnection) new URL(authorizeUrl).openConnection();
                 connection.setRequestMethod("POST");
