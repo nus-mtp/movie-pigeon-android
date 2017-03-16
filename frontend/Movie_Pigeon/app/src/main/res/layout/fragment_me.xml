@@ -9,13 +9,14 @@
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
         android:theme="?attr/actionBarTheme"
         android:minHeight="?attr/actionBarSize"
-        android:title=""
+        android:background="@color/toolbar"
+        app:titleTextColor="@color/div_white"
         android:id="@+id/me_toolbar" />
 
     <TableLayout
+        android:paddingTop="25dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TableRow
@@ -64,7 +65,7 @@
         </TableRow>
         <TableRow
             android:id="@+id/me_logout"
-            android:layout_marginTop="300dp"
+            android:layout_marginTop="250dp"
             android:padding="10dp"
             android:background="@drawable/setting_menu">
             <ImageView
