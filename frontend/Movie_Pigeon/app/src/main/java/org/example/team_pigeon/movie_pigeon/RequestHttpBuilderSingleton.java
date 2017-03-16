@@ -123,7 +123,12 @@ public class RequestHttpBuilderSingleton {
 
     public OkHttpClient getClient() {
         if(client == null){
-            client = new OkHttpClient();
+            //New client with timeout setting
+            client = new OkHttpClient.Builder().
+                    connectTimeout(10, TimeUnit.SECONDS).
+                    readTimeout(10,TimeUnit.SECONDS).
+                    writeTimeout(10,TimeUnit.SECONDS).
+                    build();
         }
         return client;
     }
