@@ -1,9 +1,12 @@
 package org.example.team_pigeon.movie_pigeon;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +40,8 @@ public class MeFragment extends Fragment {
     private View view;
     private Toolbar tbMe;
     private UserInfoSingleton userInfoBulk = UserInfoSingleton.getInstance();
+    private GlobalReceiver globalReceiver;
+    private final int changeUsername = 0;
 
     public MeFragment() {
     }
@@ -84,6 +89,15 @@ public class MeFragment extends Fragment {
         tbMe.setTitle("Welcome " + userInfoBulk.getUsername() + "!");
         tbMe.setSubtitle(userInfoBulk.getEmail());
         return view;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.i(TAG, "Me fragment resumed");
+        tbMe.setTitle("Welcome " + userInfoBulk.getUsername() + "!");
+        tbMe.setSubtitle(userInfoBulk.getEmail());
+        Log.i(TAG, "Username now is " + userInfoBulk.getUsername());
     }
 
     private void loggingOut() {

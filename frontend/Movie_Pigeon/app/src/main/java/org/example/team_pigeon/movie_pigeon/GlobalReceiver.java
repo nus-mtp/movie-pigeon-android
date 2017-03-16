@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 /**
@@ -18,6 +19,8 @@ class GlobalReceiver extends BroadcastReceiver {
     Handler uiHandler;
     private final static int VCodeSuccess = 0;
     private final static int ResetSuccess = 1;
+    private final static int changeUsername = 0;
+    private static UserInfoSingleton userInfoBulk = UserInfoSingleton.getInstance();
 
     GlobalReceiver() {
         uiHandler = null;
@@ -87,6 +90,11 @@ class GlobalReceiver extends BroadcastReceiver {
                 startRegistration.putExtras(bundle);
                 context.startActivity(startRegistration);
                 ((Activity)context).finish();
+                break;
+
+            case "changeUsername":
+                Log.i(TAG, "Received msg to update username");
+                userInfoBulk.reset();
                 break;
         }
     }

@@ -23,6 +23,7 @@ class UserInfoSingleton {
     private static UserInfoSingleton instance = null;
     private static String TAG = "UserInfo";
     private static String email, username;
+    private static String token;
 
     protected UserInfoSingleton() {
     }
@@ -43,17 +44,29 @@ class UserInfoSingleton {
         return username;
     }
 
+    void setToken(String t) {
+        token = t;
+        reset();
+    }
+
+    String getToken() {
+        return token;
+    }
+
+    void reset() {
+        new UserInfoGetter().execute();
+    }
+
     static class UserInfoGetter extends AsyncTask<Void, Void, Void> {
         private HttpURLConnection connection;
         private String token, serverResponse;
         private String charset = java.nio.charset.StandardCharsets.UTF_8.name();
         private boolean connectionError = false;
         private String[] userInfo = new String[2];
-//        private String TAG = "UserInfoWT";
 
         @Override
         protected Void doInBackground(Void... params) {
-            token = RequestHttpBuilderSingleton.getInstance().getToken();
+            token = UserInfoSingleton.getInstance().getToken();
             request();
             return null;
         }
@@ -66,6 +79,8 @@ class UserInfoSingleton {
                 connection.setRequestMethod("GET");
                 connection.setRequestProperty("Authorization", "Bearer " + token);
                 connection.setRequestProperty("Accept-Charset", charset);
+
+                Log.i(TAG, "Token is " + token);
 
                 connection.connect();
 
@@ -105,6 +120,19 @@ class UserInfoSingleton {
                         reader.close();
                     } catch (IOException e) {
                         e.printStackTrace();
+                    }
+                } else if (status == 400) {
+                    Log.i(TAG, "Error code " + status);
+                    InputStream response = connection.getErrorStream();
+                    // process the response
+                    BufferedReader br = new BufferedReader(new InputStreamReader(response));
+                    StringBuffer sb = new StringBuffer();
+                    Log.i(TAG, "Starting to read response");
+                    String line, serverResponse = "";
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line + "\n");
+                        serverResponse = "Retrieve userInfo Response>>>" + line;
+                        Log.i(TAG, serverResponse);
                     }
                 } else {
                     connectionError = true;

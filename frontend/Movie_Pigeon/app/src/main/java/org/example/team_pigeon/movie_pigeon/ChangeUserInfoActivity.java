@@ -39,6 +39,7 @@ public class ChangeUserInfoActivity extends AppCompatActivity {
 
         globalReceiver = new GlobalReceiver();
         IntentFilter filter = new IntentFilter();
+        filter.addAction("changeUsername");
         filter.addAction("userUpdate");
         registerReceiver(globalReceiver, filter);
 

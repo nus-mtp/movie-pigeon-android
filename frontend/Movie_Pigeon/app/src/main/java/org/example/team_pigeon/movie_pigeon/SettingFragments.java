@@ -245,6 +245,10 @@ class SFWorkingThread extends AsyncTask<String, Void, Void> {
             Toast.makeText(mContext, "New password is the same as old one", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(mContext, "Change " + type + " successful", Toast.LENGTH_SHORT).show();
+            if (type.equals("username")) {
+                Intent update = new Intent("changeUsername");
+                mContext.sendBroadcast(update);
+            }
             Intent intent = new Intent("userUpdate");
             mContext.sendBroadcast(intent);
         }
