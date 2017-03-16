@@ -262,20 +262,26 @@ public class NowShowingFragment extends Fragment implements AdapterView.OnItemSe
 
     @Subscribe
     public void onAddMovieToMovieListEvent(AddMovieToMovieListEvent event){
-        nowShowingListAdapter.addMovieItemToAdapter(event.movie, event.position);
-        Log.i(TAG, "New movie is added to local list");
+        if(nowShowingListAdapter!=null) {
+            nowShowingListAdapter.addMovieItemToAdapter(event.movie, event.position);
+            Log.i(TAG, "New movie is added to local list");
+        }
     }
 
     @Subscribe
     public void onDeleteMovieFromMovieListEvent(DeleteMovieFromMovieListEvent event){
-        nowShowingListAdapter.removeMovieItemToAdapter(event.position);
-        Log.i(TAG, "A movie is removed from local list");
+        if(nowShowingListAdapter!=null) {
+            nowShowingListAdapter.removeMovieItemToAdapter(event.position);
+            Log.i(TAG, "A movie is removed from local list");
+        }
     }
 
     @Subscribe
     public void onUpdateMovieListEvent(UpdateMovieListEvent event){
-        nowShowingListAdapter.updateMovieItemToAdapter(event.movie, event.position);
-        Log.i(TAG, "A movie is updated to local list at pos "+String.valueOf(event.position));
+        if(nowShowingListAdapter!=null) {
+            nowShowingListAdapter.updateMovieItemToAdapter(event.movie, event.position);
+            Log.i(TAG, "A movie is updated to local list at pos " + String.valueOf(event.position));
+        }
     }
 
     @Override
