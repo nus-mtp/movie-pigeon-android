@@ -107,7 +107,7 @@ class TPSWorkingThread extends AsyncTask<String, Void, Void> {
         thirdParty = params[1];
         Log.i(TAG, "User info and tp are " + userInfo + " " + thirdParty);
         if (thirdParty.equals("TraktTV")) {
-            url = "http://128.199.231.190:8080/api/traktTV";
+            url = "http://128.199.167.57:8080/api/traktTV";
         } else {
             Log.e(TAG, "Wrong type of third party");
         }
