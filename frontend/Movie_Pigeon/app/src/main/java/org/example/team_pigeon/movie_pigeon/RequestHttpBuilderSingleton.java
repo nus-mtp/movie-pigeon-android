@@ -23,7 +23,6 @@ public class RequestHttpBuilderSingleton {
     //Same address as bookmark for testing
     private final String recommendationUrl = "http://128.199.167.57:8080/api/bookmarks";
     private final String nowShowingHomePageUrl = "http://128.199.167.57:8080/api/showing/all";
->>>>>>> refs/remotes/origin/development-frontend
 
     protected RequestHttpBuilderSingleton() {}
 
