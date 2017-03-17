@@ -121,6 +121,17 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 }
                 correctEmailPassword = true;
             } else if (status == 401) {
+
+                response = connection.getErrorStream();
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(response));
+                StringBuffer sb = new StringBuffer();
+                String line = "";
+                Log.i("rHttpBuilder", "Starting to read response");
+                while ((line = br.readLine()) != null) {
+                    sb.append(line + "\n");
+                    Log.i(TAG, "Response>>>" + line);
+                }
                 Log.e(TAG, "Unauthorized");
 
             } else {
@@ -344,6 +355,16 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 } else if (status == 401) {
                     // will never come here theoretically as email and password must be correct to pass step 1
                     Log.e(TAG, "Unauthorized");
+                } else if (status == 404) {
+                    response = connection.getErrorStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(response));
+                    StringBuffer sb = new StringBuffer();
+                    String line = "";
+                    Log.i("rHttpBuilder", "Starting to read response");
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line + "\n");
+                        Log.i(TAG, "Response>>>" + line);
+                    }
                 } else {
                     Log.e(TAG, "step 3 " + status);
                     connectionError = true;

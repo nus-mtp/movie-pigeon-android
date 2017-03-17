@@ -25,6 +25,7 @@ public class RegistrationActivity extends AppCompatActivity {
     GlobalReceiver globalReceiver = new GlobalReceiver();
     String thirdParty = "NONE";
     String userInfo = "NONE";
+    String thirdPartyPassword = "NONE";
     String TAG = "RegActivity";
 
     @Override
@@ -37,6 +38,7 @@ public class RegistrationActivity extends AppCompatActivity {
             Bundle bundle = getIntent().getExtras();
             thirdParty = bundle.getString("ThirdParty");
             userInfo = bundle.getString("UserInfo");
+            thirdPartyPassword = bundle.getString("ThirdPartyPassword");
             Log.i(TAG, "3rd party sign up");
         } catch (NullPointerException e) {
             Log.e(TAG, "No 3rd party sign up");
@@ -56,6 +58,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
         // checking whether using third party sign up
         if (thirdParty.equals("TraktTV")) {
+            etUsername.setText(userInfo);
+        } else if (thirdParty.equals("The Movie DB")) {
             etUsername.setText(userInfo);
         }
 
@@ -89,14 +93,16 @@ public class RegistrationActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Please enter correct email address", Toast.LENGTH_SHORT).show();
                         } else {
                             System.out.println("Registering");
-                            String[] registrationDetails = new String[5];
+                            String[] registrationDetails = new String[6];
                             registrationDetails[0] = email;
                             registrationDetails[1] = username;
                             registrationDetails[2] = password;
                             registrationDetails[3] = thirdParty;
                             registrationDetails[4] = userInfo;
+                            registrationDetails[5] = thirdPartyPassword;
 
-                            Log.i("RegistrationPage", "5 parameters to be passed are " + registrationDetails[0] + " " + registrationDetails[1] + " " + registrationDetails[2] + " " + registrationDetails[3] + " " + registrationDetails[4]);
+                            Log.i("RegistrationPage", "5 parameters to be passed are " + registrationDetails[0] + " " + registrationDetails[1] + " " + registrationDetails[2] + " "
+                                    + registrationDetails[3] + " " + registrationDetails[4] + " " + registrationDetails[5]);
                             new RegistrationHttpBuilder(getApplicationContext()).execute(registrationDetails);
                         }
                     }

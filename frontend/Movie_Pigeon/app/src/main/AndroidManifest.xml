@@ -32,6 +32,7 @@
         <activity android:name=".ResetPasswordActivity" android:exported="true"></activity>
         <activity android:name=".RegistrationActivity" android:exported="true"></activity>
         <activity android:name=".ThirdPartySignupActivity" android:exported="true"></activity>
+        <activity android:name=".ChangeUserInfoActivity" android:exported="true"></activity>
     </application>
 
 </manifest>
