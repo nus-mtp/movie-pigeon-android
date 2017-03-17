@@ -118,8 +118,6 @@ public class SearchPageFragment extends Fragment implements AdapterView.OnItemCl
     }
 
     private void bindView(View view) {
-        //allMovieListView = (ListView) view.findViewById(R.id.all_in_search);
-        //nowShowingListView = (ListView) view.findViewById(R.id.now_showing_in_search);
         movieListView = (ListView) view.findViewById(R.id.list_movies);
         toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_display_page);
     }
