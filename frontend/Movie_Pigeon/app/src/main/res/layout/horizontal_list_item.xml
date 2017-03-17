@@ -15,6 +15,7 @@
     <org.example.team_pigeon.movie_pigeon.costomizedViews.CenterTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/text_title_horizontal_list_item" />
+        android:layout_gravity="center"
+        android:id="@+id/text_title_horizontal_list_item"
+        android:maxLines="2"/>
 </LinearLayout>
