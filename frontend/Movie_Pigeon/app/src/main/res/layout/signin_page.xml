@@ -134,7 +134,18 @@
         android:id="@+id/buttonTrakt"
         android:drawableTop="@drawable/ic_trakt"
         android:background="#FFFFFF"
+        android:layout_marginBottom="13dp"
         android:layout_above="@+id/buttonRegister"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="13dp" />
+        android:layout_alignStart="@+id/textView" />
+
+    <Button
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/buttonTmdb"
+        android:drawableTop="@drawable/ic_tmdb"
+        android:background="#FFFFFF"
+        android:layout_below="@+id/textView"
+        android:layout_alignEnd="@+id/textView"
+        android:scaleX="1.2"
+        android:scaleY="1.3"/>
 </RelativeLayout>

@@ -31,6 +31,7 @@ class SigninPage {
         Button BRegister = (Button) signin.findViewById(R.id.buttonRegister);
         Button BForgetPassword = (Button) signin.findViewById(R.id.buttonForgetPassword);
         Button BTrakt = (Button) signin.findViewById(R.id.buttonTrakt);
+        Button BTmdb = (Button) signin.findViewById(R.id.buttonTmdb);
         mActivity.setContentView(signin);
 
         etEmail = (EditText) signin.findViewById(R.id.editTextUsername);
@@ -77,6 +78,17 @@ class SigninPage {
                 Intent thirdPartySignup = new Intent(mContext, ThirdPartySignupActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("thirdParty", "TraktTV");
+                thirdPartySignup.putExtras(bundle);
+                mContext.startActivity(thirdPartySignup);
+            }
+        });
+
+        BTmdb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent thirdPartySignup = new Intent(mContext, ThirdPartySignupActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("thirdParty", "The Movie DB");
                 thirdPartySignup.putExtras(bundle);
                 mContext.startActivity(thirdPartySignup);
             }

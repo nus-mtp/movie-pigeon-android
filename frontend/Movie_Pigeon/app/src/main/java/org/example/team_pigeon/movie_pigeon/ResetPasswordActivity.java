@@ -157,8 +157,8 @@ public class ResetPasswordActivity extends AppCompatActivity {
 }
 
 class ResetPwdWorkingThread extends AsyncTask<String, Void, Void> {
-    String vCodeUrl = "http://128.199.231.190:8080/api/users/resetPassword";
-    String resetPwdUrl = "http://128.199.231.190:8080/api/users/password";
+    String vCodeUrl = "http://128.199.167.57:8080/api/users/resetPassword";
+    String resetPwdUrl = "http://128.199.167.57:8080/api/users/password";
     HttpURLConnection connection;
     String charset = java.nio.charset.StandardCharsets.UTF_8.name();
     String TAG = "ResetPwdWT";

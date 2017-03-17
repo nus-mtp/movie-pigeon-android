@@ -23,10 +23,10 @@ import java.net.URLEncoder;
 
 class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
     String TAG = "rHttpBuilder";
-    String url = "http://128.199.231.190:8080";
-    String registrationURL = "http://128.199.231.190:8080/api/users";
+    String url = "http://128.199.167.57:8080";
+    String registrationURL = "http://128.199.167.57:8080/api/users";
     String charset = java.nio.charset.StandardCharsets.UTF_8.name();
-    String uEmail, uUsername, uPassword, u3rdInfo, query;
+    String uEmail, uUsername, uPassword, u3rdInfo, u3rdPassword, query;
     String u3rdParty = "NONE";
     HttpURLConnection connection = null;
     Context mContext;
@@ -44,7 +44,9 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
         try {
             // check if using 3rd party sign up
             if (u3rdParty.equalsIgnoreCase("TraktTV")) {
-                registrationURL = "http://128.199.231.190:8080/api/traktTV";
+                registrationURL = "http://128.199.167.57:8080/api/traktTV";
+            } else if (u3rdParty.equalsIgnoreCase("The Movie DB")) {
+                registrationURL = "http://128.199.167.57:8080/api/tmdb";
             }
             connection = (HttpURLConnection) new URL(registrationURL).openConnection();
             connection.setRequestMethod("POST");
@@ -107,7 +109,7 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
         }
     }
 
-    private String formQuery3rdParty(String email, String username, String password, String thirdParty, String thirdPartyInfo) {
+    private String formQuery3rdPartyNoPassword(String email, String username, String password, String thirdParty, String thirdPartyInfo) {
         uEmail = email;
         uUsername = username;
         uPassword = password;
@@ -133,18 +135,54 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
         }
     }
 
+    private String formQuery3rdPartyWithPassword(String email, String username, String password, String thirdParty, String thirdPartyInfo, String thirdPartyPassword) {
+        uEmail = email;
+        uUsername = username;
+        uPassword = password;
+        u3rdParty = thirdParty;
+        u3rdInfo = thirdPartyInfo;
+        u3rdPassword = thirdPartyPassword;
+        String thirdPartyUsername = "";
+        String thirdPartyPwd="";
+        if (thirdParty.equalsIgnoreCase("The Movie DB")) {
+            thirdPartyUsername = "tmdbUsername";
+            thirdPartyPwd = "tmdbPassword";
+        } else {
+            Log.e(TAG, "Error in identifying 3rd party");
+        }
+        String strFormat = "email=%s&username=%s&password=%s&" + thirdPartyUsername + "=%s&" + thirdPartyPwd + "=%s";
+        try {
+            return String.format(strFormat,
+                    URLEncoder.encode(uEmail, charset),
+                    URLEncoder.encode(uUsername, charset),
+                    URLEncoder.encode(uPassword, charset),
+                    URLEncoder.encode(u3rdInfo, charset),
+                    URLEncoder.encode(u3rdPassword, charset));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Unable to encode message");
+            return "";
+        }
+    }
+
     @Override
     protected Void doInBackground(String... params) {
-        String pEmail, pUsername, pPassword, pThirdParty, pUserInfo;
+        String pEmail, pUsername, pPassword, pThirdParty, pUserInfo, pThirdPartyPassword;
         pEmail=params[0];
         pUsername=params[1];
         pPassword=params[2];
         pThirdParty=params[3];
         pUserInfo=params[4];
-        Log.i(TAG, "Passed in parameters are " + pEmail + " " + pUsername + " " + pPassword + " " + pThirdParty + " " + pUserInfo);
+        pThirdPartyPassword=params[5];
+        Log.i(TAG, "Passed in parameters are " + pEmail + " " + pUsername + " " + pPassword + " " + pThirdParty + " " + pUserInfo + " " + pThirdPartyPassword);
         if (pThirdParty.equals("TraktTV")) {
-            query = formQuery3rdParty(pEmail, pUsername, pPassword, pThirdParty, pUserInfo);
-            Log.i(TAG, "3rd party query formed");
+            query = formQuery3rdPartyNoPassword(pEmail, pUsername, pPassword, pThirdParty, pUserInfo);
+            Log.i(TAG, "TraktTV 3rd party query formed");
+            Log.i(TAG, "Query is " + query);
+            request(query);
+        } else if (pThirdParty.equals("The Movie DB")) {
+            query = formQuery3rdPartyWithPassword(pEmail, pUsername, pPassword, pThirdParty, pUserInfo, pThirdPartyPassword);
+            Log.i(TAG, "TMDB 3rd party query formed");
             Log.i(TAG, "Query is " + query);
             request(query);
         } else {

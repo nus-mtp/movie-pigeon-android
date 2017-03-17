@@ -1,19 +1,18 @@
 package org.example.team_pigeon.movie_pigeon;
 
-
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.TableRow;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
@@ -22,16 +21,9 @@ import com.google.gson.reflect.TypeToken;
 
 import org.example.team_pigeon.movie_pigeon.models.Movie;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import com.google.gson.stream.JsonReader;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -39,7 +31,7 @@ import okhttp3.Response;
 
 public class MeFragment extends Fragment {
     private final String TAG = "MePage";
-    private Button myRatingsButton, myBookmarksButton, settingButton, logoutButton;
+    private TableRow myRatingsRow, myBookmarksRow, settingsRow, logoutRow;
     private RequestHttpBuilderSingleton requestHttpBuilder = RequestHttpBuilderSingleton.getInstance();
     private Gson gson = new Gson();
     private MyTask myTask;
@@ -47,7 +39,9 @@ public class MeFragment extends Fragment {
     private File credential;
     private View view;
     private Toolbar tbMe;
-    private GlobalReceiver receiver;
+    private UserInfoSingleton userInfoBulk = UserInfoSingleton.getInstance();
+    private GlobalReceiver globalReceiver;
+    private final int changeUsername = 0;
 
     public MeFragment() {
     }
@@ -55,16 +49,17 @@ public class MeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        userInfoBulk.reset();
         view = inflater.inflate(R.layout.fragment_me, container, false);
         bindViews(view);
-        myRatingsButton.setOnClickListener(new View.OnClickListener() {
+        myRatingsRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 myTask = new MyTask();
                 myTask.execute("rating");
             }
         });
-        myBookmarksButton.setOnClickListener(new View.OnClickListener() {
+        myBookmarksRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 myTask = new MyTask();
@@ -72,7 +67,7 @@ public class MeFragment extends Fragment {
             }
         });
 
-        logoutButton.setOnClickListener(new View.OnClickListener() {
+        logoutRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "Logout button pressed");
@@ -80,7 +75,7 @@ public class MeFragment extends Fragment {
             }
         });
 
-        settingButton.setOnClickListener(new View.OnClickListener() {
+        settingsRow.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -92,9 +87,19 @@ public class MeFragment extends Fragment {
         });
 
         tbMe = (Toolbar) view.findViewById(R.id.me_toolbar);
-        new UserInfoGetter(getContext()).execute();
-
+        tbMe.setTitle("Welcome " + userInfoBulk.getUsername() + "!");
+        tbMe.setSubtitle(userInfoBulk.getEmail());
         return view;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.i(TAG, "Me fragment resumed");
+        userInfoBulk.reset();
+        tbMe.setTitle("Welcome " + userInfoBulk.getUsername() + "!");
+        tbMe.setSubtitle(userInfoBulk.getEmail());
+        Log.i(TAG, "Username now is " + userInfoBulk.getUsername());
     }
 
     private void loggingOut() {
@@ -117,10 +122,10 @@ public class MeFragment extends Fragment {
     }
 
     private void bindViews(View view){
-        myBookmarksButton = (Button)view.findViewById(R.id.button_my_bookmarks);
-        myRatingsButton = (Button)view.findViewById(R.id.button_my_rating);
-        logoutButton = (Button)view.findViewById(R.id.button_logout);
-        settingButton = (Button)view.findViewById(R.id.button_setting);
+        myBookmarksRow = (TableRow) view.findViewById(R.id.me_bookmark);
+        myRatingsRow = (TableRow)view.findViewById(R.id.me_rating);
+        logoutRow = (TableRow)view.findViewById(R.id.me_logout);
+        settingsRow = (TableRow)view.findViewById(R.id.me_settings);
     }
 
     //Async thread to handle myBookmarks and myRatings request
@@ -136,11 +141,11 @@ public class MeFragment extends Fragment {
         protected Integer doInBackground(String... params) {
             try {
                 OkHttpClient client = requestHttpBuilder.getClient();
-                if(params[0].equals("rating")){
+                if (params[0].equals("rating")) {
                     request = requestHttpBuilder.getRatingListRequest();
                     successfulStatus = SUCCESSFUL_RATING_LIST;
                 }
-                if(params[0].equals("bookmark")){
+                if (params[0].equals("bookmark")) {
                     request = requestHttpBuilder.getBookmarkListRequest();
                     successfulStatus = SUCCESSFUL_BOOKMARK_LIST;
                 }
@@ -155,7 +160,7 @@ public class MeFragment extends Fragment {
 
                 if (movieList.isEmpty()) {
                     return NO_RESULT;
-                }else{
+                } else {
                     return successfulStatus;
                 }
             } catch (IOException e) {
@@ -177,7 +182,7 @@ public class MeFragment extends Fragment {
             switch (status) {
                 case SUCCESSFUL_BOOKMARK_LIST:
                     Log.i(TAG, "Request of bookmark list is completed");
-                    arguments.putSerializable("movieList",movieList);
+                    arguments.putSerializable("movieList", movieList);
                     arguments.putString("type", "bookmark");
                     arguments.putString("title", "My Bookmarks");
                     displayActivityIntent.putExtra("bundle", arguments);
@@ -186,7 +191,7 @@ public class MeFragment extends Fragment {
 
                 case SUCCESSFUL_RATING_LIST:
                     Log.i(TAG, "Request of bookmark list is completed");
-                    arguments.putSerializable("movieList",movieList);
+                    arguments.putSerializable("movieList", movieList);
                     arguments.putString("type", "rating");
                     arguments.putString("title", "My Rating History");
                     displayActivityIntent.putExtra("bundle", arguments);
@@ -204,96 +209,4 @@ public class MeFragment extends Fragment {
 
         }
     }
-
-    private class UserInfoGetter extends AsyncTask<Void, Void, Void> {
-        private HttpURLConnection connection;
-        private String token, serverResponse;
-        private String charset = java.nio.charset.StandardCharsets.UTF_8.name();
-        private boolean connectionError = false;
-        private Context mContext;
-        private String[] userInfo = new String[2];
-
-        UserInfoGetter(Context context) {
-            mContext = context;
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            token = RequestHttpBuilderSingleton.getInstance().getToken();
-            request();
-            return null;
-        }
-
-        private void request() {
-            String url = "http://128.199.231.190:8080/api/users/";
-
-            try {
-                connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setRequestMethod("GET");
-                connection.setRequestProperty("Authorization", "Bearer " + token);
-                connection.setRequestProperty("Accept-Charset", charset);
-
-                connection.connect();
-
-                Log.i(TAG, "Finished sending to server");
-
-                int status = connection.getResponseCode();
-                Log.i(TAG, "get user info status is " + status);
-
-                if (status == 200) {
-                    InputStream response = connection.getInputStream();
-                    // process the response
-                    BufferedReader br = new BufferedReader(new InputStreamReader(response));
-                    StringBuffer sb = new StringBuffer();
-                    Log.i(TAG, "Starting to read response");
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line + "\n");
-                        serverResponse = line;
-                        Log.i(TAG, "Registration Response>>>" + serverResponse);
-                    }
-                    try {
-                        JsonReader reader = new JsonReader(new StringReader(serverResponse));
-                        reader.beginObject();
-                        while (reader.hasNext()) {
-                            String readStr = reader.nextName();
-                            if (readStr.equals("email")) {
-                                userInfo[0] = reader.nextString();
-                                System.out.println(userInfo[0]);
-                            } else if (readStr.equals("username")) {
-                                userInfo[1] = reader.nextString();
-                                System.out.println(userInfo[1]);
-                            } else {
-                                reader.skipValue(); //avoid some unhandled events
-                            }
-                        }
-                        reader.endObject();
-                        reader.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    connectionError = true;
-                    Log.i(TAG, "Error code " + status);
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                connectionError = true;
-                Log.e(TAG, "Unable to connect to server");
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Void v) {
-            if (connectionError) {
-                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
-            } else {
-                Log.i(TAG, "Getting user info successful");
-                tbMe.setTitle("Welcome " + userInfo[1]);
-                tbMe.setSubtitle(userInfo[0]);
-            }
-        }
-    }
-
 }

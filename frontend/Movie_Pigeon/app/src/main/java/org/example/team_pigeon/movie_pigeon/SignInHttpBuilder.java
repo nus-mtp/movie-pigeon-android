@@ -34,10 +34,10 @@ import java.util.Map;
 
 class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
     private final String TAG = "sHttpBuilder";
-    String registerClientUrl = "http://128.199.231.190:8080/api/clients";
+    String registerClientUrl = "http://128.199.167.57:8080/api/clients";
     String getUrl;
     String authorizeUrl;
-    String tokenUrl = "http://128.199.231.190:8080/api/oauth2/token";
+    String tokenUrl = "http://128.199.167.57:8080/api/oauth2/token";
     HttpURLConnection connection;
     String charset = java.nio.charset.StandardCharsets.UTF_8.name();
     String query, param1, param2, param3;
@@ -121,6 +121,17 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 }
                 correctEmailPassword = true;
             } else if (status == 401) {
+
+                response = connection.getErrorStream();
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(response));
+                StringBuffer sb = new StringBuffer();
+                String line = "";
+                Log.i("rHttpBuilder", "Starting to read response");
+                while ((line = br.readLine()) != null) {
+                    sb.append(line + "\n");
+                    Log.i(TAG, "Response>>>" + line);
+                }
                 Log.e(TAG, "Unauthorized");
 
             } else {
@@ -140,7 +151,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
          /*-------------------Login step 2-------------------------------*/
 
             Log.i(TAG, "id is " + id);
-            getUrl = "http://128.199.231.190:8080/api/oauth2/authorize/transactionId?client_id=" + id + "&response_type=code&redirect_uri=moviepigeon/";
+            getUrl = "http://128.199.167.57:8080/api/oauth2/authorize/transactionId?client_id=" + id + "&response_type=code&redirect_uri=moviepigeon/";
             Log.i(TAG, "get url is " + getUrl);
 
             try {
@@ -203,7 +214,7 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
             Log.i(TAG, "Obtained transactionId: " + transactionId);
 
             // step 2 part 2
-            authorizeUrl = "http://128.199.231.190:8080/api/oauth2/authorize/";
+            authorizeUrl = "http://128.199.167.57:8080/api/oauth2/authorize/";
             try {
                 connection = (HttpURLConnection) new URL(authorizeUrl).openConnection();
                 connection.setRequestMethod("POST");
@@ -344,6 +355,16 @@ class SignInHttpBuilder extends AsyncTask<String, Void, Void> {
                 } else if (status == 401) {
                     // will never come here theoretically as email and password must be correct to pass step 1
                     Log.e(TAG, "Unauthorized");
+                } else if (status == 404) {
+                    response = connection.getErrorStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(response));
+                    StringBuffer sb = new StringBuffer();
+                    String line = "";
+                    Log.i("rHttpBuilder", "Starting to read response");
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line + "\n");
+                        Log.i(TAG, "Response>>>" + line);
+                    }
                 } else {
                     Log.e(TAG, "step 3 " + status);
                     connectionError = true;
