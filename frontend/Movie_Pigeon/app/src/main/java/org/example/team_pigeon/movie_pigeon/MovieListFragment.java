@@ -201,13 +201,13 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
                     break;
 
                 case ERROR:
-                    Toast.makeText(getContext(), "Connection error, please check your connection", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Connection error, please check your connection", Toast.LENGTH_SHORT).show();
                     list_movies.removeFooterView(footerView);
                     isLoading = false;
                     break;
 
                 case NO_RESULT:
-                    Toast.makeText(getContext(), "Sorry, there is no more result", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Sorry, there is no more result", Toast.LENGTH_SHORT).show();
                     list_movies.removeFooterView(footerView);
                     noMoreResult = true;
                     isLoading = false;
@@ -221,7 +221,7 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
                     break;
 
                 case NO_INTERNET:
-                    Toast.makeText(getContext(), "Connection error, please make sure that you have Internet connection.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Connection error, please make sure that you have Internet connection.", Toast.LENGTH_SHORT).show();
                     list_movies.removeFooterView(footerView);
                     isLoading = false;
                     break;
