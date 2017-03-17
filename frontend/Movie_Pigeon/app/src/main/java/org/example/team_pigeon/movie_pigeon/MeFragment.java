@@ -225,7 +225,7 @@ public class MeFragment extends Fragment {
         }
 
         private void request() {
-            String url = "http://128.199.231.190:8080/api/users/";
+            String url = "http://128.199.167.57:8080/api/users/";
 
             try {
                 connection = (HttpURLConnection) new URL(url).openConnection();

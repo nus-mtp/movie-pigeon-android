@@ -23,8 +23,8 @@ import java.net.URLEncoder;
 
 class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
     String TAG = "rHttpBuilder";
-    String url = "http://128.199.231.190:8080";
-    String registrationURL = "http://128.199.231.190:8080/api/users";
+    String url = "http://128.199.167.57:8080";
+    String registrationURL = "http://128.199.167.57:8080/api/users";
     String charset = java.nio.charset.StandardCharsets.UTF_8.name();
     String uEmail, uUsername, uPassword, u3rdInfo, query;
     String u3rdParty = "NONE";
@@ -44,7 +44,7 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
         try {
             // check if using 3rd party sign up
             if (u3rdParty.equalsIgnoreCase("TraktTV")) {
-                registrationURL = "http://128.199.231.190:8080/api/traktTV";
+                registrationURL = "http://128.199.167.57:8080/api/traktTV";
             }
             connection = (HttpURLConnection) new URL(registrationURL).openConnection();
             connection.setRequestMethod("POST");

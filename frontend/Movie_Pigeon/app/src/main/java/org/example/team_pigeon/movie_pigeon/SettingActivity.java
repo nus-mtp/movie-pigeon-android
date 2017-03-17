@@ -143,7 +143,7 @@ class WorkingThread extends AsyncTask<String, Void, Void> {
     private void request(String type) {
         // find type of the request
 
-        String url = "http://128.199.231.190:8080/api/users/" + type;
+        String url = "http://128.199.167.57:8080/api/users/" + type;
 
 
         try {
