@@ -105,7 +105,7 @@ public class HomePageActivity extends AppCompatActivity implements RadioGroup.On
 
     @Override
     public void onPageScrollStateChanged(int state) {
-        if(state == 2) {
+        if(state == ViewPager.SCROLL_STATE_SETTLING) {
             switch (viewPager.getCurrentItem()) {
                 case PAGE_RECOMMENDATION:
                     rb_recommendation.setChecked(true);

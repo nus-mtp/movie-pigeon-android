@@ -117,7 +117,7 @@ public class MeFragment extends Fragment {
             getActivity().finish();
         } else {
             Log.e(TAG, "Failed to delete credential");
-            Toast.makeText(getContext(), "Failed to logout. Please check storage permissions.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Failed to logout. Please check storage permissions.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -199,11 +199,11 @@ public class MeFragment extends Fragment {
                     break;
 
                 case ERROR:
-                    Toast.makeText(getContext(), "Connection error, please check your connection", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Connection error, please check your connection", Toast.LENGTH_SHORT).show();
                     break;
 
                 case NO_RESULT:
-                    Toast.makeText(getContext(), "Sorry, you request has no results", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Sorry, you request has no results", Toast.LENGTH_SHORT).show();
                     break;
             }
 
