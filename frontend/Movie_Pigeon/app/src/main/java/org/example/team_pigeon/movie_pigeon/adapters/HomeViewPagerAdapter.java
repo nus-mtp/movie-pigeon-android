@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import org.example.team_pigeon.movie_pigeon.HomePageActivity;
 import org.example.team_pigeon.movie_pigeon.MeFragment;
-import org.example.team_pigeon.movie_pigeon.NowShowingFragment;
+import org.example.team_pigeon.movie_pigeon.CinemaFragment;
 import org.example.team_pigeon.movie_pigeon.RecommendationFragment;
 
 /**
@@ -17,13 +17,13 @@ public class HomeViewPagerAdapter extends FragmentPagerAdapter {
     private final int PAGER_COUNT = 3;
     private RecommendationFragment recommendationFragment = null;
     private MeFragment meFragment = null;
-    private NowShowingFragment nowShowingFragment = null;
+    private CinemaFragment cinemaFragment = null;
 
     public HomeViewPagerAdapter(FragmentManager fragmentManager){
         super(fragmentManager);
         recommendationFragment = new RecommendationFragment();
         meFragment = new MeFragment();
-        nowShowingFragment = new NowShowingFragment();
+        cinemaFragment = new CinemaFragment();
     }
     @Override
     public Fragment getItem(int position) {
@@ -36,7 +36,7 @@ public class HomeViewPagerAdapter extends FragmentPagerAdapter {
                 fragment = meFragment;
                 break;
             case HomePageActivity.PAGE_SHOWING:
-                fragment = nowShowingFragment;
+                fragment = cinemaFragment;
                 break;
         }
         return fragment;

@@ -1,5 +1,7 @@
 package org.example.team_pigeon.movie_pigeon;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -22,7 +24,7 @@ public class RequestHttpBuilderSingleton {
     private final String nowShowingUrl = "http://128.199.167.57:8080/api/showing";
     //Same address as bookmark for testing
     private final String recommendationUrl = "http://128.199.167.57:8080/api/bookmarks";
-
+    private final String nowShowingHomePageUrl = "http://128.199.167.57:8080/api/showing/all";
 
     protected RequestHttpBuilderSingleton() {}
 
@@ -123,7 +125,12 @@ public class RequestHttpBuilderSingleton {
 
     public OkHttpClient getClient() {
         if(client == null){
-            client = new OkHttpClient();
+            //New client with timeout setting
+            client = new OkHttpClient.Builder().
+                    connectTimeout(10, TimeUnit.SECONDS).
+                    readTimeout(10,TimeUnit.SECONDS).
+                    writeTimeout(10,TimeUnit.SECONDS).
+                    build();
         }
         return client;
     }
