@@ -20,6 +20,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import org.example.team_pigeon.movie_pigeon.DisplayActivity;
 import org.example.team_pigeon.movie_pigeon.R;
 import org.example.team_pigeon.movie_pigeon.configs.ImageConfig;
+import org.example.team_pigeon.movie_pigeon.costomizedViews.MultipleColGridView;
 import org.example.team_pigeon.movie_pigeon.models.Movie;
 
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class NowShowingListAdapter extends BaseAdapter {
             viewHolder.image_poster = (ImageView) convertView.findViewById(R.id.image_now_showing_list_poster);
             viewHolder.txt_length = (TextView) convertView.findViewById(R.id.text_now_showing_list_length);
             viewHolder.txt_special = (TextView) convertView.findViewById(R.id.text_now_showing_list_special);
-            viewHolder.grid_schedule = (GridView) convertView.findViewById(R.id.grid_schedule);
+            viewHolder.grid_schedule = (MultipleColGridView) convertView.findViewById(R.id.grid_schedule);
             viewHolder.ratingBar = (RatingBar) convertView.findViewById(R.id.ratingBar_now_showing);
             convertView.setTag(viewHolder);
         } else {
@@ -136,7 +137,7 @@ public class NowShowingListAdapter extends BaseAdapter {
         TextView txt_length;
         TextView txt_special;
         ImageView image_poster;
-        GridView grid_schedule;
+        MultipleColGridView grid_schedule;
         RatingBar ratingBar;
     }
 }
