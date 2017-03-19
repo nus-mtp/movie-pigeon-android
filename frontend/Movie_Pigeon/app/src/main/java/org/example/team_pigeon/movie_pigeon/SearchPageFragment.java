@@ -148,15 +148,6 @@ public class SearchPageFragment extends Fragment implements AdapterView.OnItemCl
         EventBus.getDefault().unregister(this);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    public void onPause() {
-        super.onPause();
-    }
-
     @Subscribe
     public void onEvent(UpdateMovieListEvent event) {
         if(movieListAdapter!=null) {
