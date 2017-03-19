@@ -41,6 +41,13 @@ public class DisplayActivity extends AppCompatActivity {
             fragmentTransaction.replace(R.id.fl_content,moviePageFragment);
             fragmentTransaction.commit();
         }
+        else if(type.equals("search")){
+            SearchPageFragment searchPageFragment = new SearchPageFragment();
+            searchPageFragment.setArguments(argument);
+            android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fl_content, searchPageFragment);
+            fragmentTransaction.commit();
+        }
         //Handle movie list requests
         else {
             MovieListFragment movieListFragment = new MovieListFragment();

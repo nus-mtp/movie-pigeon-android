@@ -41,8 +41,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class NowShowingFragment extends Fragment implements AdapterView.OnItemSelectedListener,AdapterView.OnItemClickListener{
-    private static final String TAG = "NowShowingFragment";
+public class CinemaFragment extends Fragment implements AdapterView.OnItemSelectedListener,AdapterView.OnItemClickListener{
+    private static final String TAG = "CinemaFragment";
     private static final String PROVIDER_GV = "gv";
     private static final String PROVIDER_SB = "sb";
     private static final String PROVIDER_CATHAY = "cathay";
@@ -73,14 +73,14 @@ public class NowShowingFragment extends Fragment implements AdapterView.OnItemSe
     private int currentDay;
 
 
-    public NowShowingFragment() {
+    public CinemaFragment() {
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_now_showing, container, false);
+        View view = inflater.inflate(R.layout.fragment_cinema, container, false);
         bindViews(view);
         dateList = getDateList();
         dateListInString = getDateListToString(dateList);
@@ -262,20 +262,26 @@ public class NowShowingFragment extends Fragment implements AdapterView.OnItemSe
 
     @Subscribe
     public void onAddMovieToMovieListEvent(AddMovieToMovieListEvent event){
-        nowShowingListAdapter.addMovieItemToAdapter(event.movie, event.position);
-        Log.i(TAG, "New movie is added to local list");
+        if(nowShowingListAdapter!=null) {
+            nowShowingListAdapter.addMovieItemToAdapter(event.movie, event.position);
+            Log.i(TAG, "New movie is added to local list");
+        }
     }
 
     @Subscribe
     public void onDeleteMovieFromMovieListEvent(DeleteMovieFromMovieListEvent event){
-        nowShowingListAdapter.removeMovieItemToAdapter(event.position);
-        Log.i(TAG, "A movie is removed from local list");
+        if(nowShowingListAdapter!=null) {
+            nowShowingListAdapter.removeMovieItemToAdapter(event.position);
+            Log.i(TAG, "A movie is removed from local list");
+        }
     }
 
     @Subscribe
     public void onUpdateMovieListEvent(UpdateMovieListEvent event){
-        nowShowingListAdapter.updateMovieItemToAdapter(event.movie, event.position);
-        Log.i(TAG, "A movie is updated to local list at pos "+String.valueOf(event.position));
+        if(nowShowingListAdapter!=null) {
+            nowShowingListAdapter.updateMovieItemToAdapter(event.movie, event.position);
+            Log.i(TAG, "A movie is updated to local list at pos " + String.valueOf(event.position));
+        }
     }
 
     @Override

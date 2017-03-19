@@ -43,7 +43,6 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
     private android.app.FragmentManager fragmentManager;
     private ArrayList<Movie> movies;
     private ListView list_movies;
-    private SearchMoreTask searchMoreTask;
     private MovieListAdapter movieListAdapter;
     private RequestHttpBuilderSingleton searchRequestHttpBuilder;
     private Gson gson = new Gson();
@@ -76,26 +75,7 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }
-        if(type.equals("search")){
-            toolbar.setSubtitle(bundle.getString("count"));
-            list_movies.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(),true,true,new AbsListView.OnScrollListener() {
-                @Override
-                public void onScrollStateChanged(AbsListView view, int scrollState) {
-                }
-
-                @Override
-                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                    if(view.getLastVisiblePosition() == totalItemCount-1 && list_movies.getCount() >= 20 && !isLoading && !noMoreResult) {
-                        isLoading = true;
-                        searchMoreTask = new SearchMoreTask();
-                        searchMoreTask.execute();
-                    }
-                }
-            }));
-        }
-        else{
-            list_movies.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(),true,true));
-        }
+        list_movies.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(),true,true));
         return view;
     }
 
@@ -122,111 +102,28 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
     }
 
     @Subscribe
-    public void onEvent(AddMovieToMovieListEvent event){
-        movieListAdapter.addMovieItemToAdapter(event.movie, event.position);
-        Log.i(TAG, "New movie is added to local list");
-    }
-
-    @Subscribe
     public void onEvent(DeleteMovieFromMovieListEvent event){
-        movieListAdapter.removeMovieItemToAdapter(event.position);
-        Log.i(TAG, "A movie is removed from local list");
+        if(movieListAdapter!=null) {
+            movieListAdapter.removeMovieItemToAdapter(event.position);
+            Log.i(TAG, "A movie is removed from local list");
+        }
     }
 
     @Subscribe
     public void onEvent(UpdateMovieListEvent event){
-        movieListAdapter.updateMovieItemToAdapter(event.movie, event.position);
-        Log.i(TAG, "A movie is updated to local list");
-    }
-
-    //Async thread to handle search request
-    private class SearchMoreTask extends AsyncTask<Void, Integer, Void> {
-        private final int SUCCESSFUL = 0;
-        private final int ERROR = 1;
-        private final int NO_RESULT = 2;
-        private final int NO_INTERNET = 3;
-        private final int NO_MORE_RESULT = 4;
-        int status;
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                searchRequestHttpBuilder = RequestHttpBuilderSingleton.getInstance();
-                OkHttpClient client = searchRequestHttpBuilder.getClient();
-                Request request = searchRequestHttpBuilder.getNextSearchRequest();
-                Response response = client.newCall(request).execute();
-                if (!response.isSuccessful()) {
-                    Log.i(TAG, "connect failed");
-                    status = ERROR;
-                    throw new IOException("Unexpected code" + response);
-                }
-                //Convert json to Arraylist<Movie>
-                movieListWithCount = gson.fromJson(response.body().charStream(), new TypeToken<MovieWithCount>() {}.getType());
-                resultCount = movieListWithCount.getCount();
-                searchMovieList = movieListWithCount.getMovies();
-
-                if (resultCount == 0) {
-                    status = NO_RESULT;
-                }
-                else if(searchMovieList.size() < searchRequestHttpBuilder.getLimit()){
-                    status = NO_MORE_RESULT;
-                }
-                else {
-                    status = SUCCESSFUL;
-                }
-                return null;
-            } catch (IOException e) {
-                status = NO_INTERNET;
-                Log.e(TAG, e.getMessage());
-            }
-            return null;
-
-        }
-
-        @Override
-        protected void onPreExecute() {
-            Log.i(TAG, "New search request is initialised");
-            list_movies.addFooterView(footerView);
-            return;
-        }
-
-        @Override
-        protected void onPostExecute(Void params) {
-            switch (status) {
-                case SUCCESSFUL:
-                    Log.i(TAG, "Search is completed");
-                    list_movies.removeFooterView(footerView);
-                    movieListAdapter.addListItemToAdapter(searchMovieList);
-                    isLoading = false;
-                    break;
-
-                case ERROR:
-                    Toast.makeText(getActivity(), "Connection error, please check your connection", Toast.LENGTH_SHORT).show();
-                    list_movies.removeFooterView(footerView);
-                    isLoading = false;
-                    break;
-
-                case NO_RESULT:
-                    Toast.makeText(getActivity(), "Sorry, there is no more result", Toast.LENGTH_SHORT).show();
-                    list_movies.removeFooterView(footerView);
-                    noMoreResult = true;
-                    isLoading = false;
-                    break;
-
-                case NO_MORE_RESULT:
-                    list_movies.removeFooterView(footerView);
-                    noMoreResult = true;
-                    isLoading = false;
-                    movieListAdapter.addListItemToAdapter(searchMovieList);
-                    break;
-
-                case NO_INTERNET:
-                    Toast.makeText(getActivity(), "Connection error, please make sure that you have Internet connection.", Toast.LENGTH_SHORT).show();
-                    list_movies.removeFooterView(footerView);
-                    isLoading = false;
-                    break;
-            }
-
+        if(movieListAdapter!=null) {
+            movieListAdapter.updateMovieItemToAdapter(event.movie, event.position);
+            Log.i(TAG, "A movie is updated to local list");
         }
     }
+
+    @Subscribe
+    public void onEvent(AddMovieToMovieListEvent event){
+        if(movieListAdapter!=null) {
+            movieListAdapter.addMovieItemToAdapter(event.movie, event.position);
+            Log.i(TAG, "A movie is added to local list");
+        }
+    }
+
+
 }

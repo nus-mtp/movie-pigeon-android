@@ -18,7 +18,6 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.example.team_pigeon.movie_pigeon.DisplayActivity;
-import org.example.team_pigeon.movie_pigeon.NowShowingFragment;
 import org.example.team_pigeon.movie_pigeon.R;
 import org.example.team_pigeon.movie_pigeon.configs.ImageConfig;
 import org.example.team_pigeon.movie_pigeon.models.Movie;

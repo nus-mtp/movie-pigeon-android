@@ -48,6 +48,7 @@ class RegistrationHttpBuilder extends AsyncTask<String, Void, Void> {
             } else if (u3rdParty.equalsIgnoreCase("The Movie DB")) {
                 registrationURL = "http://128.199.167.57:8080/api/tmdb";
             }
+          
             connection = (HttpURLConnection) new URL(registrationURL).openConnection();
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);

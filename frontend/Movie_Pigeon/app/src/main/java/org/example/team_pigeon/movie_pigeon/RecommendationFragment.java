@@ -1,5 +1,6 @@
 package org.example.team_pigeon.movie_pigeon;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -37,14 +38,13 @@ public class RecommendationFragment extends Fragment implements AdapterView.OnIt
     private Gson gson = new Gson();
     private Task nowShowingTask,recommendationTask,searchTask;
     private Bundle arguments;
-    private ArrayList<Movie> searchMovieList;
-    private ArrayList<Movie> nowShowingMovieList;
-    private ArrayList<Movie> recommendedMovieList;
+    private ArrayList<Movie> searchMovieList, nowShowingMovieList, recommendedMovieList, filteredNowShowingList;
     private HorizontalListAdapter nowShowingMovieAdapter, recommendedMovieAdapter;
     private MovieWithCount movieWithCount;
     private GridView nowShowingGrid, recommendedGrid;
     private int resultCount = 0;
     private RequestHttpBuilderSingleton searchRequestHttpBuilder = RequestHttpBuilderSingleton.getInstance();
+    private LoadingDialog loadingDialog;
 
     public RecommendationFragment() {
     }
@@ -52,6 +52,7 @@ public class RecommendationFragment extends Fragment implements AdapterView.OnIt
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        loadingDialog = new LoadingDialog(this.getActivity(),R.style.LoadingDialog);
         View view = inflater.inflate(R.layout.fragment_recommendation, container, false);
         searchView = (SearchView) view.findViewById(R.id.search_view);
         nowShowingGrid = (GridView) view.findViewById(R.id.grid_now_showing);
@@ -64,6 +65,7 @@ public class RecommendationFragment extends Fragment implements AdapterView.OnIt
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.d(TAG, "Search query submit = " + query);
+                filteredNowShowingList = filterNowShowing(nowShowingMovieList,query);
                 searchTask = new Task();
                 searchTask.execute("search",query);
                 return false;
@@ -109,6 +111,17 @@ public class RecommendationFragment extends Fragment implements AdapterView.OnIt
         gridView.setHorizontalSpacing(0);
         gridView.setStretchMode(GridView.NO_STRETCH);
         gridView.setNumColumns(size);
+    }
+
+    private ArrayList<Movie> filterNowShowing(ArrayList<Movie> allNowShowing, String keywords){
+        ArrayList<Movie> filteredMovies = new ArrayList<>();
+        keywords = keywords.toLowerCase();
+        for(Movie movie:allNowShowing){
+            if(movie.getTitle().toLowerCase().contains(keywords)){
+                filteredMovies.add(movie);
+            }
+        }
+        return filteredMovies;
     }
 
     private void setOnclickListener(GridView gridView){
@@ -217,17 +230,20 @@ public class RecommendationFragment extends Fragment implements AdapterView.OnIt
         @Override
         protected void onPreExecute() {
             Log.i(TAG, "Async request is initialised");
+            loadingDialog.show();
             return;
         }
 
         @Override
         protected void onPostExecute(Void params) {
+            loadingDialog.dismiss();
             switch (status) {
                 case SUCCESSFUL_SEARCH:
                     Log.i(TAG, "Search is completed");
                     Intent displayActivityIntent = new Intent(getActivity(), DisplayActivity.class);
                     arguments = new Bundle();
-                    arguments.putSerializable("movieList", searchMovieList);
+                    arguments.putSerializable("nowShowingList",filteredNowShowingList);
+                    arguments.putSerializable("allList", searchMovieList);
                     arguments.putString("type","search");
                     arguments.putString("title", "Result of '" + searchRequestHttpBuilder.getKeywords() + "'");
                     arguments.putString("count", "Found "+String.valueOf(resultCount)+ " movies");

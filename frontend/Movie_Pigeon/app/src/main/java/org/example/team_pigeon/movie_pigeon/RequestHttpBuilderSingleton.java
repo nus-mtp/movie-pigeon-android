@@ -1,5 +1,7 @@
 package org.example.team_pigeon.movie_pigeon;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -123,7 +125,12 @@ public class RequestHttpBuilderSingleton {
 
     public OkHttpClient getClient() {
         if(client == null){
-            client = new OkHttpClient();
+            //New client with timeout setting
+            client = new OkHttpClient.Builder().
+                    connectTimeout(10, TimeUnit.SECONDS).
+                    readTimeout(10,TimeUnit.SECONDS).
+                    writeTimeout(10,TimeUnit.SECONDS).
+                    build();
         }
         return client;
     }
