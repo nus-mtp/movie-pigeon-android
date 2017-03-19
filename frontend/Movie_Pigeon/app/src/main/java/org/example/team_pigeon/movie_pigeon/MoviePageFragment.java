@@ -101,10 +101,12 @@ public class MoviePageFragment extends Fragment {
 
             case R.id.action_bookmark:
                 if(isBookmarked){
+                    item.setEnabled(false);
                     MyTask bookmarkTask = new MyTask();
                     bookmarkTask.execute(UNBOOKMARK, movie.getMovieID());
                 }
                 else{
+                    item.setEnabled(false);
                     userBookmark = new UserBookmark(movie.getMovieID());
                     MyTask bookmarkTask = new MyTask();
                     bookmarkTask.execute(BOOKMARK, movie.getMovieID());
@@ -185,6 +187,7 @@ public class MoviePageFragment extends Fragment {
                 public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                     if(fromUser){
                         userRating = new UserRating(movie.getMovieID(), String.valueOf(rating * 2));
+                        ratingBar.setEnabled(false);
                         MyTask ratingTask = new MyTask();
                         ratingTask.execute(POST_RATING, movie.getMovieID(), String.valueOf(rating * 2));
                     }
@@ -239,6 +242,7 @@ public class MoviePageFragment extends Fragment {
     }
 
     private void setBookmarkIcon(boolean isBookmarked){
+        bookmarkItem.setEnabled(true);
         if(isBookmarked){
             bookmarkItem.setIcon(R.drawable.ic_bookmark_full);
         }
@@ -314,6 +318,7 @@ public class MoviePageFragment extends Fragment {
                 case SUCCESSFUL_RATE:
                     Log.i(TAG, "Rating is completed");
                     Toast.makeText(getActivity(), "Update rating successfully!", Toast.LENGTH_SHORT).show();
+                    ratingBar.setEnabled(true);
                     movie.getUserRating().clear();
                     movie.getUserRating().add(userRating);
                     EventBus.getDefault().post(new UpdateMovieListEvent(position, movie));
