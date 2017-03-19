@@ -40,6 +40,7 @@ public class MeFragment extends Fragment {
     private View view;
     private Toolbar tbMe;
     private UserInfoSingleton userInfoBulk = UserInfoSingleton.getInstance();
+    private LoadingDialog loadingDialog;
     private GlobalReceiver globalReceiver;
     private final int changeUsername = 0;
 
@@ -50,6 +51,7 @@ public class MeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         userInfoBulk.reset();
+        loadingDialog = new LoadingDialog(this.getActivity(),R.style.LoadingDialog);
         view = inflater.inflate(R.layout.fragment_me, container, false);
         bindViews(view);
         myRatingsRow.setOnClickListener(new View.OnClickListener() {
@@ -172,11 +174,13 @@ public class MeFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             Log.i(TAG, "New search request is initialised");
+            loadingDialog.show();
             return;
         }
 
         @Override
         protected void onPostExecute(Integer status) {
+            loadingDialog.dismiss();
             Intent displayActivityIntent = new Intent(getActivity(), DisplayActivity.class);
             Bundle arguments = new Bundle();
             switch (status) {

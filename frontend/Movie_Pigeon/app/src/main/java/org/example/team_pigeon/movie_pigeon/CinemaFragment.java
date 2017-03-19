@@ -25,6 +25,7 @@ import org.example.team_pigeon.movie_pigeon.eventCenter.UpdateMovieListEvent;
 import org.example.team_pigeon.movie_pigeon.models.Cinema;
 import org.example.team_pigeon.movie_pigeon.models.Movie;
 import org.example.team_pigeon.movie_pigeon.models.Schedule;
+import org.example.team_pigeon.movie_pigeon.utils.TimeUtil;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -71,6 +72,7 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
     private NowShowingListAdapter nowShowingListAdapter = null;
     private boolean isCinemasLoaded = false;
     private int currentDay;
+    private TimeUtil timeUtil = new TimeUtil();
 
 
     public CinemaFragment() {
@@ -82,8 +84,8 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cinema, container, false);
         bindViews(view);
-        dateList = getDateList();
-        dateListInString = getDateListToString(dateList);
+        dateList = timeUtil.getDateList();
+        dateListInString = timeUtil.getDateListToString_MMDDE(dateList);
         brands = this.getActivity().getResources().getStringArray(R.array.cinemaBrands);
         brandAdapter = new ArrayAdapter<>(this.getActivity(), R.layout.spinner_list_item,brands);
         brandSpinner.setAdapter(brandAdapter);
@@ -149,27 +151,6 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
             }
         }
         return showTimeList;
-    }
-
-    private List<Date> getDateList(){
-        List<Date> week = new ArrayList<>();
-        Calendar timeToAdd = Calendar.getInstance();
-        Date date;
-        for(int i=0;i<7;i++){
-            date = timeToAdd.getTime();
-            week.add(date);
-            timeToAdd.add(Calendar.DATE,1);
-        }
-        return week;
-    }
-
-    private List<String> getDateListToString(List<Date> week){
-        List<String> stringList = new ArrayList<>();
-        stringList.add("Please Choose Date");
-        for(Date date:week){
-            stringList.add(new SimpleDateFormat("MM-dd E", Locale.ENGLISH).format(date));
-        }
-        return stringList;
     }
 
     @Override

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_type_schedule"
+        android:textSize="17sp"
+        android:layout_marginLeft="10dp"/>
+
+    <org.example.team_pigeon.movie_pigeon.costomizedViews.MultipleColGridView
+        android:layout_marginLeft="10dp"
+        android:id="@+id/grid_showtime_schedule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numColumns="5"
+        android:listSelector="@android:color/transparent"/>
+
+</LinearLayout>

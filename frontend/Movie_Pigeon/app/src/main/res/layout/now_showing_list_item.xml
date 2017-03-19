@@ -58,7 +58,7 @@
 
         </GridLayout>
 
-        <GridView
+        <org.example.team_pigeon.movie_pigeon.costomizedViews.MultipleColGridView
             android:id="@+id/grid_schedule"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

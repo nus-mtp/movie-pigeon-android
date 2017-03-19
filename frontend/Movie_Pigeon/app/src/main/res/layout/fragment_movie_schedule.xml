@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <ImageView
+            android:layout_marginLeft="10dp"
+            android:layout_width="68dp"
+            android:layout_height="100dp"
+            android:id="@+id/image_schedule_poster" />
+
+        <TextView
+            android:text="Length:"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/image_schedule_poster"
+            android:layout_width="wrap_content"
+            android:textSize="15sp"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_schedule_length_title"/>
+
+        <TextView
+            android:text="TextView"
+            android:layout_marginLeft="20dp"
+            android:layout_below="@id/text_schedule_length_title"
+            android:layout_toRightOf="@id/image_schedule_poster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:id="@+id/text_schedule_length" />
+
+        <TextView
+            android:text="Genre:"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/image_schedule_poster"
+            android:layout_below="@id/text_schedule_length"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_schedule_genre_title"/>
+
+        <TextView
+            android:text="TextView"
+            android:layout_marginLeft="20dp"
+            android:textSize="15sp"
+            android:layout_below="@id/text_schedule_genre_title"
+            android:layout_toRightOf="@id/image_schedule_poster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_schedule_genre" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/image_schedule_poster"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="11dp"
+            android:id="@+id/spinner_date_schedule" />
+
+
+    </RelativeLayout>
+
+    <ListView
+        android:layout_marginTop="5dp"
+        android:id="@+id/list_schedules"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

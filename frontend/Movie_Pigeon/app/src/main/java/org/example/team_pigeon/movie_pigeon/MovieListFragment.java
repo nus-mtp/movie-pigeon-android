@@ -44,14 +44,7 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
     private ArrayList<Movie> movies;
     private ListView list_movies;
     private MovieListAdapter movieListAdapter;
-    private RequestHttpBuilderSingleton searchRequestHttpBuilder;
-    private Gson gson = new Gson();
     public View footerView;
-    public boolean isLoading = false;
-    public boolean noMoreResult = false;
-    private ArrayList<Movie> searchMovieList;
-    private MovieWithCount movieListWithCount;
-    private int resultCount;
     private Toolbar toolbar;
     private Bundle bundle;
     private String type;

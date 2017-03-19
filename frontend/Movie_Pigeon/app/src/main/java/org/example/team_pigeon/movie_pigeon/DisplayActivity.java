@@ -10,6 +10,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.utils.StorageUtils;
+
+import java.io.File;
+
 public class DisplayActivity extends AppCompatActivity {
     private FrameLayout frameLayout;
     private android.app.FragmentManager fragmentManager = null;
@@ -28,6 +37,9 @@ public class DisplayActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         fragmentManager = getFragmentManager();
         frameLayout = (FrameLayout) findViewById(R.id.fl_content);
+        if(!ImageLoader.getInstance().isInited()){
+            initImageLoaderConfig();
+        }
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -77,6 +89,21 @@ public class DisplayActivity extends AppCompatActivity {
                 }
         }
         return false;
+    }
+
+    private void initImageLoaderConfig(){
+        File cacheDir = StorageUtils.getOwnCacheDirectory(getApplicationContext(), "MoviePigeon/cache/poster");
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+                .threadPoolSize(5)
+                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
+                .memoryCacheSize(5 * 1024 * 1024)
+                .tasksProcessingOrder(QueueProcessingType.LIFO)
+                .diskCacheSize(50 * 1024 * 1024)
+                .diskCacheFileCount(200)
+                .diskCache(new UnlimitedDiskCache(cacheDir))
+                .writeDebugLogs()
+                .build();
+        ImageLoader.getInstance().init(config);
     }
 
 }

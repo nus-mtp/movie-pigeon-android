@@ -22,9 +22,10 @@ public class RequestHttpBuilderSingleton {
     private final String bookmarkUrl = "http://128.199.167.57:8080/api/bookmarks";
     private final String cinemaUrl = "http://128.199.167.57:8080/api/cinemas";
     private final String nowShowingUrl = "http://128.199.167.57:8080/api/showing";
-    //Same address as bookmark for testing
+    //Use bookmarks as place holders
     private final String recommendationUrl = "http://128.199.167.57:8080/api/bookmarks";
     private final String nowShowingHomePageUrl = "http://128.199.167.57:8080/api/showing/all";
+    private final String movieScheduleUrl = "http://128.199.167.57:8080/api/movies/schedule";
 
     protected RequestHttpBuilderSingleton() {}
 
@@ -97,6 +98,10 @@ public class RequestHttpBuilderSingleton {
 
     public Request getShowingListRequest(String cinemaId){
         return new Request.Builder().url(nowShowingUrl).header("Authorization", "Bearer "+ token.trim()).addHeader("cinema_id",cinemaId).build();
+    }
+
+    public Request getScheduleOfMovie(String movieId){
+        return new Request.Builder().url(movieScheduleUrl).header("Authorization", "Bearer "+ token.trim()).addHeader("movie_id",movieId).build();
     }
 
     public String getKeywords() {
