@@ -58,6 +58,8 @@ public class Movie implements Serializable{
     private boolean isRated;
     private boolean isReleased;
     private boolean isBookmarked;
+    @Expose
+    private boolean isShowing;
 
     public Movie(String title,String movieID){
         this.title = title;
@@ -230,5 +232,13 @@ public class Movie implements Serializable{
 
     public void setShowTimes(ArrayList<String> showTimes) {
         this.showTimes = showTimes;
+    }
+
+    public boolean isShowing() {
+        return isShowing;
+    }
+
+    public void setShowing(boolean showing) {
+        isShowing = showing;
     }
 }
