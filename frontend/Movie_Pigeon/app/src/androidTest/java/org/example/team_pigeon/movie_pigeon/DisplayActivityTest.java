@@ -46,9 +46,17 @@ public class DisplayActivityTest {
     };
 
     @Test
-    public void showMovieListProperly() {
-        onView(withId(R.id.toolbar_display_page)).check(matches(isDisplayed()));
+    public void movieListIsDisplayed() {
         onView(withId(R.id.list_movies)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void toolBarIsDisplayed() {
+        onView(withId(R.id.toolbar_display_page)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void allItemInTheListAreInCorrectPosition() {
         for(int i = 0;i<10;i++) {
             onData(withText(String.valueOf(i))).inAdapterView(withId(R.id.list_movies)).atPosition(i);
         }
