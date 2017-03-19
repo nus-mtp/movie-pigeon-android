@@ -9,9 +9,17 @@
     <string name="text_movie_page_actors">Actors</string>
     <string name="text_movie_page_director">Director</string>
     <string name="text_movie_page_genres">Genres</string>
-    
+
     <string-array name="updateUserInfo">
+        <item>Please Choose One...</item>
         <item>Change Username</item>
         <item>Change Password</item>
+    </string-array>
+
+    <string-array name="cinemaBrands">
+        <item>Please Choose Cinemas</item>
+        <item>Golden Village</item>
+        <item>Shaw Theatres</item>
+        <item>Cathay Cineplex</item>
     </string-array>
 </resources>

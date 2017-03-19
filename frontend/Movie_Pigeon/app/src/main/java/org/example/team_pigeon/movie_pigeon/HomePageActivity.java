@@ -2,9 +2,6 @@ package org.example.team_pigeon.movie_pigeon;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,17 +11,21 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.utils.StorageUtils;
 
 import org.example.team_pigeon.movie_pigeon.adapters.HomeViewPagerAdapter;
+
+import java.io.File;
 
 public class HomePageActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener, ViewPager.OnPageChangeListener{
     private TextView txt_title;
     private ViewPager viewPager;
-    private RadioButton rb_recommendation;
-    private RadioButton rb_me;
+    private RadioButton rb_recommendation,rb_me,rb_showing;
     private RadioGroup rg_tab_bar;
     private FrameLayout fl_content;
     private Context mContext;
@@ -34,7 +35,8 @@ public class HomePageActivity extends AppCompatActivity implements RadioGroup.On
     private long exitTime = 0;
 
     public static final int PAGE_RECOMMENDATION = 0;
-    public static final int PAGE_ME = 1;
+    public static final int PAGE_ME = 2;
+    public static final int PAGE_SHOWING = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,7 @@ public class HomePageActivity extends AppCompatActivity implements RadioGroup.On
         rg_tab_bar = (RadioGroup)findViewById(R.id.rg_tab_bar);
         rb_recommendation = (RadioButton)findViewById(R.id.rb_home);
         rb_me = (RadioButton)findViewById(R.id.rb_me);
+        rb_showing = (RadioButton) findViewById(R.id.rb_now_showing);
         rg_tab_bar.setOnCheckedChangeListener(this);
         viewPager = (ViewPager)findViewById(R.id.view_pager);
         viewPager.setAdapter(homeViewPagerAdapter);
@@ -76,10 +79,15 @@ public class HomePageActivity extends AppCompatActivity implements RadioGroup.On
     }
 
     private void initImageLoaderConfig(){
+        File cacheDir = StorageUtils.getOwnCacheDirectory(getApplicationContext(), "MoviePigeon/cache/poster");
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
                 .threadPoolSize(5)
                 .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
-                .memoryCacheSize(2 * 1024 * 1024)
+                .memoryCacheSize(5 * 1024 * 1024)
+                .tasksProcessingOrder(QueueProcessingType.LIFO)
+                .diskCacheSize(50 * 1024 * 1024)
+                .diskCacheFileCount(200)
+                .diskCache(new UnlimitedDiskCache(cacheDir))
                 .writeDebugLogs()
                 .build();
         ImageLoader.getInstance().init(config);
@@ -97,13 +105,16 @@ public class HomePageActivity extends AppCompatActivity implements RadioGroup.On
 
     @Override
     public void onPageScrollStateChanged(int state) {
-        if(state == 2) {
+        if(state == ViewPager.SCROLL_STATE_SETTLING) {
             switch (viewPager.getCurrentItem()) {
                 case PAGE_RECOMMENDATION:
                     rb_recommendation.setChecked(true);
                     break;
                 case PAGE_ME:
                     rb_me.setChecked(true);
+                    break;
+                case PAGE_SHOWING:
+                    rb_showing.setChecked(true);
                     break;
             }
         }
@@ -117,6 +128,9 @@ public class HomePageActivity extends AppCompatActivity implements RadioGroup.On
                 break;
             case R.id.rb_me:
                 viewPager.setCurrentItem(PAGE_ME);
+                break;
+            case R.id.rb_now_showing:
+                viewPager.setCurrentItem(PAGE_SHOWING);
                 break;
         }
     }

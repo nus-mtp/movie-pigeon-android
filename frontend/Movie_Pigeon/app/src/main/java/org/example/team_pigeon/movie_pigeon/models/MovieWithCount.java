@@ -14,7 +14,7 @@ public class MovieWithCount {
     @SerializedName("count")
     private int count;
     @Expose
-    @SerializedName("rows")
+    @SerializedName("raw")
     private ArrayList<Movie> movies;
 
     public MovieWithCount(int count, ArrayList<Movie> movies) {

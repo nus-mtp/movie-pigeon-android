@@ -4,7 +4,9 @@
     android:id="@+id/activity_home_page"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.example.team_pigeon.movie_pigeon.HomePageActivity">
+    tools:context="org.example.team_pigeon.movie_pigeon.HomePageActivity"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <RadioGroup
         android:id="@+id/rg_tab_bar"
@@ -21,6 +23,12 @@
             android:text="Home" />
 
         <RadioButton
+            android:id="@+id/rb_now_showing"
+            style="@style/tab_menu_item"
+            android:drawableTop="@drawable/tab_menu_now_showing"
+            android:text="Cinemas"/>
+
+        <RadioButton
             android:id="@+id/rb_me"
             style="@style/tab_menu_item"
             android:drawableTop="@drawable/tab_menu_me"
@@ -31,7 +39,7 @@
     <View
         android:id="@+id/div_tab_bar"
         android:layout_width="match_parent"
-        android:layout_height="2px"
+        android:layout_height="1dp"
         android:layout_above="@id/rg_tab_bar"
         android:background="@color/div_white" />
 

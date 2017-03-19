@@ -2,14 +2,69 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <SearchView
         android:id="@+id/search_view"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:iconifiedByDefault="false"
-        android:queryHint="Search movies by title..."
-        android:focusable="true"
-        android:focusableInTouchMode="true"/>
+        android:queryHint="Search movies by title..."/>
+
+    <TextView
+        android:text="Now Showing"
+        android:textSize="20sp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="20dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <GridView
+                android:id="@+id/grid_now_showing"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:stretchMode="spacingWidthUniform" >
+            </GridView>
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <TextView
+        android:text="Recommended For You"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView4" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="20dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <GridView
+                android:id="@+id/grid_recommended"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:stretchMode="spacingWidthUniform" >
+            </GridView>
+        </LinearLayout>
+
+    </HorizontalScrollView>
 </LinearLayout>

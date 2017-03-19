@@ -35,6 +35,16 @@
                     android:layout_height="222dp"
                     android:adjustViewBounds="true" />
 
+                <Button
+                    android:text="View Showtimes"
+                    android:textColor="@color/background_white"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/toolbar"
+                    android:textAllCaps="false"
+                    android:id="@+id/btn_view_schedule"
+                    android:layout_height="30dp" />
+
             </LinearLayout>
 
             <TableLayout
@@ -233,7 +243,7 @@
                 android:textSize="15sp"/>
 
             <RatingBar
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="5dp"

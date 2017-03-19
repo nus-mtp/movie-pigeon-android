@@ -1,0 +1,46 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.example.team_pigeon.movie_pigeon.CinemaFragment"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:descendantFocusability="blocksDescendants">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:id="@+id/spinner_cinema_brand"
+            android:textAlignment="center"
+            android:dropDownWidth="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner_cinema_outlet"
+            android:visibility="invisible"
+            android:textAlignment="center"
+            android:dropDownWidth="match_parent"/>
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner_date"
+            android:visibility="invisible"
+            android:textAlignment="center"
+            android:dropDownWidth="match_parent"/>
+
+        <ListView
+            android:id="@+id/list_now_showing"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+
+    </LinearLayout>
+</LinearLayout>

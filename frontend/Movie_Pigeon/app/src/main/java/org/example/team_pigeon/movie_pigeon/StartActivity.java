@@ -1,12 +1,18 @@
 package org.example.team_pigeon.movie_pigeon;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,6 +25,7 @@ import java.io.InputStreamReader;
 public class StartActivity extends AppCompatActivity {
 
     private final GlobalReceiver globalReceiver = new GlobalReceiver();
+    private final int PERMISSIONS_WRITE_EXTERNAL_STORAGE = 0;
     private File credential;
     private FileInputStream fis;
     private String token = "";
@@ -28,7 +35,6 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //Disable Landscape Mode
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        credential = new File(Environment.getExternalStorageDirectory() + "/MoviePigeon/Signin/credential");
 
         // set up broadcast globalReceiver to receive request from background thread
         IntentFilter filter = new IntentFilter();
@@ -36,6 +42,44 @@ public class StartActivity extends AppCompatActivity {
         filter.addAction("automaticSignin");
         registerReceiver(globalReceiver, filter);
 
+        //Check permission for android 6.0+ devices
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        //Ask for permission if there is no permission
+        if(permissionCheck != PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(this, "Please give us permission to save important in your device, otherwise this app may not able to run.", Toast.LENGTH_LONG).show();
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSIONS_WRITE_EXTERNAL_STORAGE);
+        }
+        else{
+            //Access credential if there is write to external storage permission
+            loadCredential();
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_WRITE_EXTERNAL_STORAGE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    loadCredential();
+                } else {
+                    //Close the app
+                    System.exit(0);
+                }
+                return;
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(globalReceiver);
+    }
+
+    private void loadCredential(){
+        credential = new File(Environment.getExternalStorageDirectory() + "/MoviePigeon/Signin/credential");
         if (credential.exists()) {
             // sign-in automatically
             // read token from file first
@@ -53,12 +97,6 @@ public class StartActivity extends AppCompatActivity {
 
             SigninPage sp = new SigninPage(StartActivity.this, this);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(globalReceiver);
     }
 
     String convertStreamToString(InputStream is) {

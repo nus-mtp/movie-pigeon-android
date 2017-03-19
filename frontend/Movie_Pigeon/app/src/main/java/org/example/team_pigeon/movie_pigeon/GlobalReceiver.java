@@ -5,8 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.Switch;
 
 /**
  * Created by Guo Mingxuan on 11/2/2017.
@@ -15,6 +16,19 @@ import android.widget.Switch;
 class GlobalReceiver extends BroadcastReceiver {
     String emailSignin, passwordSignin;
     String TAG = "GlobalReceiver";
+    Handler uiHandler;
+    private final static int VCodeSuccess = 0;
+    private final static int ResetSuccess = 1;
+    private final static int changeUsername = 0;
+    private static UserInfoSingleton userInfoBulk = UserInfoSingleton.getInstance();
+
+    GlobalReceiver() {
+        uiHandler = null;
+    }
+
+    GlobalReceiver(Handler handler) {
+        uiHandler = handler;
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -23,6 +37,8 @@ class GlobalReceiver extends BroadcastReceiver {
 
         switch (action) {
             case "startHomePageActivity":
+                // refresh user info singleton
+                userInfoBulk.reset();
                 // get token from the broadcast
                 Intent homePageIntent = new Intent(context, HomePageActivity.class);
                 // pass token to the new activity
@@ -49,9 +65,38 @@ class GlobalReceiver extends BroadcastReceiver {
                 sBuilder.execute(signInDetails);
                 break;
 
-            case "UserUpdate":
+            case "killRegistration":
+                Log.i(TAG, "Kill Registration received");
+                ((Activity) context).finish();
+                break;
+
+            case "userUpdate":
                 Log.i(TAG, "User Update received");
                 ((Activity) context).finish();
+                break;
+
+            case "vCodeSuccessful":
+                Log.i(TAG, "Successful VCode received");
+                uiHandler.sendEmptyMessage(VCodeSuccess);
+                break;
+
+            case "ResetSuccessful":
+                Log.i(TAG, "Successful VCode received");
+                uiHandler.sendEmptyMessage(ResetSuccess);
+                break;
+
+            case "dataPullingSuccess":
+                Log.i(TAG, "Successful data pulling received");
+                Intent startRegistration = new Intent(context, RegistrationActivity.class);
+                bundle = intent.getExtras();
+                startRegistration.putExtras(bundle);
+                context.startActivity(startRegistration);
+                ((Activity)context).finish();
+                break;
+
+            case "changeUsername":
+                Log.i(TAG, "Received msg to update username");
+                userInfoBulk.reset();
                 break;
         }
     }
