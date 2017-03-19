@@ -15,9 +15,9 @@
         android:layout_centerHorizontal="true" />
 
     <Button
-        android:text="Forget Password?"
+        android:text="Forgot Password?"
         android:textColor="@android:color/holo_blue_dark"
-        android:id="@+id/buttonForgetPassword"
+        android:id="@+id/buttonForgotPassword"
         android:background="@color/transparent"
         android:textAllCaps="false"
         android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:textAllCaps="false"
         android:layout_width="150dp"
-        android:layout_above="@+id/buttonForgetPassword"
+        android:layout_above="@+id/buttonForgotPassword"
         android:layout_alignStart="@+id/imageViewProfile" />
 
     <TableLayout

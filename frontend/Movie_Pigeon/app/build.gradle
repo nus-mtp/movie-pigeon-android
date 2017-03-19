@@ -54,5 +54,4 @@ dependencies {
     })
     // intent mocking support
     androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2.2'
-
 }

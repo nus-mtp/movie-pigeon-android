@@ -29,7 +29,7 @@ class SigninPage {
         signin = LayoutInflater.from(mActivity.getApplication()).inflate(R.layout.signin_page, null);
         Button BSignIn = (Button) signin.findViewById(R.id.buttonSignIn);
         Button BRegister = (Button) signin.findViewById(R.id.buttonRegister);
-        Button BForgetPassword = (Button) signin.findViewById(R.id.buttonForgetPassword);
+        Button BForgetPassword = (Button) signin.findViewById(R.id.buttonForgotPassword);
         Button BTrakt = (Button) signin.findViewById(R.id.buttonTrakt);
         Button BTmdb = (Button) signin.findViewById(R.id.buttonTmdb);
         mActivity.setContentView(signin);
