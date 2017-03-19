@@ -35,7 +35,7 @@ public class HomePageActivityTest {
     };
 
     @Test
-    public void ensureUiComponentsDisplayed() {
+    public void ensureNavigationButtonsAreDisplayed() {
         onView(withId(R.id.rg_tab_bar))
                 .check(matches(isDisplayed()));
         onView(withId(R.id.rb_now_showing))
@@ -44,21 +44,31 @@ public class HomePageActivityTest {
                 .check(matches(isDisplayed()));
         onView(withId(R.id.rb_me))
                 .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void viewPagerDisplayed() {
         onView(withId(R.id.view_pager))
-                .check(matches(isDisplayed()));
-        onView(withId(R.id.rg_tab_bar))
                 .check(matches(isDisplayed()));
     }
 
     @Test
-    public void viewPagerSwitchCorrectly() {
+    public void viewPagerSwitchToCinemaPageCorrectly() {
         onView(withText("Cinemas")).perform(click());
         onView(withId(R.id.spinner_cinema_brand)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void viewPagerSwitchToMePageCorrectly() {
         onView(withText("Me")).perform(click());
         onView(withText("My Ratings")).check(matches(isDisplayed()));
         onView(withText("My Bookmarks")).check(matches(isDisplayed()));
         onView(withText("Settings")).check(matches(isDisplayed()));
         onView(withText("Logout")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void viewPagerSwitchToHomePageCorrectly() {
         onView(withText("Home")).perform(click());
         onView(withId(R.id.search_view)).check(matches(isDisplayed()));
         onView(withId(R.id.grid_now_showing)).check(matches(isDisplayed()));
