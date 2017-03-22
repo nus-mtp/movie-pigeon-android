@@ -12,6 +12,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,19 +32,22 @@ import org.example.team_pigeon.movie_pigeon.utils.TimeUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class MovieScheduleFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class MovieScheduleFragment extends Fragment implements RadioGroup.OnCheckedChangeListener {
     private static String TAG = "MovieScheduleFragment";
     private ListView scheduleListView;
     private ImageView poster;
     private TextView lengthText, genreText;
-    private Spinner dateSpinner;
+    private RadioGroup dateGroup;
+    private RadioButton[] dateButtons = new RadioButton[7];
     private TimeUtil timeUtil = new TimeUtil();
     private List<Date> dateList;
     private List<String> dateListString;
@@ -54,6 +59,7 @@ public class MovieScheduleFragment extends Fragment implements AdapterView.OnIte
     private DisplayImageOptions options = new ImageConfig().getDisplayImageOption();
     private Boolean isDataReady = false;
     private LoadingDialog loadingDialog;
+    private Map<Integer,Integer> dateIdMap = new HashMap<>(7);
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -75,8 +81,9 @@ public class MovieScheduleFragment extends Fragment implements AdapterView.OnIte
         View view = inflater.inflate(R.layout.fragment_movie_schedule, container, false);
         bindView(view);
 
-        dateSpinner.setAdapter(new ArrayAdapter<>(getActivity(), R.layout.spinner_list_item, dateListString));
-        dateSpinner.setOnItemSelectedListener(this);
+        dateGroup.setOnCheckedChangeListener(this);
+        dateButtons[0].setChecked(true);
+
         //Set movie info views
         setMovieInfoViews();
 
@@ -196,23 +203,26 @@ public class MovieScheduleFragment extends Fragment implements AdapterView.OnIte
         poster = (ImageView) view.findViewById(R.id.image_schedule_poster);
         lengthText = (TextView) view.findViewById(R.id.text_schedule_length);
         genreText = (TextView) view.findViewById(R.id.text_schedule_genre);
-        dateSpinner = (Spinner) view.findViewById(R.id.spinner_date_schedule);
+        dateGroup = (RadioGroup) view.findViewById(R.id.rg_dates);
+        for(int i = 0;i<7;i++){
+            String buttonId = "rb_date_"+String.valueOf(i);
+            int resID = getResources().getIdentifier(buttonId,"id", "org.example.team_pigeon.movie_pigeon");
+            dateButtons[i] = (RadioButton) view.findViewById(resID);
+            dateButtons[i].setText(dateListString.get(i).substring(5));
+            dateIdMap.put(resID,i);
+        }
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (parent.getId() == R.id.spinner_date_schedule && isDataReady) {
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        int position = dateIdMap.get(checkedId);
+        if (isDataReady) {
             scheduleListView.setAdapter(adapterList.get(position));
             adapterList.get(position).notifyDataSetChanged();
             if(adapterList.get(position).getCount()==0){
                 Toast.makeText(getActivity(), "Sorry, there is no schedule available on this day.", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     //Async thread to handle search request
