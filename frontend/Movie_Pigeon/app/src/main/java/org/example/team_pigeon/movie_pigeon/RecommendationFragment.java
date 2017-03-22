@@ -65,9 +65,15 @@ public class RecommendationFragment extends Fragment implements AdapterView.OnIt
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.d(TAG, "Search query submit = " + query);
-                filteredNowShowingList = filterNowShowing(nowShowingMovieList,query);
-                searchTask = new Task();
-                searchTask.execute("search",query);
+                //Check if the characters are all ASCII characters
+                if(query.matches("^\\p{ASCII}*$")){
+                    filteredNowShowingList = filterNowShowing(nowShowingMovieList,query);
+                    searchTask = new Task();
+                    searchTask.execute("search",query);
+                }
+                else{
+                    Toast.makeText(getActivity(),"Please use English alphabets to search.",Toast.LENGTH_SHORT).show();
+                }
                 return false;
             }
             //TODO: Search suggestion
