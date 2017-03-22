@@ -1,8 +1,10 @@
 package org.example.team_pigeon.movie_pigeon;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -18,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -27,6 +32,7 @@ import org.example.team_pigeon.movie_pigeon.eventCenter.DeleteMovieFromMovieList
 import org.example.team_pigeon.movie_pigeon.eventCenter.UpdateMovieListEvent;
 import org.example.team_pigeon.movie_pigeon.models.Movie;
 import org.example.team_pigeon.movie_pigeon.models.PublicRating;
+import org.example.team_pigeon.movie_pigeon.models.Schedule;
 import org.example.team_pigeon.movie_pigeon.models.UserBookmark;
 import org.example.team_pigeon.movie_pigeon.models.UserRating;
 import org.greenrobot.eventbus.EventBus;
@@ -50,6 +56,7 @@ public class MoviePageFragment extends Fragment {
     private static final String UNBOOKMARK = "unbookmark";
     private TextView txt_country, txt_length, txt_director, txt_plot, txt_genres, txt_year, txt_actors, score_imdb, score_douban, score_trakt, text_score;
     private TableRow row_country, row_length, row_director, row_genres, row_year, row_actors;
+    private Button btn_showtimes;
     private LinearLayout linearLayout_ratings;
     private ImageView image_poster, image_imdb, image_douban, image_trakt;
     private Movie movie;
@@ -94,10 +101,12 @@ public class MoviePageFragment extends Fragment {
 
             case R.id.action_bookmark:
                 if(isBookmarked){
+                    item.setEnabled(false);
                     MyTask bookmarkTask = new MyTask();
                     bookmarkTask.execute(UNBOOKMARK, movie.getMovieID());
                 }
                 else{
+                    item.setEnabled(false);
                     userBookmark = new UserBookmark(movie.getMovieID());
                     MyTask bookmarkTask = new MyTask();
                     bookmarkTask.execute(BOOKMARK, movie.getMovieID());
@@ -132,6 +141,7 @@ public class MoviePageFragment extends Fragment {
         row_actors = (TableRow) view.findViewById(R.id.row_actors);
         linearLayout_ratings = (LinearLayout) view.findViewById(R.id.linear_ratings);
         ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
+        btn_showtimes = (Button) view.findViewById(R.id.btn_view_schedule);
     }
 
     private void setContent(Bundle argument) {
@@ -177,11 +187,33 @@ public class MoviePageFragment extends Fragment {
                 public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                     if(fromUser){
                         userRating = new UserRating(movie.getMovieID(), String.valueOf(rating * 2));
+                        ratingBar.setEnabled(false);
                         MyTask ratingTask = new MyTask();
                         ratingTask.execute(POST_RATING, movie.getMovieID(), String.valueOf(rating * 2));
                     }
                 }
             });
+
+            //Set Schedule Button
+            if(!movie.isShowing()){
+                btn_showtimes.setVisibility(View.GONE);
+            }
+            else {
+                btn_showtimes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        android.app.FragmentManager fragmentManager = getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("movie", movie);
+                        MovieScheduleFragment movieScheduleFragment = new MovieScheduleFragment();
+                        movieScheduleFragment.setArguments(bundle);
+                        fragmentTransaction.replace(R.id.fl_content, movieScheduleFragment);
+                        fragmentTransaction.addToBackStack(movieScheduleFragment.getClass().getName());
+                        fragmentTransaction.commit();
+                    }
+                });
+            }
         }
 
     }
@@ -210,6 +242,7 @@ public class MoviePageFragment extends Fragment {
     }
 
     private void setBookmarkIcon(boolean isBookmarked){
+        bookmarkItem.setEnabled(true);
         if(isBookmarked){
             bookmarkItem.setIcon(R.drawable.ic_bookmark_full);
         }
@@ -218,7 +251,7 @@ public class MoviePageFragment extends Fragment {
         }
     }
 
-    //Async thread to handle search request
+    //Async thread to handle http request
     private class MyTask extends AsyncTask<String, Integer, Integer> {
         private int successfulStatus = -1;
         private final int SUCCESSFUL_UNBOOKMARK = 2;
@@ -261,7 +294,7 @@ public class MoviePageFragment extends Fragment {
                 OkHttpClient client = requestHttpBuilder.getClient();
                 Response response = client.newCall(request).execute();
                 if (!response.isSuccessful()) {
-                    Log.i(TAG, "rating failed" + response);
+                    Log.i(TAG, "request" + requestType + "failed" + response);
                     throw new IOException("Unexpected code" + response);
                 } else {
                     status = successfulStatus;
@@ -285,6 +318,7 @@ public class MoviePageFragment extends Fragment {
                 case SUCCESSFUL_RATE:
                     Log.i(TAG, "Rating is completed");
                     Toast.makeText(getActivity(), "Update rating successfully!", Toast.LENGTH_SHORT).show();
+                    ratingBar.setEnabled(true);
                     movie.getUserRating().clear();
                     movie.getUserRating().add(userRating);
                     EventBus.getDefault().post(new UpdateMovieListEvent(position, movie));
@@ -317,7 +351,6 @@ public class MoviePageFragment extends Fragment {
                         EventBus.getDefault().post(new UpdateMovieListEvent(position, movie));
                     }
                     break;
-
                 case NO_INTERNET:
                     Toast.makeText(getActivity(), "Connection error, please make sure that you have Internet connection.", Toast.LENGTH_SHORT).show();
                     break;

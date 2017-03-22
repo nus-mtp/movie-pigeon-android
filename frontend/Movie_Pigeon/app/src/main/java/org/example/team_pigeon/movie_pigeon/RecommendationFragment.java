@@ -81,7 +81,6 @@ public class RecommendationFragment extends Fragment implements AdapterView.OnIt
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.e(TAG,"tap"+String.valueOf(position));
         Intent displayActivityIntent = new Intent(getActivity(), DisplayActivity.class);
         Bundle arguments = new Bundle();
         switch (parent.getId()) {
@@ -191,6 +190,9 @@ public class RecommendationFragment extends Fragment implements AdapterView.OnIt
                         }
                         else{
                             status = SUCCESSFUL_NOW_SHOWING;
+                            for(Movie movie:nowShowingMovieList){
+                                movie.setShowing(true);
+                            }
                         }
                         return null;
                     }
@@ -270,7 +272,6 @@ public class RecommendationFragment extends Fragment implements AdapterView.OnIt
                     recommendedGrid.setAdapter(recommendedMovieAdapter);
                     setOnclickListener(recommendedGrid);
                     recommendedMovieAdapter.notifyDataSetChanged();
-                    Log.e(TAG,String.valueOf(recommendedMovieAdapter.getCount()));
                     break;
                 case ERROR:
                     Toast.makeText(getActivity(), "Connection error, please check your connection", Toast.LENGTH_SHORT).show();
