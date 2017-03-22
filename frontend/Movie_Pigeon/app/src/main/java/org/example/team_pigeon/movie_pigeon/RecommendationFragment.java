@@ -1,13 +1,11 @@
 package org.example.team_pigeon.movie_pigeon;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +23,6 @@ import org.example.team_pigeon.movie_pigeon.models.Movie;
 import org.example.team_pigeon.movie_pigeon.models.MovieWithCount;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import okhttp3.OkHttpClient;
@@ -57,6 +54,7 @@ public class RecommendationFragment extends Fragment implements AdapterView.OnIt
         searchView = (SearchView) view.findViewById(R.id.search_view);
         nowShowingGrid = (GridView) view.findViewById(R.id.grid_now_showing);
         recommendedGrid = (GridView) view.findViewById(R.id.grid_recommended);
+        nowShowingMovieList = new ArrayList<>();
         nowShowingTask = new Task();
         nowShowingTask.execute("nowshowing");
         searchView.setSubmitButtonEnabled(true);
