@@ -53,6 +53,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -96,9 +98,6 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
     private GlobalReceiver receiver;
     private final int cinemasLoaded = 1;
     private final int locationLoaded = 0;
-    private TableLayout cinemaTable;
-    private ScrollView sv;
-    private LinearLayout ll;
     private CinemaListAdapter cinemaListAdapter;
     private ListView cinemaList;
     private boolean isGpsEnabled = false;
@@ -111,24 +110,7 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        View view = inflater.inflate(R.layout.fragment_cinema, container, false);
-//        bindViews(view);
-//        dateList = timeUtil.getDateList();
-//        dateListInString = timeUtil.getDateListToString_MMDDE(dateList);
-//        brands = this.getActivity().getResources().getStringArray(R.array.cinemaBrands);
-//        brandAdapter = new ArrayAdapter<>(this.getActivity(), R.layout.spinner_list_item,brands);
-//        brandSpinner.setAdapter(brandAdapter);
-//        nowShowingTask = new NowShowingTask();
-//        nowShowingTask.execute(GET_CINEMAS);
-//        if(!EventBus.getDefault().isRegistered(this)){
-//            EventBus.getDefault().register(this);
-//        }
         View view = inflater.inflate(R.layout.fragment_cinema_new, container, false);
-//        sv = (ScrollView) view.findViewById(R.id.cinema_scroll_view);
-//        ll = (LinearLayout) view.findViewById(R.id.ll);
-//        cinemaTable = new TableLayout(getContext());
-//        cinemaTable.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
-//        sv.addView(cinemaTable);
         String permission = "android.permission.ACCESS_FINE_LOCATION";
         int res = getContext().checkCallingOrSelfPermission(permission);
         isGpsEnabled = (res == PackageManager.PERMISSION_GRANTED);
@@ -171,24 +153,16 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
         nowShowingTask.execute(GET_CINEMAS);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.i(TAG, "Cinema fragment paused");
-        if (isGpsEnabled) {
-            getContext().unregisterReceiver(receiver);
-        }
-    }
-
     private void showCinemas() {
         Log.i(TAG, "Preparing to generate cinema table");
         // sort cinemas according to distance
-
+        Collections.sort(allCinemas,
+                new Comparator<Cinema>() {
+                    @Override
+                    public int compare(Cinema o1, Cinema o2) {
+                        return o1.getDistance() - o2.getDistance();
+                    }
+                });
         // load table rows containing cinema name and distance
         cinemaListAdapter = new CinemaListAdapter(allCinemas, getContext());
         cinemaList.setAdapter(cinemaListAdapter);
@@ -361,6 +335,9 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        if (isGpsEnabled) {
+            getContext().unregisterReceiver(receiver);
+        }
     }
 
     private class NowShowingTask extends AsyncTask<String, Integer, Void> {
@@ -372,7 +349,6 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
         private String requestType, cinemaId;
         private Location cinemaLocation;
         int status;
-        private UserInfoSingleton userInfoBulk = UserInfoSingleton.getInstance();
 
         @Override
         protected Void doInBackground(String... params) {
@@ -447,13 +423,10 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
                             cinemaLocation = new Location(cinema.getName());
                             cinemaLocation.setLatitude(Double.valueOf(cinema.getLatitude()));
                             cinemaLocation.setLongitude(Double.valueOf(cinema.getLongitude()));
-//                            Log.e(TAG, "Lat and lon stored are " + Double.valueOf(cinema.getLatitude()) + " " + Double.valueOf(cinema.getLongitude()));
-//                            Log.e(TAG, "User location is " + userLocation.getLatitude() + " " + userLocation.getLongitude());
                             int distance = (int) userLocation.distanceTo(cinemaLocation);
-                            Log.e(TAG, "getCinemas: distance is " + distance);
                             cinema.setDistance(distance);
                         } else {
-//                            Log.e(TAG, "getCinemas: user location is null");
+                            Log.e(TAG, "getCinemas: user location is null");
                         }
                         allCinemas.add(cinema);
                     }
