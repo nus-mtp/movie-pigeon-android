@@ -1,17 +1,27 @@
 package org.example.team_pigeon.movie_pigeon;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -62,6 +72,7 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
     private ArrayList<Cinema> gvCinemas = new ArrayList<>();
     private ArrayList<Cinema> sbCinemas = new ArrayList<>();
     private ArrayList<Cinema> cathayCinemas = new ArrayList<>();
+    private ArrayList<Cinema> allCinemas;
     private ArrayList<ArrayList<Movie>> oneWeekMovieList;
     private ArrayList<Movie> movieList;
     private ArrayList<Movie> moviesOfTheDay = new ArrayList<>();
@@ -73,6 +84,13 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
     private boolean isCinemasLoaded = false;
     private int currentDay;
     private TimeUtil timeUtil = new TimeUtil();
+    private GlobalReceiver receiver;
+    private final int cinemasLoaded = 1;
+    private TableLayout cinemaTable;
+    private ScrollView sv;
+    private LinearLayout ll;
+    private CinemaListAdapter cinemaListAdapter;
+    private ListView cinemaList;
 
 
     public CinemaFragment() {
@@ -82,20 +100,71 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_cinema, container, false);
-        bindViews(view);
-        dateList = timeUtil.getDateList();
-        dateListInString = timeUtil.getDateListToString_MMDDE(dateList);
-        brands = this.getActivity().getResources().getStringArray(R.array.cinemaBrands);
-        brandAdapter = new ArrayAdapter<>(this.getActivity(), R.layout.spinner_list_item,brands);
-        brandSpinner.setAdapter(brandAdapter);
-        nowShowingTask = new NowShowingTask();
-        nowShowingTask.execute(GET_CINEMAS);
-        if(!EventBus.getDefault().isRegistered(this)){
-            EventBus.getDefault().register(this);
+//        View view = inflater.inflate(R.layout.fragment_cinema, container, false);
+//        bindViews(view);
+//        dateList = timeUtil.getDateList();
+//        dateListInString = timeUtil.getDateListToString_MMDDE(dateList);
+//        brands = this.getActivity().getResources().getStringArray(R.array.cinemaBrands);
+//        brandAdapter = new ArrayAdapter<>(this.getActivity(), R.layout.spinner_list_item,brands);
+//        brandSpinner.setAdapter(brandAdapter);
+//        nowShowingTask = new NowShowingTask();
+//        nowShowingTask.execute(GET_CINEMAS);
+//        if(!EventBus.getDefault().isRegistered(this)){
+//            EventBus.getDefault().register(this);
+//        }
+        View view = inflater.inflate(R.layout.fragment_cinema_new, container, false);
+//        sv = (ScrollView) view.findViewById(R.id.cinema_scroll_view);
+//        ll = (LinearLayout) view.findViewById(R.id.ll);
+//        cinemaTable = new TableLayout(getContext());
+//        cinemaTable.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
+//        sv.addView(cinemaTable);
+        cinemaList = (ListView) view.findViewById(R.id.cinema_list);
+        if (!isCinemasLoaded) { // make sure cinemaTable is loaded
+            loadCinemaList();
         }
+        receiver = new GlobalReceiver(new Handler() {
+            public void handleMessage(Message msg) {
+                final int what = msg.what;
+                switch(what) {
+                    case cinemasLoaded:
+                        Log.i(TAG, "Successfully loaded cinemas");
+                        showCinemas();
+                        break;
+                }
+            }
+        });
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("cinemasLoaded");
+        getContext().registerReceiver(receiver, filter);
         view.requestFocus();
         return view;
+    }
+
+    private void loadCinemaList() {
+        allCinemas = new ArrayList<>();
+        nowShowingTask = new NowShowingTask();
+        nowShowingTask.execute(GET_CINEMAS);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.i(TAG, "Cinema fragment paused");
+        getContext().unregisterReceiver(receiver);
+    }
+
+    private void showCinemas() {
+        Log.i(TAG, "Preparing to generate cinema table");
+        // sort cinemas according to distance
+
+        // load table rows containing cinema name and distance
+        cinemaListAdapter = new CinemaListAdapter(allCinemas, getContext());
+        cinemaList.setAdapter(cinemaListAdapter);
     }
 
     private void bindViews(View view) {
@@ -303,6 +372,8 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
                 case SUCCESSFUL_CINEMALIST:
                     Log.i(TAG, "Requset is completed");
                     isCinemasLoaded = true;
+                    Intent intent = new Intent("cinemasLoaded");
+                    getContext().sendBroadcast(intent);
                     break;
                 case SUCCESSFUL_MOVIELIST:
                     Log.i(TAG,"Request is completed");
@@ -347,17 +418,18 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
                 } else {
                     status = SUCCESSFUL_CINEMALIST;
                     for (Cinema cinema : cinemas) {
-                        switch (cinema.getProvider()) {
-                            case PROVIDER_CATHAY:
-                                cathayCinemas.add(cinema);
-                                break;
-                            case PROVIDER_GV:
-                                gvCinemas.add(cinema);
-                                break;
-                            case PROVIDER_SB:
-                                sbCinemas.add(cinema);
-                                break;
-                        }
+//                        switch (cinema.getProvider()) {
+//                            case PROVIDER_CATHAY:
+//                                cathayCinemas.add(cinema);
+//                                break;
+//                            case PROVIDER_GV:
+//                                gvCinemas.add(cinema);
+//                                break;
+//                            case PROVIDER_SB:
+//                                sbCinemas.add(cinema);
+//                                break;
+//                        }
+                        allCinemas.add(cinema);
                     }
                 }
             } catch (IOException e) {

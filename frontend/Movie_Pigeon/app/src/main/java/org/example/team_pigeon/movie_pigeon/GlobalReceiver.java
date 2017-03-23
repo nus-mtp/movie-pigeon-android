@@ -19,7 +19,7 @@ class GlobalReceiver extends BroadcastReceiver {
     Handler uiHandler;
     private final static int VCodeSuccess = 0;
     private final static int ResetSuccess = 1;
-    private final static int changeUsername = 0;
+    private final static int cinemasLoaded = 1;
     private static UserInfoSingleton userInfoBulk = UserInfoSingleton.getInstance();
 
     GlobalReceiver() {
@@ -97,6 +97,11 @@ class GlobalReceiver extends BroadcastReceiver {
             case "changeUsername":
                 Log.i(TAG, "Received msg to update username");
                 userInfoBulk.reset();
+                break;
+
+            case "cinemasLoaded":
+                Log.i(TAG, "Received msg that cinemas loaded");
+                uiHandler.sendEmptyMessage(cinemasLoaded);
                 break;
         }
     }
