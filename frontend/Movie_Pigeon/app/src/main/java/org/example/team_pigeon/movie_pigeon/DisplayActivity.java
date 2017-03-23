@@ -3,9 +3,11 @@ package org.example.team_pigeon.movie_pigeon;
 
 
 import android.content.pm.ActivityInfo;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -23,6 +25,7 @@ public class DisplayActivity extends AppCompatActivity {
     private FrameLayout frameLayout;
     private android.app.FragmentManager fragmentManager = null;
     private String type;
+    private String TAG = "DisplayActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,14 @@ public class DisplayActivity extends AppCompatActivity {
             searchPageFragment.setArguments(argument);
             android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.fl_content, searchPageFragment);
+            fragmentTransaction.commit();
+        }
+        else if (type.equals("nowShowing")) {
+            Log.i(TAG, "onCreate: received now showing intent");
+            CinemaScheduleFragment cinemaScheduleFragment = new CinemaScheduleFragment();
+            cinemaScheduleFragment.setArguments(argument);
+            android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fl_content, cinemaScheduleFragment);
             fragmentTransaction.commit();
         }
         //Handle movie list requests

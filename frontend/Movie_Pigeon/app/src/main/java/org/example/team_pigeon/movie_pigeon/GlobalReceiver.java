@@ -22,6 +22,7 @@ class GlobalReceiver extends BroadcastReceiver {
     private final static int ResetSuccess = 1;
     private final static int cinemasLoaded = 1;
     private final static int locationLoaded = 0;
+    private final static int weekList = 1;
     private static UserInfoSingleton userInfoBulk = UserInfoSingleton.getInstance();
 
     GlobalReceiver() {
@@ -113,6 +114,11 @@ class GlobalReceiver extends BroadcastReceiver {
                 msg.setData(bundle);
                 msg.what = locationLoaded;
                 uiHandler.sendMessage(msg);
+                break;
+
+            case "weekList":
+                Log.i(TAG, "Received week list");
+                uiHandler.sendEmptyMessage(weekList);
                 break;
         }
     }

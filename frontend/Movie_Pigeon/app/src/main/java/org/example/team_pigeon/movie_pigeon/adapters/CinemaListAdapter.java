@@ -1,4 +1,4 @@
-package org.example.team_pigeon.movie_pigeon;
+package org.example.team_pigeon.movie_pigeon.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import org.example.team_pigeon.movie_pigeon.R;
 import org.example.team_pigeon.movie_pigeon.models.Cinema;
 
 import java.util.ArrayList;

@@ -17,9 +17,9 @@ import android.util.Log;
  */
 
 public class GPSService extends Service {
-    // location update intervals are 10s and 100m
+    // location update intervals are 10s and 0m
     private static final int LOCATION_INTERVAL = 10000;
-    private static final float LOCATION_DISTANCE = 100;
+    private static final float LOCATION_DISTANCE = 0;
     private LocationManager mLocationManager;
     private String TAG = "GPSService";
 
