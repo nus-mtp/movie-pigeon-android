@@ -1,12 +1,21 @@
 package org.example.team_pigeon.movie_pigeon;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -52,7 +61,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class CinemaFragment extends Fragment implements AdapterView.OnItemSelectedListener,AdapterView.OnItemClickListener{
+public class CinemaFragment extends Fragment implements AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener {
     private static final String TAG = "CinemaFragment";
     private static final String PROVIDER_GV = "gv";
     private static final String PROVIDER_SB = "sb";
@@ -86,12 +95,14 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
     private TimeUtil timeUtil = new TimeUtil();
     private GlobalReceiver receiver;
     private final int cinemasLoaded = 1;
+    private final int locationLoaded = 0;
     private TableLayout cinemaTable;
     private ScrollView sv;
     private LinearLayout ll;
     private CinemaListAdapter cinemaListAdapter;
     private ListView cinemaList;
-
+    private boolean isGpsEnabled = false;
+    Location userLocation;
 
     public CinemaFragment() {
     }
@@ -118,23 +129,37 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
 //        cinemaTable = new TableLayout(getContext());
 //        cinemaTable.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
 //        sv.addView(cinemaTable);
-        cinemaList = (ListView) view.findViewById(R.id.cinema_list);
-        if (!isCinemasLoaded) { // make sure cinemaTable is loaded
-            loadCinemaList();
+        String permission = "android.permission.ACCESS_FINE_LOCATION";
+        int res = getContext().checkCallingOrSelfPermission(permission);
+        isGpsEnabled = (res == PackageManager.PERMISSION_GRANTED);
+        if (!isGpsEnabled) {
+            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            Log.i(TAG, "onCreateView: asking for gps permission");
         }
+        cinemaList = (ListView) view.findViewById(R.id.cinema_list);
         receiver = new GlobalReceiver(new Handler() {
             public void handleMessage(Message msg) {
                 final int what = msg.what;
-                switch(what) {
+                switch (what) {
                     case cinemasLoaded:
                         Log.i(TAG, "Successfully loaded cinemas");
                         showCinemas();
+                        break;
+                    case locationLoaded:
+                        Log.i(TAG, "Successfully loaded location");
+                        Bundle coordinates = msg.getData();
+                        userLocation = new Location("user");
+                        userLocation.setLatitude(coordinates.getDouble("lat"));
+                        userLocation.setLongitude(coordinates.getDouble("lon"));
+                        Log.i(TAG, "User location is " + userLocation);
+                        loadCinemaList();
                         break;
                 }
             }
         });
         IntentFilter filter = new IntentFilter();
         filter.addAction("cinemasLoaded");
+        filter.addAction("locationLoaded");
         getContext().registerReceiver(receiver, filter);
         view.requestFocus();
         return view;
@@ -147,7 +172,7 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
     }
 
@@ -155,7 +180,9 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
     public void onPause() {
         super.onPause();
         Log.i(TAG, "Cinema fragment paused");
-        getContext().unregisterReceiver(receiver);
+        if (isGpsEnabled) {
+            getContext().unregisterReceiver(receiver);
+        }
     }
 
     private void showCinemas() {
@@ -178,17 +205,17 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
         movieListView.setOnItemClickListener(this);
     }
 
-    private ArrayList<ArrayList<Movie>> getOneWeekMovieList (ArrayList<Movie> movieList, List<Date> dateList) throws ParseException {
+    private ArrayList<ArrayList<Movie>> getOneWeekMovieList(ArrayList<Movie> movieList, List<Date> dateList) throws ParseException {
         ArrayList<ArrayList<Movie>> oneWeekMovieList = new ArrayList<>();
-        for(int i=0;i<7;i++){
+        for (int i = 0; i < 7; i++) {
             oneWeekMovieList.add(new ArrayList<Movie>());
         }
-        for(int i = 0; i<dateList.size();i++){
-            for(int j = 0; j<movieList.size();j++){
+        for (int i = 0; i < dateList.size(); i++) {
+            for (int j = 0; j < movieList.size(); j++) {
                 Movie movie = movieList.get(j);
                 Date date = dateList.get(i);
-                ArrayList<String> showTime = convertToShowTimeArray(date,movie.getSchedule());
-                if(!showTime.isEmpty()){
+                ArrayList<String> showTime = convertToShowTimeArray(date, movie.getSchedule());
+                if (!showTime.isEmpty()) {
                     movie.setShowTimes(showTime);
                     oneWeekMovieList.get(i).add(movie);
                 }
@@ -211,7 +238,7 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
             try {
                 time = stringToDate.parse(timeString);
             } catch (ParseException e) {
-                Log.d(TAG,"Parsing schedule with a mistake. TimeString:"+timeString);
+                Log.d(TAG, "Parsing schedule with a mistake. TimeString:" + timeString);
                 return null;
             }
             calendarTwo.setTime(time);
@@ -225,55 +252,51 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String cinemaId;
-        if(isCinemasLoaded) {
+        if (isCinemasLoaded) {
             switch (parent.getId()) {
                 case R.id.spinner_cinema_brand:
                     cinemaAdapter = getOutletSpinnerAdapter(position);
-                    if(cinemaAdapter!=null) {
+                    if (cinemaAdapter != null) {
                         outletSpinner.setAdapter(cinemaAdapter);
                         outletSpinner.setVisibility(View.VISIBLE);
                         dateSpinner.setVisibility(View.INVISIBLE);
-                    }
-                    else{
+                    } else {
                         outletSpinner.setVisibility(View.GONE);
                     }
                     dateSpinner.setVisibility(View.GONE);
                     movieListView.setVisibility(View.GONE);
                     break;
                 case R.id.spinner_cinema_outlet:
-                    if(position!=0) {
+                    if (position != 0) {
                         cinemaId = cinemaAdapter.getItem(position).getId();
                         nowShowingTask = new NowShowingTask();
                         nowShowingTask.execute(GET_MOVIES, cinemaId);
-                    }
-                    else {
+                    } else {
                         dateSpinner.setVisibility(View.GONE);
                     }
                     movieListView.setVisibility(View.GONE);
                     break;
                 case R.id.spinner_date:
-                    if(position!=0) {
-                        currentDay = position-1;
-                        if(nowShowingListAdapter==null) {
+                    if (position != 0) {
+                        currentDay = position - 1;
+                        if (nowShowingListAdapter == null) {
                             //init adapter
                             moviesOfTheDay.addAll(oneWeekMovieList.get(currentDay));
-                            if(moviesOfTheDay.isEmpty()){
+                            if (moviesOfTheDay.isEmpty()) {
                                 Toast.makeText(getActivity(), "Opps, there is no movie schedule on this day yet.", Toast.LENGTH_SHORT).show();
                             }
                             nowShowingListAdapter = new NowShowingListAdapter(moviesOfTheDay, this.getActivity());
                             movieListView.setAdapter(nowShowingListAdapter);
-                        }
-                        else{
+                        } else {
                             moviesOfTheDay.clear();
                             moviesOfTheDay.addAll(oneWeekMovieList.get(currentDay));
-                            if(moviesOfTheDay.isEmpty()){
+                            if (moviesOfTheDay.isEmpty()) {
                                 Toast.makeText(getActivity(), "Opps, there is no movie schedule on this day yet.", Toast.LENGTH_SHORT).show();
                             }
                             nowShowingListAdapter.notifyDataSetChanged();
                         }
                         movieListView.setVisibility(View.VISIBLE);
-                    }
-                    else {
+                    } else {
                         movieListView.setVisibility(View.GONE);
                     }
                     break;
@@ -285,9 +308,9 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent displayActivityIntent = new Intent(getActivity(), DisplayActivity.class);
         Bundle arguments = new Bundle();
-        arguments.putSerializable("movie",nowShowingListAdapter.getItem(position));
+        arguments.putSerializable("movie", nowShowingListAdapter.getItem(position));
         arguments.putString("type", "moviePage");
-        arguments.putInt("position",position);
+        arguments.putInt("position", position);
         arguments.putString("title", nowShowingListAdapter.getItem(position).getTitle());
         displayActivityIntent.putExtra("bundle", arguments);
         getActivity().startActivity(displayActivityIntent);
@@ -311,24 +334,24 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
     }
 
     @Subscribe
-    public void onAddMovieToMovieListEvent(AddMovieToMovieListEvent event){
-        if(nowShowingListAdapter!=null) {
+    public void onAddMovieToMovieListEvent(AddMovieToMovieListEvent event) {
+        if (nowShowingListAdapter != null) {
             nowShowingListAdapter.addMovieItemToAdapter(event.movie, event.position);
             Log.i(TAG, "New movie is added to local list");
         }
     }
 
     @Subscribe
-    public void onDeleteMovieFromMovieListEvent(DeleteMovieFromMovieListEvent event){
-        if(nowShowingListAdapter!=null) {
+    public void onDeleteMovieFromMovieListEvent(DeleteMovieFromMovieListEvent event) {
+        if (nowShowingListAdapter != null) {
             nowShowingListAdapter.removeMovieItemToAdapter(event.position);
             Log.i(TAG, "A movie is removed from local list");
         }
     }
 
     @Subscribe
-    public void onUpdateMovieListEvent(UpdateMovieListEvent event){
-        if(nowShowingListAdapter!=null) {
+    public void onUpdateMovieListEvent(UpdateMovieListEvent event) {
+        if (nowShowingListAdapter != null) {
             nowShowingListAdapter.updateMovieItemToAdapter(event.movie, event.position);
             Log.i(TAG, "A movie is updated to local list at pos " + String.valueOf(event.position));
         }
@@ -347,7 +370,9 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
         private final int NO_RESULT = 3;
         private final int NO_INTERNET = 4;
         private String requestType, cinemaId;
+        private Location cinemaLocation;
         int status;
+        private UserInfoSingleton userInfoBulk = UserInfoSingleton.getInstance();
 
         @Override
         protected Void doInBackground(String... params) {
@@ -418,17 +443,18 @@ public class CinemaFragment extends Fragment implements AdapterView.OnItemSelect
                 } else {
                     status = SUCCESSFUL_CINEMALIST;
                     for (Cinema cinema : cinemas) {
-//                        switch (cinema.getProvider()) {
-//                            case PROVIDER_CATHAY:
-//                                cathayCinemas.add(cinema);
-//                                break;
-//                            case PROVIDER_GV:
-//                                gvCinemas.add(cinema);
-//                                break;
-//                            case PROVIDER_SB:
-//                                sbCinemas.add(cinema);
-//                                break;
-//                        }
+                        if (userLocation != null) {
+                            cinemaLocation = new Location(cinema.getName());
+                            cinemaLocation.setLatitude(Double.valueOf(cinema.getLatitude()));
+                            cinemaLocation.setLongitude(Double.valueOf(cinema.getLongitude()));
+//                            Log.e(TAG, "Lat and lon stored are " + Double.valueOf(cinema.getLatitude()) + " " + Double.valueOf(cinema.getLongitude()));
+//                            Log.e(TAG, "User location is " + userLocation.getLatitude() + " " + userLocation.getLongitude());
+                            int distance = (int) userLocation.distanceTo(cinemaLocation);
+                            Log.e(TAG, "getCinemas: distance is " + distance);
+                            cinema.setDistance(distance);
+                        } else {
+//                            Log.e(TAG, "getCinemas: user location is null");
+                        }
                         allCinemas.add(cinema);
                     }
                 }

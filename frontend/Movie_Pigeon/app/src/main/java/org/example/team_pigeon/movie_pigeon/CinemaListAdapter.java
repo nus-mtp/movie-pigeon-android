@@ -48,7 +48,7 @@ public class CinemaListAdapter extends BaseAdapter {
         name.setText(cinema.getName());
         TextView distance = (TextView) convertView.findViewById(R.id.cinema_distance);
         // TODO set distance
-        distance.setText("Distance");
+        distance.setText(cinema.getDistance() + "m");
         return convertView;
     }
 }

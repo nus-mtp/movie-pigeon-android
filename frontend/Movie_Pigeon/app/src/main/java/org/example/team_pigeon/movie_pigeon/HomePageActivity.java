@@ -1,6 +1,7 @@
 package org.example.team_pigeon.movie_pigeon;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -41,6 +42,9 @@ public class HomePageActivity extends AppCompatActivity implements RadioGroup.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // start gps service
+        Intent intent = new Intent(this, GPSService.class);
+        startService(intent);
         //Disable Landscape Mode
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         initImageLoaderConfig();
