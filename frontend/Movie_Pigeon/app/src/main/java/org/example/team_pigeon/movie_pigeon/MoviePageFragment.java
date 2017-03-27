@@ -54,8 +54,8 @@ public class MoviePageFragment extends Fragment {
     private static final String POST_RATING = "post rating";
     private static final String BOOKMARK = "bookmark";
     private static final String UNBOOKMARK = "unbookmark";
-    private TextView txt_country, txt_length, txt_director, txt_plot, txt_genres, txt_year, txt_actors, score_imdb, score_douban, score_trakt, text_score;
-    private TableRow row_country, row_length, row_director, row_genres, row_year, row_actors;
+    private TextView txt_length, txt_director, txt_plot, txt_genres, txt_year, txt_actors, score_imdb, score_douban, score_trakt, text_score;
+    private TableRow  row_length, row_director, row_genres, row_year, row_actors;
     private Button btn_showtimes;
     private LinearLayout linearLayout_ratings;
     private ImageView image_poster, image_imdb, image_douban, image_trakt;
@@ -119,7 +119,6 @@ public class MoviePageFragment extends Fragment {
 
 
     private void loadViews(View view) {
-        txt_country = (TextView) view.findViewById(R.id.text_movie_page_country_content);
         txt_director = (TextView) view.findViewById(R.id.text_movie_page_director_content);
         txt_plot = (TextView) view.findViewById(R.id.text_movie_page_plot_content);
         txt_length = (TextView) view.findViewById(R.id.text_movie_page_length_content);
@@ -134,7 +133,6 @@ public class MoviePageFragment extends Fragment {
         image_douban = (ImageView) view.findViewById(R.id.image_douban);
         image_trakt = (ImageView) view.findViewById(R.id.image_trakt);
         row_year = (TableRow) view.findViewById(R.id.row_year);
-        row_country = (TableRow) view.findViewById(R.id.row_country);
         row_director = (TableRow) view.findViewById(R.id.row_director);
         row_length = (TableRow) view.findViewById(R.id.row_length);
         row_genres = (TableRow) view.findViewById(R.id.row_genres);
@@ -160,7 +158,6 @@ public class MoviePageFragment extends Fragment {
 
             //Set other details
             setTextOtherwiseSetGone(movie.getProductionYear(), row_year, txt_year);
-            setTextOtherwiseSetGone(movie.getCountry(), row_country, txt_country);
             setTextOtherwiseSetGone(movie.getLength(), row_length, txt_length);
             setTextOtherwiseSetGone(movie.getDirector(), row_director, txt_director);
             setTextOtherwiseSetGone(movie.getGenres(), row_genres, txt_genres);
@@ -230,7 +227,7 @@ public class MoviePageFragment extends Fragment {
     }
 
     private void setRatingsOtherwiseSetGone(String rating, TextView score, ImageView icon) {
-        if (rating != null) {
+        if (rating != null && !rating.equals("0")) {
             if (rating.length() >= 5) {
                 rating = rating.substring(0, 3);
             }

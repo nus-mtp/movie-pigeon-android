@@ -98,6 +98,7 @@ public class HomePageActivity extends AppCompatActivity implements RadioGroup.On
         viewPager.setAdapter(homeViewPagerAdapter);
         viewPager.setCurrentItem(0);
         viewPager.addOnPageChangeListener(this);
+        viewPager.setOffscreenPageLimit(2);
     }
 
     private void initImageLoaderConfig(){
