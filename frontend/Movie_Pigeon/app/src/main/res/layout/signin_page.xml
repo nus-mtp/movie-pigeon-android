@@ -15,28 +15,6 @@
         android:layout_alignStart="@+id/loginTable"
         android:layout_alignEnd="@+id/loginTable" />
 
-    <Button
-        android:text="Forgot Password?"
-        android:textColor="@android:color/holo_blue_dark"
-        android:id="@+id/buttonForgotPassword"
-        android:background="@color/transparent"
-        android:textAllCaps="false"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_width="150dp"/>
-
-    <Button
-        android:text="Register Here"
-        android:textColor="@android:color/holo_blue_dark"
-        android:id="@+id/buttonRegister"
-        android:background="@color/transparent"
-        android:layout_height="wrap_content"
-        android:textAllCaps="false"
-        android:layout_width="150dp"
-        android:layout_above="@+id/buttonForgotPassword"
-        android:layout_alignStart="@+id/imageViewProfile" />
-
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -149,4 +127,26 @@
         android:layout_alignEnd="@+id/textView"
         android:scaleX="1.2"
         android:scaleY="1.3"/>
+
+    <Button
+        android:text="Register Here"
+        android:textColor="@android:color/holo_blue_dark"
+        android:id="@+id/buttonRegister"
+        android:background="@color/transparent"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:layout_width="150dp"
+        android:layout_above="@+id/buttonForgotPassword"
+        android:layout_alignStart="@+id/buttonForgotPassword" />
+
+    <Button
+        android:text="Forgot Password?"
+        android:textColor="@android:color/holo_blue_dark"
+        android:id="@+id/buttonForgotPassword"
+        android:background="@color/transparent"
+        android:textAllCaps="false"
+        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
