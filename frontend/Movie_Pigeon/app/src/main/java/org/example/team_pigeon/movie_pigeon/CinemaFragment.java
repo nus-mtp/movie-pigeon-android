@@ -166,10 +166,11 @@ public class CinemaFragment extends Fragment {
         super.onResume();
         Log.i(TAG, "onResume: back from pause");
         gpsLoading.setVisibility(View.VISIBLE);
-        if (allCinemas!=null) {
-            Log.i(TAG, "onResume: loading cached cinema list");
+        if (!isGPSRunning() || userLocation == null) {
+            Log.i(TAG, "onResume: load default list");
+            loadCinemaList();
+        } else {
             gpsLoading.setVisibility(View.GONE);
-            showCinemas();
         }
     }
 

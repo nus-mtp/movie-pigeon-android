@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -169,11 +170,16 @@ public class HomePageActivity extends AppCompatActivity implements RadioGroup.On
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             Log.i(TAG, "onCreate: asking for gps permission");
         }
+        LocationManager mLocationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
         if (resCoarse == PackageManager.PERMISSION_GRANTED && resFine == PackageManager.PERMISSION_GRANTED) {
-            // start gps service
-            Intent intent = new Intent(this, GPSService.class);
-            startService(intent);
-            Log.i(TAG, "onCreate: started gps service");
+            if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                // start gps service
+                Intent intent = new Intent(this, GPSService.class);
+                startService(intent);
+                Log.i(TAG, "onCreate: started gps service");
+            } else {
+                Toast.makeText(this, "GPS is not turned on", Toast.LENGTH_SHORT).show();
+            }
         } else {
             Log.e(TAG, "onCreate: don't have permission for gps");
             Toast.makeText(getApplicationContext(), "GPS permission not granted", Toast.LENGTH_SHORT).show();
