@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
@@ -19,7 +20,9 @@ class GlobalReceiver extends BroadcastReceiver {
     Handler uiHandler;
     private final static int VCodeSuccess = 0;
     private final static int ResetSuccess = 1;
-    private final static int changeUsername = 0;
+    private final static int cinemasLoaded = 1;
+    private final static int locationLoaded = 0;
+    private final static int weekList = 1;
     private static UserInfoSingleton userInfoBulk = UserInfoSingleton.getInstance();
 
     GlobalReceiver() {
@@ -97,6 +100,25 @@ class GlobalReceiver extends BroadcastReceiver {
             case "changeUsername":
                 Log.i(TAG, "Received msg to update username");
                 userInfoBulk.reset();
+                break;
+
+            case "cinemasLoaded":
+                Log.i(TAG, "Received msg that cinemas loaded");
+                uiHandler.sendEmptyMessage(cinemasLoaded);
+                break;
+
+            case "locationLoaded":
+                Log.i(TAG, "Received msg that location loaded");
+                bundle = intent.getExtras();
+                Message msg = new Message();
+                msg.setData(bundle);
+                msg.what = locationLoaded;
+                uiHandler.sendMessage(msg);
+                break;
+
+            case "weekList":
+                Log.i(TAG, "Received week list");
+                uiHandler.sendEmptyMessage(weekList);
                 break;
         }
     }

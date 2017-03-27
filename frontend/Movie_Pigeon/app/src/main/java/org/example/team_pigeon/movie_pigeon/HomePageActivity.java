@@ -1,10 +1,15 @@
 package org.example.team_pigeon.movie_pigeon;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -22,6 +27,8 @@ import org.example.team_pigeon.movie_pigeon.adapters.HomeViewPagerAdapter;
 
 import java.io.File;
 
+import static java.security.AccessController.getContext;
+
 public class HomePageActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener, ViewPager.OnPageChangeListener{
     private TextView txt_title;
     private ViewPager viewPager;
@@ -37,6 +44,8 @@ public class HomePageActivity extends AppCompatActivity implements RadioGroup.On
     public static final int PAGE_RECOMMENDATION = 0;
     public static final int PAGE_ME = 2;
     public static final int PAGE_SHOWING = 1;
+    private boolean isGpsEnabled = false;
+    private String TAG = "HomepageActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +73,19 @@ public class HomePageActivity extends AppCompatActivity implements RadioGroup.On
         } else {
             fragmentManager.popBackStack();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // start gps
+        startGPS();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopService(new Intent(this, GPSService.class));
     }
 
     private void bindViews(){
@@ -132,6 +154,29 @@ public class HomePageActivity extends AppCompatActivity implements RadioGroup.On
             case R.id.rb_now_showing:
                 viewPager.setCurrentItem(PAGE_SHOWING);
                 break;
+        }
+    }
+
+    public void startGPS() {
+        // check gps permissions
+        String coarsePermission = "android.permission.ACCESS_COARSE_LOCATION";
+        String finePermission = "android.permission.ACCESS_FINE_LOCATION";
+        int resCoarse = checkCallingOrSelfPermission(coarsePermission);
+        int resFine = checkCallingOrSelfPermission(finePermission);
+        isGpsEnabled = (resCoarse == PackageManager.PERMISSION_GRANTED && resFine == PackageManager.PERMISSION_GRANTED);
+        if (!isGpsEnabled) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            Log.i(TAG, "onCreate: asking for gps permission");
+        }
+        if (resCoarse == PackageManager.PERMISSION_GRANTED && resFine == PackageManager.PERMISSION_GRANTED) {
+            // start gps service
+            Intent intent = new Intent(this, GPSService.class);
+            startService(intent);
+            Log.i(TAG, "onCreate: started gps service");
+        } else {
+            Log.e(TAG, "onCreate: don't have permission for gps");
+            Toast.makeText(getApplicationContext(), "GPS permission not granted", Toast.LENGTH_SHORT).show();
         }
     }
 }
