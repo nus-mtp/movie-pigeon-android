@@ -176,8 +176,7 @@ public class HomePageActivity extends AppCompatActivity implements RadioGroup.On
             Log.i(TAG, "onCreate: started gps service");
         } else {
             Log.e(TAG, "onCreate: don't have permission for gps");
-            Toast.makeText(getApplicationContext(), "GPS permission needed", Toast.LENGTH_SHORT).show();
-            finish();
+            Toast.makeText(getApplicationContext(), "GPS permission not granted", Toast.LENGTH_SHORT).show();
         }
     }
 }

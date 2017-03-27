@@ -1,6 +1,7 @@
 package org.example.team_pigeon.movie_pigeon;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -130,13 +131,15 @@ public class CinemaFragment extends Fragment {
     private void showCinemas() {
         Log.i(TAG, "Preparing to generate cinema table");
         // sort cinemas according to distance
-        Collections.sort(allCinemas,
-                new Comparator<Cinema>() {
-                    @Override
-                    public int compare(Cinema o1, Cinema o2) {
-                        return o1.getDistance() - o2.getDistance();
-                    }
-                });
+        if (isGPSRunning()) {
+            Collections.sort(allCinemas,
+                    new Comparator<Cinema>() {
+                        @Override
+                        public int compare(Cinema o1, Cinema o2) {
+                            return o1.getDistance() - o2.getDistance();
+                        }
+                    });
+        }
         // load table rows containing cinema name and distance
         cinemaListAdapter = new CinemaListAdapter(allCinemas, getContext());
         cinemaList.setAdapter(cinemaListAdapter);
@@ -242,7 +245,7 @@ public class CinemaFragment extends Fragment {
                 } else {
                     status = SUCCESSFUL_CINEMALIST;
                     for (Cinema cinema : cinemas) {
-                        if (userLocation != null) {
+                        if (userLocation != null && isGPSRunning()) {
                             cinemaLocation = new Location(cinema.getName());
                             cinemaLocation.setLatitude(Double.valueOf(cinema.getLatitude()));
                             cinemaLocation.setLongitude(Double.valueOf(cinema.getLongitude()));
@@ -258,5 +261,15 @@ public class CinemaFragment extends Fragment {
                 Log.e(TAG, e.getMessage());
             }
         }
+    }
+
+    private boolean isGPSRunning() {
+        ActivityManager manager = (ActivityManager) getActivity().getSystemService(getActivity().ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (GPSService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
