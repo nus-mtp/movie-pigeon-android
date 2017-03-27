@@ -1,6 +1,7 @@
 package org.example.team_pigeon.movie_pigeon;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -64,6 +66,7 @@ public class CinemaScheduleFragment extends Fragment {
     private String cinemaId;
     private GlobalReceiver receiver;
     private final int weekListUpdated = 1;
+    private FragmentManager fragmentManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -72,6 +75,7 @@ public class CinemaScheduleFragment extends Fragment {
         cinemaId = bundle.getString("cinemaId");
         dateList = timeUtil.getDateList();
         dateListString = timeUtil.getDateListToString_YYYYMMDD(dateList);
+        fragmentManager = getFragmentManager();
         new getMovieWorkingThread().execute();
     }
 
@@ -88,29 +92,40 @@ public class CinemaScheduleFragment extends Fragment {
             dateButtons[i].setText(dateListString.get(i).substring(5));
             dateIdMap.put(resID,i);
         }
+        dateGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            public void onCheckedChanged(RadioGroup group, int checkedId)
+            {
+                RadioButton checkedRadioButton = (RadioButton)group.findViewById(checkedId);
+                boolean isChecked = checkedRadioButton.isChecked();
+                if (isChecked) {
+                    Log.d(TAG, "onCheckedChanged: button clicked, refreshing adapter");
+                    adapter = new NowShowingListAdapter(weekList.get(dateIdMap.get(checkedId)), getActivity());
+                    scheduleListView.setAdapter(adapter);
+                    ((NowShowingListAdapter)scheduleListView.getAdapter()).notifyDataSetChanged();
+                }
+            }
+        });
         receiver = new GlobalReceiver(new Handler() {
             public void handleMessage(Message msg) {
                 final int what = msg.what;
                 switch (what) {
                     case weekListUpdated:
                         Log.i(TAG, "Successfully get week list");
-                        adapter = new NowShowingListAdapter(weekList.get(0), getActivity());
-                        Log.i(TAG, "onCreateView: size of movie list " + weekList.get(0).size()
-                        + weekList.get(1).size()+ " "+ weekList.get(2).size()+ " "+ weekList.get(3).size()+ " "+
-                                weekList.get(4).size()+ " "+ weekList.get(5).size()+ " "+ weekList.get(6).size());
-                        scheduleListView.setAdapter(adapter);
-                        ((NowShowingListAdapter)scheduleListView.getAdapter()).notifyDataSetChanged();
-                        dateGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-                        {
-                            public void onCheckedChanged(RadioGroup group, int checkedId)
-                            {
-                                RadioButton checkedRadioButton = (RadioButton)group.findViewById(checkedId);
-                                boolean isChecked = checkedRadioButton.isChecked();
-                                if (isChecked)
-                                {
-                                    adapter = new NowShowingListAdapter(weekList.get(dateIdMap.get(checkedId)), getActivity());
-                                    ((NowShowingListAdapter)scheduleListView.getAdapter()).notifyDataSetChanged();
-                                }
+                        dateButtons[0].setChecked(true);
+
+                        // click movie to show detailed info
+                        scheduleListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Intent displayActivityIntent = new Intent(getActivity(), DisplayActivity.class);
+                                Bundle arguments = new Bundle();
+                                arguments.putSerializable("movie", adapter.getItem(position));
+                                arguments.putString("title", adapter.getItem(position).getTitle());
+                                arguments.putString("type", "moviePage");
+                                arguments.putInt("position",position);
+                                displayActivityIntent.putExtra("bundle", arguments);
+                                getActivity().startActivity(displayActivityIntent);
                             }
                         });
                         break;
@@ -121,6 +136,12 @@ public class CinemaScheduleFragment extends Fragment {
         filter.addAction("weekList");
         getActivity().registerReceiver(receiver, filter);
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(receiver);
     }
 
     private class getMovieWorkingThread extends AsyncTask<Void,Void,Void> {

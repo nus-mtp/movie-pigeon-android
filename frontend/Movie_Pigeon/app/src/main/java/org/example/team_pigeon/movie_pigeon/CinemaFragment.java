@@ -154,7 +154,7 @@ public class CinemaFragment extends Fragment {
                 Log.i(TAG, "Request of now showing movie list is completed");
                 arguments.putString("cinemaId", cinemaId);
                 arguments.putString("type", "nowShowing");
-                arguments.putString("title", "Now showing in " + selectedCinemaName);
+                arguments.putString("title", selectedCinemaName);
                 displayMovies.putExtra("bundle", arguments);
                 getActivity().startActivity(displayMovies);
             }
