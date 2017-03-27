@@ -11,12 +11,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -76,6 +78,7 @@ public class CinemaFragment extends Fragment {
     private boolean isGpsEnabled = false;
     Location userLocation;
     private String selectedCinemaName;
+    private TextView gpsLoading;
 
     public CinemaFragment() {
     }
@@ -87,13 +90,7 @@ public class CinemaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cinema_new, container, false);
         dateList = timeUtil.getDateList();
         dateListInString = timeUtil.getDateListToString_MMDDE(dateList);
-        String permission = "android.permission.ACCESS_FINE_LOCATION";
-        int res = getContext().checkCallingOrSelfPermission(permission);
-        isGpsEnabled = (res == PackageManager.PERMISSION_GRANTED);
-        if (!isGpsEnabled) {
-            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            Log.i(TAG, "onCreateView: asking for gps permission");
-        }
+        gpsLoading = (TextView) view.findViewById(R.id.gps_loading);
         cinemaList = (ListView) view.findViewById(R.id.cinema_list);
         receiver = new GlobalReceiver(new Handler() {
             public void handleMessage(Message msg) {
@@ -101,6 +98,7 @@ public class CinemaFragment extends Fragment {
                 switch (what) {
                     case cinemasLoaded:
                         Log.i(TAG, "Successfully loaded cinemas");
+                        gpsLoading.setVisibility(View.GONE);
                         showCinemas();
                         break;
                     case locationLoaded:
@@ -160,14 +158,23 @@ public class CinemaFragment extends Fragment {
             }
         });
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume: back from pause");
+        gpsLoading.setVisibility(View.VISIBLE);
+        if (allCinemas!=null) {
+            Log.i(TAG, "onResume: loading cached cinema list");
+            gpsLoading.setVisibility(View.GONE);
+            showCinemas();
+        }
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        if (isGpsEnabled) {
-            getContext().unregisterReceiver(receiver);
-        }
+        getContext().unregisterReceiver(receiver);
     }
 
     private class NowShowingTask extends AsyncTask<String, Integer, Void> {
