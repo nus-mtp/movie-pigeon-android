@@ -22,8 +22,7 @@ public class RequestHttpBuilderSingleton {
     private final String bookmarkUrl = "http://128.199.167.57:8080/api/bookmarks";
     private final String cinemaUrl = "http://128.199.167.57:8080/api/cinemas";
     private final String nowShowingUrl = "http://128.199.167.57:8080/api/showing";
-    //Use bookmarks as place holders
-    private final String recommendationUrl = "http://128.199.167.57:8080/api/bookmarks";
+    private final String recommendationUrl = "http://128.199.167.57:8080/api/recommendations";
     private final String nowShowingHomePageUrl = "http://128.199.167.57:8080/api/showing/all";
     private final String movieScheduleUrl = "http://128.199.167.57:8080/api/movies/schedule";
 

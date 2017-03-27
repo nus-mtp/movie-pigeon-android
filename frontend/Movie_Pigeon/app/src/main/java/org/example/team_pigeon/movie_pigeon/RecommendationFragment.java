@@ -19,8 +19,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.example.team_pigeon.movie_pigeon.adapters.HorizontalListAdapter;
+import org.example.team_pigeon.movie_pigeon.eventCenter.UpdateMovieListEvent;
 import org.example.team_pigeon.movie_pigeon.models.Movie;
 import org.example.team_pigeon.movie_pigeon.models.MovieWithCount;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -80,6 +83,9 @@ public class RecommendationFragment extends Fragment implements AdapterView.OnIt
                 return false;
             }
         });
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         return view;
     }
 
@@ -125,6 +131,28 @@ public class RecommendationFragment extends Fragment implements AdapterView.OnIt
             }
         }
         return filteredMovies;
+    }
+
+    @Subscribe
+    public void onEvent(UpdateMovieListEvent event){
+        if(nowShowingMovieAdapter!=null) {
+            if(event.movie.getMovieID().equals(nowShowingMovieAdapter.getItem(event.position).getMovieID())) {
+                nowShowingMovieAdapter.updateMovieItemToAdapter(event.movie, event.position);
+                Log.i(TAG, "A movie is updated to local list");
+            }
+        }
+        if(recommendedMovieAdapter!=null) {
+            if(event.movie.getMovieID().equals(recommendedMovieAdapter.getItem(event.position).getMovieID())) {
+                recommendedMovieAdapter.updateMovieItemToAdapter(event.movie, event.position);
+                Log.i(TAG, "A movie is updated to local list");
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     private void setOnclickListener(GridView gridView){
