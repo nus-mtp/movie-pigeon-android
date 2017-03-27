@@ -72,6 +72,7 @@ public class CinemaFragment extends Fragment {
     Location userLocation;
     private String selectedCinemaName;
     private TextView gpsLoading;
+    private Handler delayHandler;
 
     public CinemaFragment() {
     }
@@ -158,10 +159,21 @@ public class CinemaFragment extends Fragment {
         super.onResume();
         Log.i(TAG, "onResume: back from pause");
         gpsLoading.setVisibility(View.VISIBLE);
-        if (allCinemas!=null) {
-            Log.i(TAG, "onResume: loading cached cinema list");
+        if (!isGPSRunning()) {
+            Log.i(TAG, "onResume: load default list");
+            loadCinemaList();
+        } else {
+            delayHandler = new Handler();
+            delayHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (userLocation == null) {
+                        Log.i(TAG, "onResume: load default list as user location is null");
+                        loadCinemaList();
+                    }
+                }
+            }, 500);
             gpsLoading.setVisibility(View.GONE);
-            showCinemas();
         }
     }
 

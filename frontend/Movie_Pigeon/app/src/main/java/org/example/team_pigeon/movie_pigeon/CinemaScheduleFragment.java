@@ -95,12 +95,15 @@ public class CinemaScheduleFragment extends Fragment {
             dateButtons[i].setText(dateListString.get(i).substring(5));
             dateIdMap.put(resID, i);
         }
-        dateGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                Log.d(TAG, "onCheckedChanged: button clicked, refreshing adapter");
-                adapter = new NowShowingListAdapter(weekList.get(dateIdMap.get(checkedId)), getActivity());
-                scheduleListView.setAdapter(adapter);
-                ((NowShowingListAdapter) scheduleListView.getAdapter()).notifyDataSetChanged();
+      
+        dateGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            public void onCheckedChanged(RadioGroup group, int checkedId)
+            {
+                    Log.d(TAG, "onCheckedChanged: button clicked, refreshing adapter");
+                    adapter = new NowShowingListAdapter(weekList.get(dateIdMap.get(checkedId)), getActivity());
+                    scheduleListView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
             }
         });
         receiver = new GlobalReceiver(new Handler() {
@@ -153,10 +156,8 @@ public class CinemaScheduleFragment extends Fragment {
         @Override
         protected void onPostExecute(Void V) {
             try {
-                for (Movie movie : movieList) {
-                    System.out.println(movie.getMovieID());
-                }
-                weekList = getOneWeekMovieList(movieList, dateList);
+
+                weekList = getOneWeekMovieList(movieList,dateList);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -192,8 +193,6 @@ public class CinemaScheduleFragment extends Fragment {
         for (int i = 0; i < 7; i++) {
             oneWeekMovieList.add(new ArrayList<Movie>());
         }
-        System.out.println(dateList.size());
-        System.out.println(movieList.size());
         for (int i = 0; i < dateList.size(); i++) {
             for (int j = 0; j < movieList.size(); j++) {
                 Movie movie = CloneUtil.clone(movieList.get(j));
