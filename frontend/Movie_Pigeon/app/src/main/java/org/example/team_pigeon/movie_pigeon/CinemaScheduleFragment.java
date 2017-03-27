@@ -26,9 +26,13 @@ import com.google.gson.reflect.TypeToken;
 import org.example.team_pigeon.movie_pigeon.adapters.MovieListAdapter;
 import org.example.team_pigeon.movie_pigeon.adapters.NowShowingListAdapter;
 import org.example.team_pigeon.movie_pigeon.adapters.ScheduleListAdapter;
+import org.example.team_pigeon.movie_pigeon.eventCenter.UpdateMovieListEvent;
 import org.example.team_pigeon.movie_pigeon.models.Movie;
 import org.example.team_pigeon.movie_pigeon.models.Schedule;
+import org.example.team_pigeon.movie_pigeon.utils.CloneUtil;
 import org.example.team_pigeon.movie_pigeon.utils.TimeUtil;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -67,13 +71,16 @@ public class CinemaScheduleFragment extends Fragment {
     private final int weekListUpdated = 1;
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         cinemaId = bundle.getString("cinemaId");
         dateList = timeUtil.getDateList();
         dateListString = timeUtil.getDateListToString_YYYYMMDD(dateList);
         new getMovieWorkingThread().execute();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
     }
 
     @Override
@@ -81,25 +88,19 @@ public class CinemaScheduleFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cinema_schedule, container, false);
         scheduleListView = (ListView) view.findViewById(R.id.cinema_movies_list);
         dateGroup = (RadioGroup) view.findViewById(R.id.rg_dates);
-        for(int i = 0;i<7;i++){
+        for (int i = 0; i < 7; i++) {
             String dbId = "rb_date_" + i;
             int resID = getResources().getIdentifier(dbId, "id", "org.example.team_pigeon.movie_pigeon");
             dateButtons[i] = (RadioButton) view.findViewById(resID);
             dateButtons[i].setText(dateListString.get(i).substring(5));
-            dateIdMap.put(resID,i);
+            dateIdMap.put(resID, i);
         }
-        dateGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
-            public void onCheckedChanged(RadioGroup group, int checkedId)
-            {
-                RadioButton checkedRadioButton = (RadioButton)group.findViewById(checkedId);
-                boolean isChecked = checkedRadioButton.isChecked();
-                if (isChecked) {
-                    Log.d(TAG, "onCheckedChanged: button clicked, refreshing adapter");
-                    adapter = new NowShowingListAdapter(weekList.get(dateIdMap.get(checkedId)), getActivity());
-                    scheduleListView.setAdapter(adapter);
-                    ((NowShowingListAdapter)scheduleListView.getAdapter()).notifyDataSetChanged();
-                }
+        dateGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                Log.d(TAG, "onCheckedChanged: button clicked, refreshing adapter");
+                adapter = new NowShowingListAdapter(weekList.get(dateIdMap.get(checkedId)), getActivity());
+                scheduleListView.setAdapter(adapter);
+                ((NowShowingListAdapter) scheduleListView.getAdapter()).notifyDataSetChanged();
             }
         });
         receiver = new GlobalReceiver(new Handler() {
@@ -119,7 +120,7 @@ public class CinemaScheduleFragment extends Fragment {
                                 arguments.putSerializable("movie", adapter.getItem(position));
                                 arguments.putString("title", adapter.getItem(position).getTitle());
                                 arguments.putString("type", "moviePage");
-                                arguments.putInt("position",position);
+                                arguments.putInt("position", position);
                                 displayActivityIntent.putExtra("bundle", arguments);
                                 getActivity().startActivity(displayActivityIntent);
                             }
@@ -138,9 +139,10 @@ public class CinemaScheduleFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         getActivity().unregisterReceiver(receiver);
+        EventBus.getDefault().unregister(this);
     }
 
-    private class getMovieWorkingThread extends AsyncTask<Void,Void,Void> {
+    private class getMovieWorkingThread extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -154,7 +156,7 @@ public class CinemaScheduleFragment extends Fragment {
                 for (Movie movie : movieList) {
                     System.out.println(movie.getMovieID());
                 }
-                weekList = getOneWeekMovieList(movieList,dateList);
+                weekList = getOneWeekMovieList(movieList, dateList);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -172,7 +174,8 @@ public class CinemaScheduleFragment extends Fragment {
                 throw new IOException("Unexpected code" + response);
             }
             //Convert json to Arraylist<Movie>
-            movieList = gson.fromJson(response.body().charStream(), new TypeToken<ArrayList<Movie>>() {}.getType());
+            movieList = gson.fromJson(response.body().charStream(), new TypeToken<ArrayList<Movie>>() {
+            }.getType());
             if (movieList.size() == 0) {
                 return;
             } else {
@@ -193,10 +196,8 @@ public class CinemaScheduleFragment extends Fragment {
         System.out.println(movieList.size());
         for (int i = 0; i < dateList.size(); i++) {
             for (int j = 0; j < movieList.size(); j++) {
-                Movie movie = movieList.get(j);
+                Movie movie = CloneUtil.clone(movieList.get(j));
                 Date date = dateList.get(i);
-                System.out.println("is movie null? " + movie==null);
-                System.out.println("is date null? " + date==null);
                 ArrayList<String> showTime = convertToShowTimeArray(date, movie.getSchedule());
                 if (!showTime.isEmpty()) {
                     movie.setShowTimes(showTime);
@@ -230,6 +231,21 @@ public class CinemaScheduleFragment extends Fragment {
             }
         }
         return showTimeList;
+    }
+
+    @Subscribe
+    public void onEvent(UpdateMovieListEvent event) {
+        Movie updatedMovie = event.movie;
+        if (weekList != null) {
+            for (int i = 0; i < 7; i++) {
+                for (Movie movie : weekList.get(i)) {
+                    if (updatedMovie.getMovieID().equals(movie.getMovieID())) {
+                        movie.setUserRating(updatedMovie.getUserRating());
+                        movie.setUserBookmark(updatedMovie.getUserBookmark());
+                    }
+                }
+            }
+        }
     }
 
 }
