@@ -117,7 +117,7 @@ public class CinemaFragment extends Fragment {
         IntentFilter filter = new IntentFilter();
         filter.addAction("cinemasLoaded");
         filter.addAction("locationLoaded");
-        getContext().registerReceiver(receiver, filter);
+        getActivity().registerReceiver(receiver, filter);
         view.requestFocus();
         return view;
     }
@@ -141,7 +141,7 @@ public class CinemaFragment extends Fragment {
                     });
         }
         // load table rows containing cinema name and distance
-        cinemaListAdapter = new CinemaListAdapter(allCinemas, getContext());
+        cinemaListAdapter = new CinemaListAdapter(allCinemas, getActivity());
         cinemaList.setAdapter(cinemaListAdapter);
         cinemaList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -177,7 +177,7 @@ public class CinemaFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        getContext().unregisterReceiver(receiver);
+        getActivity().unregisterReceiver(receiver);
     }
 
     private class NowShowingTask extends AsyncTask<String, Integer, Void> {
@@ -210,7 +210,7 @@ public class CinemaFragment extends Fragment {
                     Log.i(TAG, "Requset is completed");
                     isCinemasLoaded = true;
                     Intent intent = new Intent("cinemasLoaded");
-                    getContext().sendBroadcast(intent);
+                    getActivity().sendBroadcast(intent);
                     break;
                 case ERROR:
                     Toast.makeText(getActivity(), "Connection error, please check your connection", Toast.LENGTH_SHORT).show();
