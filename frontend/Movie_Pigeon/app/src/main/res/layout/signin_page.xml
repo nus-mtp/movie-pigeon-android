@@ -8,11 +8,12 @@
     <ImageView
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:src="@mipmap/pigeon"
+        android:src="@drawable/newlogo"
         android:id="@+id/imageViewProfile"
         android:layout_marginTop="50dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignStart="@+id/loginTable"
+        android:layout_alignEnd="@+id/loginTable" />
 
     <Button
         android:text="Forgot Password?"
