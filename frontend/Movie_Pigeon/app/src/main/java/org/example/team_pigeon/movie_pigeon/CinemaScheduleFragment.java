@@ -54,7 +54,6 @@ public class CinemaScheduleFragment extends Fragment {
     private TimeUtil timeUtil = new TimeUtil();
     private List<Date> dateList;
     private List<String> dateListString;
-    private LoadingDialog loadingDialog;
     private ListView scheduleListView;
     private RadioGroup dateGroup;
     private RadioButton[] dateButtons = new RadioButton[7];
@@ -66,7 +65,6 @@ public class CinemaScheduleFragment extends Fragment {
     private String cinemaId;
     private GlobalReceiver receiver;
     private final int weekListUpdated = 1;
-    private FragmentManager fragmentManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -75,13 +73,11 @@ public class CinemaScheduleFragment extends Fragment {
         cinemaId = bundle.getString("cinemaId");
         dateList = timeUtil.getDateList();
         dateListString = timeUtil.getDateListToString_YYYYMMDD(dateList);
-        fragmentManager = getFragmentManager();
         new getMovieWorkingThread().execute();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        loadingDialog = new LoadingDialog(this.getActivity(),R.style.LoadingDialog);
         View view = inflater.inflate(R.layout.fragment_cinema_schedule, container, false);
         scheduleListView = (ListView) view.findViewById(R.id.cinema_movies_list);
         dateGroup = (RadioGroup) view.findViewById(R.id.rg_dates);
