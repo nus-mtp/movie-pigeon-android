@@ -3,6 +3,7 @@ package org.example.team_pigeon.movie_pigeon.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import org.example.team_pigeon.movie_pigeon.R;
 import org.example.team_pigeon.movie_pigeon.configs.ImageConfig;
 import org.example.team_pigeon.movie_pigeon.costomizedViews.MultipleColGridView;
 import org.example.team_pigeon.movie_pigeon.models.Movie;
+import org.example.team_pigeon.movie_pigeon.models.PublicRating;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -111,12 +113,12 @@ public class NowShowingListAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void startActivity(int position){
+    private void startActivity(int position) {
         Intent displayActivityIntent = new Intent(this.mContext, DisplayActivity.class);
         Bundle arguments = new Bundle();
-        arguments.putSerializable("movie",movieList.get(position));
+        arguments.putSerializable("movie", movieList.get(position));
         arguments.putString("type", "moviePage");
-        arguments.putInt("position",position);
+        arguments.putInt("position", position);
         arguments.putString("title", movieList.get(position).getTitle());
         displayActivityIntent.putExtra("bundle", arguments);
         this.mContext.startActivity(displayActivityIntent);
@@ -124,9 +126,23 @@ public class NowShowingListAdapter extends BaseAdapter {
 
     private void setRatingBar(RatingBar ratingBar, Movie movie) {
         if (!movie.getPublicRatingses().isEmpty()) {
-            Float ratting = Float.valueOf(movie.getPublicRatingses().get(0).getScore());
-            ratingBar.setNumStars(5);
-            ratingBar.setRating(ratting / 2);
+            Float averageRating = new Float(0);
+            int ratingCount = 0;
+            ArrayList<PublicRating> ratings = movie.getPublicRatingses();
+            for (PublicRating rating : ratings) {
+                if (rating.getScore() != null && !rating.getScore().equals("0")) {
+                    ratingCount++;
+                    averageRating += Float.valueOf(rating.getScore());
+                }
+            }
+            if (ratingCount == 0) {
+                ratingBar.setVisibility(View.INVISIBLE);
+            } else {
+                averageRating = averageRating / ratingCount;
+                ratingBar.setVisibility(View.VISIBLE);
+                ratingBar.setNumStars(5);
+                ratingBar.setRating(averageRating / 2);
+            }
         } else {
             ratingBar.setVisibility(View.INVISIBLE);
         }
