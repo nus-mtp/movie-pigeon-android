@@ -32,21 +32,18 @@
                 android:id="@+id/text_now_showing_list_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView"
                 android:layout_columnSpan="2"/>
 
             <TextView
                 android:id="@+id/text_now_showing_list_length"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/text_now_showing_list_special"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:text="TextView" />
+                android:layout_marginLeft="50dp" />
 
             <RatingBar
                 android:layout_width="wrap_content"
