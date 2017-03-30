@@ -15,13 +15,55 @@
         android:layout_marginLeft="10dp"
         android:id="@+id/image_movie_list_poster" />
 
-    <TextView
-        android:text="TextView"
-        android:paddingLeft="12dp"
-        android:textSize="18sp"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/text_movie_list_title" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:paddingLeft="12dp"
+            android:textSize="18sp"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_movie_list_title" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="12dp"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_movie_list_year"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_movie_list_length"
+                android:layout_weight="1"/>
+
+        </TableRow>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="12dp"
+            android:id="@+id/text_movie_list_genre"
+            android:layout_marginTop="5dp"/>
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:id="@+id/ratingBar_movie_list"
+            android:layout_marginLeft="12dp"
+            style="@android:style/Widget.DeviceDefault.Light.RatingBar.Small"
+            android:numStars="5"/>
+
+    </LinearLayout>
 
 </LinearLayout>
