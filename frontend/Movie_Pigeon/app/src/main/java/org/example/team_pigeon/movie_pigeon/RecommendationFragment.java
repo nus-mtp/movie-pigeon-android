@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -42,6 +43,7 @@ public class RecommendationFragment extends Fragment implements AdapterView.OnIt
     private HorizontalListAdapter nowShowingMovieAdapter, recommendedMovieAdapter;
     private MovieWithCount movieWithCount;
     private GridView nowShowingGrid, recommendedGrid;
+    private ImageButton refreshButton;
     private int resultCount = 0;
     private RequestHttpBuilderSingleton searchRequestHttpBuilder = RequestHttpBuilderSingleton.getInstance();
     private LoadingDialog loadingDialog;
@@ -57,6 +59,7 @@ public class RecommendationFragment extends Fragment implements AdapterView.OnIt
         searchView = (SearchView) view.findViewById(R.id.search_view);
         nowShowingGrid = (GridView) view.findViewById(R.id.grid_now_showing);
         recommendedGrid = (GridView) view.findViewById(R.id.grid_recommended);
+        refreshButton = (ImageButton) view.findViewById(R.id.button_fresh_recommendation);
         nowShowingMovieList = new ArrayList<>();
         nowShowingTask = new Task();
         nowShowingTask.execute("nowshowing");
@@ -81,6 +84,14 @@ public class RecommendationFragment extends Fragment implements AdapterView.OnIt
             @Override
             public boolean onQueryTextChange(String newText) {
                 return false;
+            }
+        });
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "Refreshing recommendation");
+                recommendationTask = new Task();
+                recommendationTask.execute("recommendation");
             }
         });
         if (!EventBus.getDefault().isRegistered(this)) {

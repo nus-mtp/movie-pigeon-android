@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -40,14 +41,31 @@
 
     </HorizontalScrollView>
 
-    <TextView
-        android:text="Recommended For You"
-        android:textSize="20sp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView4" />
+        android:layout_height="match_parent">
+
+        <TextView
+            android:text="Recommended For You"
+            android:textSize="20sp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView4"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_fresh"
+            android:background="@color/transparent"
+            android:layout_marginTop="10dp"
+            android:id="@+id/button_fresh_recommendation"
+            android:layout_weight="1" />
+
+    </LinearLayout>
 
     <HorizontalScrollView
         android:layout_width="match_parent"
