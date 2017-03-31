@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 /**
@@ -30,8 +31,8 @@ class SigninPage {
         Button BSignIn = (Button) signin.findViewById(R.id.buttonSignIn);
         Button BRegister = (Button) signin.findViewById(R.id.buttonRegister);
         Button BForgetPassword = (Button) signin.findViewById(R.id.buttonForgotPassword);
-        Button BTrakt = (Button) signin.findViewById(R.id.buttonTrakt);
-        Button BTmdb = (Button) signin.findViewById(R.id.buttonTmdb);
+        ImageButton BTrakt = (ImageButton) signin.findViewById(R.id.buttonTrakt);
+        ImageButton BTmdb = (ImageButton) signin.findViewById(R.id.buttonTmdb);
         mActivity.setContentView(signin);
 
         etEmail = (EditText) signin.findViewById(R.id.editTextUsername);

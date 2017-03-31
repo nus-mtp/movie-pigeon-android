@@ -24,28 +24,51 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/menu_setting_page">
+
             <TableRow
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:id="@+id/username_setting_page"
-                android:gravity="center_horizontal"
-                android:layout_marginTop="20dp">
+                android:layout_gravity="center_vertical"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:paddingLeft="20dp"
+                android:layout_width="match_parent"
+                android:background="@drawable/table_text_underline">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_me_normal"
+                    android:id="@+id/imageView4" />
+
                 <TextView
-                    android:padding="10dp"
                     android:text="Change username"
                     android:textSize="20sp"
-                    android:textColor="#000000"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="4dp"
                     android:id="@+id/tv_username_setting_menu" />
             </TableRow>
+
             <TableRow
                 android:layout_height="wrap_content"
                 android:id="@+id/password_setting_page"
-                android:layout_marginTop="20dp"
-                android:gravity="center_horizontal">
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:paddingLeft="20dp"
+                android:background="@drawable/table_text_underline"
+                android:layout_gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_password"
+                    android:id="@+id/imageView5" />
+
                 <TextView
-                    android:padding="10dp"
+                    android:paddingLeft="10dp"
                     android:text="Change password"
                     android:textSize="20sp"
-                    android:textColor="#000000"
+                    android:paddingTop="4dp"
                     android:id="@+id/tv_password_setting_menu" />
             </TableRow>
         </TableLayout>
