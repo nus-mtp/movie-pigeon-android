@@ -13,7 +13,7 @@
         android:layout_width="68dp"
         android:layout_height="100dp"
         android:layout_marginLeft="10dp"
-        android:id="@+id/image_movie_list_poster" />
+        android:id="@+id/image_rating_list_poster" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -26,42 +26,22 @@
             android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/text_movie_list_title" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="12dp"
-            android:layout_marginTop="5dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/text_movie_list_year"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/text_movie_list_length"
-                android:layout_weight="1"/>
-
-        </TableRow>
+            android:id="@+id/text_rating_list_title" />
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:text="Your Rating:"
+            android:layout_marginTop="5dp"
             android:paddingLeft="12dp"
-            android:id="@+id/text_movie_list_genre"
-            android:layout_marginTop="5dp"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <RatingBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:id="@+id/ratingBar_movie_list"
+            android:id="@+id/ratingBar_rating_list"
             android:layout_marginLeft="12dp"
-            style="@android:style/Widget.DeviceDefault.Light.RatingBar.Small"
+            style="@android:style/Widget.DeviceDefault.RatingBar.Indicator"
             android:numStars="5"/>
 
     </LinearLayout>

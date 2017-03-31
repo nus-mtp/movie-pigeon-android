@@ -19,6 +19,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 
 import org.example.team_pigeon.movie_pigeon.adapters.MovieListAdapter;
+import org.example.team_pigeon.movie_pigeon.adapters.RatingListAdapter;
 import org.example.team_pigeon.movie_pigeon.eventCenter.AddMovieToMovieListEvent;
 import org.example.team_pigeon.movie_pigeon.eventCenter.DeleteMovieFromMovieListEvent;
 import org.example.team_pigeon.movie_pigeon.eventCenter.UpdateMovieListEvent;
@@ -28,6 +29,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import okhttp3.OkHttpClient;
@@ -38,37 +40,43 @@ import okhttp3.Response;
  * Created by SHENGX on 2017/2/3.
  */
 
-public class MovieListFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class MovieListFragment extends Fragment implements AdapterView.OnItemClickListener {
     private static final String TAG = "MovieListFragment";
     private android.app.FragmentManager fragmentManager;
     private ArrayList<Movie> movies;
     private ListView list_movies;
     private MovieListAdapter movieListAdapter;
+    private RatingListAdapter ratingListAdapter;
     public View footerView;
     private Toolbar toolbar;
     private Bundle bundle;
     private String type;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
         //Load common views
         fragmentManager = getFragmentManager();
-        View view = inflater.inflate(R.layout.fragment_movie_list,container,false);
-        list_movies = (ListView)view.findViewById(R.id.list_movies);
-        footerView = inflater.inflate(R.layout.footer_load_more,null);
-        toolbar = (Toolbar)getActivity().findViewById(R.id.toolbar_display_page);
+        View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
+        list_movies = (ListView) view.findViewById(R.id.list_movies);
+        footerView = inflater.inflate(R.layout.footer_load_more, null);
+        toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_display_page);
         //Load pass-in content
         bundle = getActivity().getIntent().getBundleExtra("bundle");
         type = bundle.getString("type");
-        movies = (ArrayList<Movie>)getArguments().getSerializable("movieList");
-        movieListAdapter = new MovieListAdapter(movies,getActivity());
-        list_movies.setAdapter(movieListAdapter);
+        movies = (ArrayList<Movie>) getArguments().getSerializable("movieList");
+        movieListAdapter = new MovieListAdapter(movies, getActivity());
+        ratingListAdapter = new RatingListAdapter(movies, getActivity());
+        if (type.equals("rating")) {
+            list_movies.setAdapter(ratingListAdapter);
+        } else {
+            list_movies.setAdapter(movieListAdapter);
+        }
         toolbar.setTitle(bundle.getString("title"));
         list_movies.setOnItemClickListener(this);
-        if(!EventBus.getDefault().isRegistered(this)){
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        list_movies.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(),true,true));
+        list_movies.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), true, true));
         return view;
     }
 
@@ -77,13 +85,19 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
         android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         MoviePageFragment moviePageFragment = new MoviePageFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("movie", movieListAdapter.getItem(position));
         bundle.putInt("position", position);
         bundle.putString("type", type);
-        toolbar.setTitle(movieListAdapter.getItem(position).getTitle());
-        toolbar.setSubtitle(null);
+        if (type.equals("rating")) {
+            bundle.putSerializable("movie", movieListAdapter.getItem(position));
+            toolbar.setTitle(movieListAdapter.getItem(position).getTitle());
+            toolbar.setSubtitle(null);
+        } else {
+            bundle.putSerializable("movie", ratingListAdapter.getItem(position));
+            toolbar.setTitle(ratingListAdapter.getItem(position).getTitle());
+            toolbar.setSubtitle(null);
+        }
         moviePageFragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.fl_content,moviePageFragment);
+        fragmentTransaction.replace(R.id.fl_content, moviePageFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
@@ -95,24 +109,30 @@ public class MovieListFragment extends Fragment implements AdapterView.OnItemCli
     }
 
     @Subscribe
-    public void onEvent(DeleteMovieFromMovieListEvent event){
-        if(movieListAdapter!=null) {
+    public void onEvent(DeleteMovieFromMovieListEvent event) {
+        if (type.equals("rating") && ratingListAdapter != null) {
+            ratingListAdapter.removeMovieItemToAdapter(event.position);
+        } else if (movieListAdapter != null) {
             movieListAdapter.removeMovieItemToAdapter(event.position);
             Log.i(TAG, "A movie is removed from local list");
         }
     }
 
     @Subscribe
-    public void onEvent(UpdateMovieListEvent event){
-        if(movieListAdapter!=null) {
+    public void onEvent(UpdateMovieListEvent event) {
+        if (type.equals("rating") && ratingListAdapter != null) {
+            ratingListAdapter.updateMovieItemToAdapter(event.movie, event.position);
+        } else if (movieListAdapter != null) {
             movieListAdapter.updateMovieItemToAdapter(event.movie, event.position);
             Log.i(TAG, "A movie is updated to local list");
         }
     }
 
     @Subscribe
-    public void onEvent(AddMovieToMovieListEvent event){
-        if(movieListAdapter!=null) {
+    public void onEvent(AddMovieToMovieListEvent event) {
+        if (type.equals("rating") && ratingListAdapter != null) {
+            ratingListAdapter.addMovieItemToAdapter(event.movie, event.position);
+        } else if (movieListAdapter != null) {
             movieListAdapter.addMovieItemToAdapter(event.movie, event.position);
             Log.i(TAG, "A movie is added to local list");
         }
