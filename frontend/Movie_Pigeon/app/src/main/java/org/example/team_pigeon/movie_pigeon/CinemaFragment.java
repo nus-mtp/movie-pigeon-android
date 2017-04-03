@@ -1,18 +1,14 @@
 package org.example.team_pigeon.movie_pigeon;
 
-import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,24 +21,13 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.example.team_pigeon.movie_pigeon.adapters.CinemaAdapter;
 import org.example.team_pigeon.movie_pigeon.adapters.CinemaListAdapter;
-import org.example.team_pigeon.movie_pigeon.adapters.NowShowingListAdapter;
-import org.example.team_pigeon.movie_pigeon.eventCenter.AddMovieToMovieListEvent;
-import org.example.team_pigeon.movie_pigeon.eventCenter.DeleteMovieFromMovieListEvent;
-import org.example.team_pigeon.movie_pigeon.eventCenter.UpdateMovieListEvent;
 import org.example.team_pigeon.movie_pigeon.models.Cinema;
-import org.example.team_pigeon.movie_pigeon.models.Movie;
-import org.example.team_pigeon.movie_pigeon.models.Schedule;
 import org.example.team_pigeon.movie_pigeon.utils.TimeUtil;
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
