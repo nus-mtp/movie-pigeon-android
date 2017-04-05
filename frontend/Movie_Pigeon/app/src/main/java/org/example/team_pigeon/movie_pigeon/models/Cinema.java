@@ -14,7 +14,7 @@ public class Cinema implements Serializable{
     @SerializedName("cinema_id")
     private String id;
     @Expose
-    @SerializedName("cinema_name")
+    @SerializedName("displayed_name")
     private String name;
     @Expose
     private String provider;
